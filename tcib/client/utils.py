@@ -165,7 +165,7 @@ def playbook_verbosity(self):
 
 
 def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
-                         connection='smart', output_callback='tripleo_dense',
+                         connection='smart', output_callback='default',
                          ssh_user='root', key=None, module_path=None,
                          limit_hosts=None, tags=None, skip_tags=None,
                          verbosity=0, quiet=False, extra_vars=None,
@@ -189,7 +189,7 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
     :param connection: Connection type (local, smart, etc).
     :type connection: String
     :param output_callback: Callback for output format. Defaults to
-                            "tripleo_dense".
+                            "default".
     :type output_callback: String
     :param ssh_user: User for the ssh connection.
     :type ssh_user: String
