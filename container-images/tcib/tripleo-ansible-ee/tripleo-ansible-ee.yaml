@@ -1,11 +1,11 @@
 tcib_args:
-  TRIPLEO_ANSIBLE_REQ: "/usr/share/openstack-tripleo-common-containers/container-images/kolla/tripleo-ansible-ee/requirements.yaml"
+  TRIPLEO_ANSIBLE_REQ: "/usr/share/tcib/container-images/kolla/tripleo-ansible-ee/requirements.yaml"
 tcib_from: quay.io/tripleoansible/ansible-runner:stream9
 tcib_actions:
 - run: dnf install -y {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - user: root
 - run: >-
-    cp /usr/share/openstack-tripleo-common-containers/container-images/kolla/tripleo-ansible-ee/settings /runner/env/settings &&
+    cp /usr/share/tcib/container-images/kolla/tripleo-ansible-ee/settings /runner/env/settings &&
     chmod 777 /runner/env/settings
 # To be able for ansible to deal with the arbirtray uid's that Openshift is enforcing
 # in its default scc, it would be necessary to add "RUN chmod g=u /etc/passwd /etc/group"
@@ -30,7 +30,7 @@ tcib_actions:
     rm -rf /runner/project && ln -snf /usr/share/ansible/tripleo-playbooks project; fi
 # Append the ansible-runner entrypoint content in tripleo_entrypoint by removing bash shebang
 - run: >-
-    cp /usr/share/openstack-tripleo-common-containers/container-images/kolla/tripleo-ansible-ee/tripleo_entrypoint.sh /bin/tripleo_entrypoint &&
+    cp /usr/share/tcib/container-images/kolla/tripleo-ansible-ee/tripleo_entrypoint.sh /bin/tripleo_entrypoint &&
     sed -i '1d' /bin/entrypoint &&
     cat /bin/entrypoint >> /bin/tripleo_entrypoint &&
     chmod +x /bin/tripleo_entrypoint
@@ -41,5 +41,3 @@ tcib_packages:
   common:
   - ansible-role-chrony
   - dumb-init
-  - openstack-tripleo-common-containers
-  - tripleo-ansible

@@ -5,7 +5,7 @@ tcib_actions:
 - run: if [ "$(uname -m)" == "x86_64" ]; then dnf -y install {{ tcib_packages['x86_64'] | join(' ') }}; fi
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: chown -R collectd:collectd /etc/collectd* /var/run/
-- run: ln -s /usr/share/openstack-tripleo-common/healthcheck/collectd /openstack/healthcheck && chmod a+rx /openstack/healthcheck
+- run: ln -s /usr/share/tcib/healthcheck/collectd /openstack/healthcheck && chmod a+rx /openstack/healthcheck
 tcib_packages:
   common:
   - collectd

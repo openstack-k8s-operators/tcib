@@ -1,0 +1,3 @@
+#!/bin/bash
+
+rabbitmq-diagnostics check_running || exit 1

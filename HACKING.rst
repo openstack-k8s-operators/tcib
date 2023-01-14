@@ -1,4 +1,4 @@
-tripleo-common Style Commandments
-=================================
+tcib Style Commandments
+=======================
 
 Read the OpenStack Style Commandments https://docs.openstack.org/hacking/latest/
