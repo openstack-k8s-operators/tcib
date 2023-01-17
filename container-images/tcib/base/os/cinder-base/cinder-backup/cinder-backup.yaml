@@ -5,7 +5,6 @@ tcib_envs:
 tcib_actions:
 - run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: mkdir -p /etc/libqb
-- run: ln -s /usr/share/tcib/healthcheck/cinder-backup /openstack/healthcheck && chmod a+rx /openstack/healthcheck
 tcib_packages:
   common:
   - pacemaker

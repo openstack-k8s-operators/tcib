@@ -1,9 +1,11 @@
+tcib_gather_files:
+- /usr/share/tcib/container-images/kolla/iscsid/extend_start.sh
+tcib_copies:
+- /usr/share/tcib/container-images/kolla/iscsid/extend_start.sh /usr/local/bin/kolla_extend_start
 tcib_actions:
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
-- run: cp /usr/share/tcib/container-images/kolla/iscsid/extend_start.sh /usr/local/bin/kolla_extend_start
 - run: chmod 755 /usr/local/bin/kolla_extend_start
 - run: rm -f /etc/iscsi/initiatorname.iscsi
-- run: ln -s /usr/share/tcib/healthcheck/iscsid /openstack/healthcheck &&  chmod a+rx /openstack/healthcheck
 tcib_packages:
   common:
   - iscsi-initiator-utils

@@ -1,3 +1,11 @@
+tcib_gather_files: >
+  {{ lookup('fileglob', '/usr/share/tcib/container-images/kolla/base/*', wantlist=True) }}
+tcib_copies:
+- /usr/share/tcib/container-images/kolla/base/uid_gid_manage.sh /usr/local/bin/uid_gid_manage
+- /usr/share/tcib/container-images/kolla/base/set_configs.py /usr/local/bin/kolla_set_configs
+- /usr/share/tcib/container-images/kolla/base/start.sh /usr/local/bin/kolla_start
+- /usr/share/tcib/container-images/kolla/base/httpd_setup.sh /usr/local/bin/kolla_httpd_setup
+- /usr/share/tcib/container-images/kolla/base/sudoers /etc/sudoers
 tcib_actions:
 - run: if [ -f "/etc/yum.repos.d/ubi.repo" ]; then rm -f /etc/yum.repos.d/ubi.repo && dnf clean all && rm -rf /var/cache/dnf; fi
 - run: >-
@@ -22,17 +30,12 @@ tcib_actions:
       echo "WARNING: No modules defined for el{{ tcib_release}}";
     {%- endif %}
     fi
-- run: cp /usr/share/tcib/container-images/kolla/base/uid_gid_manage.sh /usr/local/bin/uid_gid_manage
 - run: chmod 755 /usr/local/bin/uid_gid_manage
 - run: bash /usr/local/bin/uid_gid_manage kolla hugetlbfs libvirt qemu
 - run: touch /usr/local/bin/kolla_extend_start && chmod 755 /usr/local/bin/kolla_extend_start
-- run: cp /usr/share/tcib/container-images/kolla/base/set_configs.py /usr/local/bin/kolla_set_configs
 - run: chmod 755 /usr/local/bin/kolla_set_configs
-- run: cp /usr/share/tcib/container-images/kolla/base/start.sh /usr/local/bin/kolla_start
 - run: chmod 755 /usr/local/bin/kolla_start
-- run: cp /usr/share/tcib/container-images/kolla/base/httpd_setup.sh /usr/local/bin/kolla_httpd_setup
 - run: chmod 755 /usr/local/bin/kolla_httpd_setup
-- run: cp /usr/share/tcib/container-images/kolla/base/sudoers /etc/sudoers
 - run: chmod 440 /etc/sudoers
 - run: >-
     if [ '{{ tcib_release }}' == '8' ];then
@@ -71,7 +74,6 @@ tcib_packages:
   - socat
   - sudo
   - tar
-  - tcib
   - util-linux-user
   - which
   modules:
