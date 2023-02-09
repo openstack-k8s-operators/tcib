@@ -67,8 +67,6 @@ container_images:
   image_source: tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-haproxy:current-tripleo
   image_source: tripleo
-- imagename: quay.io/tripleomastercentos9/openstack-heat-all:current-tripleo
-  image_source: tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-heat-api-cfn:current-tripleo
   image_source: tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-heat-api:current-tripleo
