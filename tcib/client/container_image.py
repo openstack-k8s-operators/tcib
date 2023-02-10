@@ -37,7 +37,7 @@ DEFAULT_AUTHFILE = "{}/containers/auth.json".format(
     os.environ.get("XDG_RUNTIME_DIR", os.path.expanduser("~"))
 )
 DEFAULT_ENV_AUTHFILE = os.environ.get("REGISTRY_AUTH_FILE", DEFAULT_AUTHFILE)
-DEFAULT_CONFIG = "tripleo_containers.yaml"
+DEFAULT_CONFIG = "containers.yaml"
 DEFAULT_TCIB_CONFIG_BASE = "tcib"
 SUPPORTED_RHEL_MODULES = ['container-tools', 'mariadb', 'redis', 'virt']
 DEFAULT_CONTAINER_NAMESPACE = "tripleomastercentos9"
@@ -516,8 +516,6 @@ class Build(command.Command):
 
             for c in containers_yaml["container_images"]:
                 entry = dict(c)
-                if not entry.get("image_source", "") == "tripleo":
-                    continue
                 image = self.imagename_to_regex(entry.get("imagename"))
                 if image and image not in excludes:
                     images_to_prepare.append(image)
