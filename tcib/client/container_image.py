@@ -47,6 +47,7 @@ CONTAINER_IMAGES_BASE_PATH = os.path.join(
 if sys.prefix != "/usr" and not os.path.isdir(CONTAINER_IMAGES_BASE_PATH):
     CONTAINER_IMAGES_BASE_PATH = os.path.join(
         "/usr", "share", "tcib", "container-images")
+CONTAINER_IMAGES_BASE_PATH = os.environ.get("TCIB_CONFIG_PATH", CONTAINER_IMAGES_BASE_PATH)
 
 
 class Build(command.Command):
