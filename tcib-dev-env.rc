@@ -1,0 +1,17 @@
+export TCIB_ANSIBLE_WORKPATH="$(dirname $(readlink -f ${BASH_SOURCE[0]}))"
+export ANSIBLE_ROLES_PATH="${TCIB_ANSIBLE_WORKPATH}/roles"
+export TCIB_CONFIG_PATH="${TCIB_ANSIBLE_WORKPATH}/container-images"
+
+function unset-tcib-dev-env {
+  for i in $(env | grep ANSIBLE_ | awk -F'=' '{print $1}'); do
+    unset ${i}
+  done
+  for i in $(env | grep TCIB_ | awk -F'=' '{print $1}'); do
+    unset ${i}
+  done
+  echo -e "TCIB development environment deactivated.\n"
+  unset -f unset-tcib-dev-env
+}
+
+echo -e "TCIB development environment is now active"
+echo -e "Run 'unset-tcib-dev-env' to deactivate.\n"
