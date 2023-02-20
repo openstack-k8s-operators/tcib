@@ -71,7 +71,6 @@ tcib_packages:
   - socat
   - sudo
   - tar
-  - tcib
   - util-linux-user
   - which
   modules:
