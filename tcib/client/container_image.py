@@ -787,8 +787,8 @@ class HotFix(command.Command):
             for image in parsed_args.images:
                 tasks.append(
                     {
-                        "name": "include ansible-role-tripleo-modify-image",
-                        "import_role": {"name": "tripleo-modify-image"},
+                        "name": "include modify_container_image",
+                        "import_role": {"name": "modify_container_image"},
                         "vars": {
                             "container_build_tool": "buildah",
                             "tasks_from": "rpm_install.yml",
