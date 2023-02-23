@@ -48,7 +48,7 @@ def build_option_parser(parser):
     """
     parser.add_argument(
         '--os-tcib-api-version',
-        metavar='<tripleoclient-api-version>',
+        metavar='<tcib-api-version>',
         default=utils.env(
             'OS_TCIB_API_VERSION',
             default=DEFAULT_TCIB_API_VERSION),

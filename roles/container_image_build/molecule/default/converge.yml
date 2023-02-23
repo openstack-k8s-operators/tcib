@@ -18,4 +18,4 @@
 - name: Converge
   hosts: all
   roles:
-    - role: "tripleo_container_image_build"
+    - role: "container_image_build"

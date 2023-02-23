@@ -51,7 +51,7 @@ CONTAINER_IMAGES_BASE_PATH = os.environ.get("TCIB_CONFIG_PATH", CONTAINER_IMAGES
 
 
 class Build(command.Command):
-    """Build tripleo container images with tripleo-ansible."""
+    """Build container images with tcib."""
 
     log = logging.getLogger(__name__ + ".Build")
 
@@ -666,7 +666,7 @@ class Build(command.Command):
                 )
 
         with utils.TempDirs() as tmp:
-            playbook = os.path.join(tmp, "tripleo-multi-playbook.yaml")
+            playbook = os.path.join(tmp, "tcib-multi-playbook.yaml")
             playdata = [
                 {
                     "name": "Generate localhost facts",
@@ -680,7 +680,7 @@ class Build(command.Command):
                 "connection": "local",
                 "hosts": "all",
                 "gather_facts": False,
-                "roles": [{"role": "tripleo_container_image_build"}],
+                "roles": [{"role": "container_image_build"}],
             }
             if parsed_args.extra_config:
                 if not os.path.exists(parsed_args.extra_config):
@@ -744,7 +744,7 @@ class Build(command.Command):
 
 
 class HotFix(command.Command):
-    """Hotfix tripleo container images with tripleo-ansible."""
+    """Hotfix container images with tcib."""
 
     log = logging.getLogger(__name__ + ".HotFix")
 
@@ -802,7 +802,7 @@ class HotFix(command.Command):
                     }
                 )
 
-            playbook = os.path.join(tmp, "tripleo-hotfix-playbook.yaml")
+            playbook = os.path.join(tmp, "tcib-hotfix-playbook.yaml")
             playdata = {
                 "name": "Generate hotfixs",
                 "connection": "local",

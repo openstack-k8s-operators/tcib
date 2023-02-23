@@ -22,8 +22,7 @@ from tcib.client import container_image as image_build
 
 IMAGE_YAML = """---
 container_images:
-  - image_source: "tripleo"
-    imagename: "test/keystone:tag"
+  - imagename: "test/keystone:tag"
 """
 
 MOCK_WALK = [
