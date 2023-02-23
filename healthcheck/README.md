@@ -4,7 +4,6 @@ The scripts in this directory are meant to implement the
 [container-healthcheck][] blueprint.    They are written to be compatible
 with the Docker [HEALTHCHECK][] api.
 
-[container-healthcheck]: https://blueprints.launchpad.net/tripleo/+spec/container-healthchecks
 [healthcheck]: https://docs.docker.com/engine/reference/builder/#healthcheck
 
 The scripts expect to source

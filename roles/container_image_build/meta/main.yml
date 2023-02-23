@@ -18,7 +18,7 @@
 galaxy_info:
   namespace: openstack
   author: OpenStack
-  description: TripleO OpenStack Role -- tripleo_container_image_build
+  description: TCIB container_image_build
   company: Red Hat
   license: Apache-2.0
   min_ansible_version: 2.7
@@ -35,7 +35,7 @@ galaxy_info:
         - 8
 
   galaxy_tags:
-    - tripleo
+    - tcib
 
 
 # List your role dependencies here, one per line. Be sure to remove the '[]' above,

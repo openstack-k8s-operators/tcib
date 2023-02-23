@@ -15,7 +15,7 @@
 # under the License.
 
 
-# "tripleo_container_image_build" will search for and load any operating system variable file
+# "container_image_build" will search for and load any operating system variable file
 
 - name: "Ensure {{ tcib_path }} exists"
   file:

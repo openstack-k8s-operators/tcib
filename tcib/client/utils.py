@@ -57,7 +57,7 @@ class Pushd(object):
 class TempDirs(object):
     """Simple context manager to manage temp directories."""
 
-    def __init__(self, dir_path=None, dir_prefix='tripleo', cleanup=True,
+    def __init__(self, dir_path=None, dir_prefix='tcib', cleanup=True,
                  chdir=True):
         """This context manager will create, push, and cleanup temp directories.
         >>> with TempDirs() as t:
@@ -298,7 +298,7 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
 
     if isinstance(playbook, (list, set)):
         verified_playbooks = [_playbook_check(play=i) for i in playbook]
-        playbook = os.path.join(workdir, 'tripleo-multi-playbook.yaml')
+        playbook = os.path.join(workdir, 'tcib-multi-playbook.yaml')
         with open(playbook, 'w') as f:
             f.write(
                 yaml.safe_dump(
@@ -336,7 +336,7 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
         )
     ansible_fact_path = os.path.join(
         os.path.expanduser('~'),
-        '.tripleo',
+        '.tcib',
         'fact_cache'
     )
     makedirs(ansible_fact_path)
@@ -371,33 +371,27 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
     env['ANSIBLE_STDOUT_CALLBACK'] = output_callback
     env['ANSIBLE_COLLECTIONS_PATHS'] = '/usr/share/ansible/collections'
     env['ANSIBLE_LIBRARY'] = (
-        '/usr/share/ansible/tripleo-plugins/modules:'
         '/usr/share/ansible/plugins/modules:'
         '/usr/share/ceph-ansible/library:'
         '/usr/share/ansible-modules'
     )
     env['ANSIBLE_LOOKUP_PLUGINS'] = (
-        '/usr/share/ansible/tripleo-plugins/lookup:'
         '/usr/share/ansible/plugins/lookup:'
         '/usr/share/ceph-ansible/plugins/lookup'
     )
     env['ANSIBLE_CALLBACK_PLUGINS'] = (
-        '/usr/share/ansible/tripleo-plugins/callback:'
         '/usr/share/ansible/plugins/callback:'
         '/usr/share/ceph-ansible/plugins/callback'
     )
     env['ANSIBLE_ACTION_PLUGINS'] = (
-        '/usr/share/ansible/tripleo-plugins/action:'
         '/usr/share/ansible/plugins/action:'
         '/usr/share/ceph-ansible/plugins/actions'
     )
     env['ANSIBLE_FILTER_PLUGINS'] = (
-        '/usr/share/ansible/tripleo-plugins/filter:'
         '/usr/share/ansible/plugins/filter:'
         '/usr/share/ceph-ansible/plugins/filter'
     )
     env['ANSIBLE_ROLES_PATH'] = (
-        '/usr/share/ansible/tripleo-roles:'
         '/usr/share/ansible/roles:'
         '/usr/share/ceph-ansible/roles:'
         '/etc/ansible/roles'
