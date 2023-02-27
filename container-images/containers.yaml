@@ -51,7 +51,6 @@ container_images:
 - imagename: quay.io/tripleomastercentos9/openstack-multipathd:current-tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-neutron-dhcp-agent:current-tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-neutron-sriov-agent:current-tripleo
-- imagename: quay.io/tripleomastercentos9/openstack-neutron-mlnx-agent:current-tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-neutron-server:current-tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-neutron-metadata-agent-ovn:current-tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-nova-api:current-tripleo
