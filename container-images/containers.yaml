@@ -73,7 +73,6 @@ container_images:
 - imagename: quay.io/tripleomastercentos9/openstack-ovn-northd:current-tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-ovn-sb-db-server:current-tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-placement-api:current-tripleo
-- imagename: quay.io/tripleomastercentos9/openstack-qdrouterd:current-tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-rabbitmq:current-tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-redis:current-tripleo
 - imagename: quay.io/tripleomastercentos9/openstack-swift-account:current-tripleo
