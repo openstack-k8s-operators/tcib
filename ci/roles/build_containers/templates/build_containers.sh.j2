@@ -1,6 +1,6 @@
 #!/bin/bash -eux
 
-openstack tripleo container image build \
+openstack tcib container image build \
 {%   if push_containers|bool %}
      --push \
 {%   endif %}
@@ -61,4 +61,5 @@ openstack tripleo container image build \
 {%   endif %}
      --tag {{ image_tag }} \
      --base {{ containers_base_image }} \
-     --prefix {{ container_name_prefix }} 
+     --prefix {{ container_name_prefix }}
+
