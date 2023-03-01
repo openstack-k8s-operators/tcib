@@ -11,7 +11,6 @@ tcib_actions:
 - run: cp -a /usr/bin/keystone-wsgi-admin /var/www/cgi-bin/keystone/admin
 - run: sed -i -r 's,^(Listen 80),#\1,' /etc/httpd/conf/httpd.conf
 - run: sed -i -r 's,^(Listen 443),#\1,' /etc/httpd/conf.d/ssl.conf
-- run: ln -s /usr/share/tcib/healthcheck/keystone /openstack/healthcheck && chmod a+rx /openstack/healthcheck
 tcib_packages:
   common:
   - httpd

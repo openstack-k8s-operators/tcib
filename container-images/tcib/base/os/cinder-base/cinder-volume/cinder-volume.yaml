@@ -7,7 +7,6 @@ tcib_actions:
 - run: cp /usr/share/tcib/container-images/kolla/cinder-volume/extend_start.sh /usr/local/bin/kolla_extend_start
 - run: cp /usr/share/tcib/container-images/kolla/cinder-volume/cinder-volume-sudoers /etc/sudoers.d/cinder-volume-sudoers
 - run: chmod 755 /usr/local/bin/kolla_extend_start && chmod 440 /etc/sudoers.d/cinder-volume-sudoers && mkdir -p /etc/libqb
-- run: ln -s /usr/share/tcib/healthcheck/cinder-volume /openstack/healthcheck && chmod a+rx /openstack/healthcheck
 tcib_packages:
   common:
   - pacemaker
