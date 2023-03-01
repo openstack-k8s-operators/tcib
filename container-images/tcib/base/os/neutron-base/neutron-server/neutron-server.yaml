@@ -6,6 +6,5 @@ tcib_packages:
   - httpd
   - mod_ssl
   - python3-networking-baremetal
-  - python3-networking-bgpvpn
   - python3-mod_wsgi
 tcib_user: neutron

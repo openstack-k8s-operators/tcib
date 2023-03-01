@@ -68,7 +68,6 @@ tcib_packages:
   - procps-ng
   - python3
   - rsync
-  - socat
   - sudo
   - tar
   - tcib

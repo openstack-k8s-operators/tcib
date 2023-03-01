@@ -1,11 +1,5 @@
 tcib_actions:
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
-- run: mkdir -p /etc/libqb
 tcib_packages:
   common:
-  - libqb
   - openvswitch-ovn-central
-  - pacemaker
-  - pacemaker-remote
-  - pcs
-  - resource-agents

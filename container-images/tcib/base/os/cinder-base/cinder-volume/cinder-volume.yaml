@@ -6,11 +6,8 @@ tcib_actions:
 - run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: cp /usr/share/tcib/container-images/kolla/cinder-volume/extend_start.sh /usr/local/bin/kolla_extend_start
 - run: cp /usr/share/tcib/container-images/kolla/cinder-volume/cinder-volume-sudoers /etc/sudoers.d/cinder-volume-sudoers
-- run: chmod 755 /usr/local/bin/kolla_extend_start && chmod 440 /etc/sudoers.d/cinder-volume-sudoers && mkdir -p /etc/libqb
+- run: chmod 755 /usr/local/bin/kolla_extend_start && chmod 440 /etc/sudoers.d/cinder-volume-sudoers
 tcib_packages:
   common:
-  - pacemaker
-  - pacemaker-remote
-  - pcs
   - python3-cinderlib
 tcib_user: cinder
