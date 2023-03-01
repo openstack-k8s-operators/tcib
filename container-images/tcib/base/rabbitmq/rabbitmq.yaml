@@ -6,10 +6,5 @@ tcib_actions:
 tcib_packages:
   common:
   - hostname
-  - libqb
-  - pacemaker
-  - pacemaker-remote
-  - pcs
   - rabbitmq-server
-  - resource-agents
 tcib_user: rabbitmq

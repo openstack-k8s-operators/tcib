@@ -3,8 +3,3 @@ tcib_actions:
 tcib_packages:
   common:
   - haproxy
-  - libqb
-  - pacemaker
-  - pacemaker-remote
-  - pcs
-  - resource-agents
