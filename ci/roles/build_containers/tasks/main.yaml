@@ -38,6 +38,8 @@
     chdir: "{{ work_dir }}"
   ansible.builtin.shell: |
     set -o pipefail && bash build_containers.sh 2>&1 {{ timestamper_cmd }} > {{ work_dir }}/logs/build.log
+  environment:
+   PATH: /usr/local/bin:{{ ansible_env.PATH }}
 
 - name: Retrieve built images  # noqa risky-shell-pipe
   shell: "podman images | grep {{ container_name_prefix }} | awk '{ print $1 }'"
