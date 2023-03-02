@@ -50,7 +50,7 @@
 - name: "Push image: {{ item }}"
   become: true
   command: >
-    buildah push --tls-verify=false {{ item }}
+    buildah push --tls-verify=false {{ item }}:{{ image_tag }}
   loop: "{{ built_images.stdout_lines }}"
   when:
     - buildah_push | default ('false') | bool
