@@ -43,5 +43,16 @@
 
 - name: Retrieve built images  # noqa risky-shell-pipe
   shell: "podman images | grep {{ container_name_prefix }} | awk '{ print $1 }'"
+  register: built_images
   become: true
   changed_when: false
+
+- name: "Push image: {{ item }}"
+  become: true
+  command: >
+    buildah push --tls-verify=false {{ item }}
+  loop: "{{ built_images.stdout_lines }}"
+  when:
+    - buildah_push | default ('false') | bool
+    - not push_containers | bool
+
