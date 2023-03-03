@@ -1,6 +1,6 @@
 ---
-# Path of the authentication file. Use REGISTRY_AUTH_FILE environment variable to override. (default: /root/containers/auth.json)
-# authfile_path
+# Path of the authentication file. Use REGISTRY_AUTH_FILE environment variable to override.
+authfile_path: ${XDG_RUNTIME_DIR}/containers/auth.json
 
 # Base image name from which containers can be built
 containers_base_image: registry.access.redhat.com/ubi9:latest
