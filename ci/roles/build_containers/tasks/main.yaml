@@ -13,7 +13,9 @@
   include_tasks: install.yaml
 
 - name: Make sure authfile exists
-  when: authfile_path is defined
+  when:
+    - authfile_path is defined
+    - push_containers | bool
   block:
     - name: Check for authfile
       stat:
