@@ -1,5 +1,8 @@
 ---
 exclude_containers:
+  master:
+    centos9:
+      - neutron-mlnx-agent
   zed:
-    centos9: 
+    centos9:
       - neutron-mlnx-agent

@@ -1,6 +1,6 @@
 ---
-# Path of the authentication file. Use REGISTRY_AUTH_FILE environment variable to override. (default: /root/containers/auth.json)
-# authfile_path
+# Path of the authentication file. Use REGISTRY_AUTH_FILE environment variable to override.
+authfile_path: ${XDG_RUNTIME_DIR}/containers/auth.json
 
 # Base image name from which containers can be built
 containers_base_image: registry.access.redhat.com/ubi9:latest
@@ -12,10 +12,10 @@ containers_base_image: registry.access.redhat.com/ubi9:latest
 # config_path
 
 # Distro name which sets tcib_distro
-distro: centos
+distro: "{{ ansible_distribution|lower }}"
 
 # Distro major release version which sets tcib_release
-release: 9
+release: "{{ ansible_distribution_major_version }}"
 
 # TCIB extra variables you want to pass. They can be later used within TCIB files as conditonals
 # tcib_extras
@@ -55,7 +55,7 @@ volume_mounts:
 # repo_dir
 
 # container builds directory, storing configs and logs for each image and its dependencies
-work_dir: "{{ ansible_user_dir }}/container-builds"
+work_dir: "{{ ansible_user_dir }}/workspace"
 
 # A comma separated list of RHEL modules to enable with their version
 # rhel_modules
@@ -68,4 +68,5 @@ openstack_release: master
 
 # Roles related vars
 tcib_repo: "{{ ansible_user_dir }}/src/github.com/openstack-k8s-operators/tcib"
-
+timestamper_cmd: >-
+  | awk '{ print strftime("%Y-%m-%d %H:%M:%S |"), $0; fflush(); }'
