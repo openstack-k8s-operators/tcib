@@ -70,7 +70,7 @@ tcib_packages:
   - rsync
   - sudo
   - tar
-  - tcib
+  - python-tcib-containers
   - util-linux-user
   - which
   modules:
