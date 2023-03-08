@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = tcib
+omit = tcib/tests/*
+
+[report]
+ignore_errors = True
