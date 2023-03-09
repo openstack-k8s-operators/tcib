@@ -110,11 +110,11 @@ class TempDirs(object):
         if self.cleanup:
             self.clean()
         else:
-            LOG.warning("Not cleaning temporary directory [ %s ]" % self.dir)
+            LOG.warning("Not cleaning temporary directory [ %s ]", self.dir)
 
     def clean(self):
         shutil.rmtree(self.dir, ignore_errors=True)
-        LOG.info("Temporary directory [ %s ] cleaned up" % self.dir)
+        LOG.info("Temporary directory [ %s ] cleaned up", self.dir)
 
 
 def _encode_envvars(env):
@@ -124,8 +124,7 @@ def _encode_envvars(env):
     """
     for key, value in env.items():
         env[key] = str(value)
-    else:
-        return env
+    return env
 
 
 def makedirs(dir_path):
@@ -139,15 +138,13 @@ def makedirs(dir_path):
         os.makedirs(dir_path)
     except FileExistsError:
         LOG.debug(
-            'Directory "{}" was not created because it'
-            ' already exists.'.format(
-                dir_path
-            )
+            'Directory "%s" was not created because it already exists.',
+            dir_path
         )
         return False
-    else:
-        LOG.debug('Directory "{}" was created.'.format(dir_path))
-        return True
+
+    LOG.debug('Directory "%s" was created.', dir_path)
+    return True
 
 
 def playbook_verbosity(self):
@@ -244,7 +241,7 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
             play = os.path.join(playbook_dir, play)
             if not os.path.exists(play):
                 raise RuntimeError('No such playbook: {}'.format(play))
-        LOG.debug('Ansible playbook {} found'.format(play))
+        LOG.debug('Ansible playbook %s found', play)
         return play
 
     def _inventory(inventory):
@@ -267,9 +264,9 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
 
     def _running_ansible_msg(playbook, timeout=None):
         if timeout and timeout > 0:
-            return ('Running Ansible playbook with timeout %sm: %s,' %
+            return ('Running Ansible playbook with timeout %sm: %s' %
                     (timeout, playbook))
-        return ('Running Ansible playbook: %s,' % playbook)
+        return ('Running Ansible playbook: %s' % playbook)
 
     if not playbook_dir:
         playbook_dir = workdir
@@ -308,31 +305,27 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
             )
 
         LOG.info(
-            _running_ansible_msg(playbook, timeout) +
-            ' multi-playbook execution: {}'
-            ' Working directory: {},'
-            ' Playbook directory: {}'.format(
-                verified_playbooks,
-                workdir,
-                playbook_dir
-            )
+            '%s,'
+            '  multi-playbook execution: %s,'
+            ' Working directory: %s,'
+            ' Playbook directory: %s',
+            _running_ansible_msg(playbook, timeout),
+            verified_playbooks,
+            workdir,
+            playbook_dir
         )
     else:
         playbook = _playbook_check(play=playbook)
         LOG.info(
-            _running_ansible_msg(playbook, timeout) +
-            ' Working directory: {},'
-            ' Playbook directory: {}'.format(
-                workdir,
-                playbook_dir
-            )
+            '%s, Working directory: %s, Playbook directory: %s',
+            _running_ansible_msg(playbook, timeout),
+            workdir,
+            playbook_dir
         )
 
     if limit_hosts:
         LOG.info(
-            'Running ansible with the following limit: {}'.format(
-                limit_hosts
-            )
+            'Running ansible with the following limit: %s', limit_hosts
         )
     ansible_fact_path = os.path.join(
         os.path.expanduser('~'),
@@ -441,8 +434,7 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
             msg = "extra_env_variables must be a dict"
             LOG.error(msg)
             raise SystemError(msg)
-        else:
-            env.update(extra_env_variables)
+        env.update(extra_env_variables)
 
     if 'ANSIBLE_CONFIG' not in env and not ansible_cfg:
         ansible_cfg = os.path.join(workdir, 'ansible.cfg')
@@ -554,6 +546,4 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
 
             raise RuntimeError(err_msg)
 
-    LOG.info(
-        'Ansible execution success. playbook: {}'.format(
-            playbook))
+    LOG.info('Ansible execution success. playbook: %s', playbook)

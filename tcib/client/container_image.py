@@ -47,7 +47,8 @@ CONTAINER_IMAGES_BASE_PATH = os.path.join(
 if sys.prefix != "/usr" and not os.path.isdir(CONTAINER_IMAGES_BASE_PATH):
     CONTAINER_IMAGES_BASE_PATH = os.path.join(
         "/usr", "share", "tcib", "container-images")
-CONTAINER_IMAGES_BASE_PATH = os.environ.get("TCIB_CONFIG_PATH", CONTAINER_IMAGES_BASE_PATH)
+CONTAINER_IMAGES_BASE_PATH = os.environ.get(
+    "TCIB_CONFIG_PATH", CONTAINER_IMAGES_BASE_PATH)
 
 
 class Build(command.Command):
@@ -688,9 +689,8 @@ class Build(command.Command):
                         "The file provided by <options-apply> does not "
                         "exist, check you settings and try again."
                     )
-                else:
-                    with open(parsed_args.extra_config) as f:
-                        generation_playbook["vars"] = yaml.safe_load(f)
+                with open(parsed_args.extra_config) as f:
+                    generation_playbook["vars"] = yaml.safe_load(f)
 
             playdata.append(generation_playbook)
 
