@@ -48,9 +48,9 @@ class BuildahBuilder(base.BaseBuilder):
             dependencies.
         :params base: Base image on which the containers are built.
             Default to fedora.
-        :params img_type: Method used to build the image. All TripleO images
-            are built from binary method. Can be set to false to remove it
-            from image name.
+        :params img_type: Method used to build the image. All images are built
+            from binary method. Can be set to false to remove it from image
+            name.
         :params tag: Tag used to identify the images that we build.
             Default to latest.
         :params namespace: Namespace used to build the containers.

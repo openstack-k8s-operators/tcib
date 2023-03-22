@@ -252,7 +252,7 @@ class Build(command.Command):
             metavar="<work-directory>",
             default="/tmp/container-builds",
             help=_(
-                "TripleO container builds directory, storing configs and "
+                "The container builds directory, storing configs and "
                 "logs for each image and its dependencies. "
                 "(default: %(default)s)"
             ),
@@ -630,7 +630,7 @@ class Build(command.Command):
                 _desc = "OpenStack Platform {}".format(image_parsed_name)
                 label_data = image_config['tcib_labels'] = {
                     "tcib_managed": True,
-                    "maintainer": "OpenStack TripleO Team",
+                    "maintainer": "OpenStack Kubernetes Operator Team",
                     "description": _desc,
                     "summary": _desc,
                     "io.k8s.display-name": _desc,
