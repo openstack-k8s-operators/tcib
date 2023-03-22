@@ -166,8 +166,8 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
                          ssh_user='root', key=None, module_path=None,
                          limit_hosts=None, tags=None, skip_tags=None,
                          verbosity=0, quiet=False, extra_vars=None,
-                         extra_vars_file=None, plan='overcloud',
-                         gathering_policy='smart', extra_env_variables=None,
+                         extra_vars_file=None, gathering_policy='smart',
+                         extra_env_variables=None,
                          parallel_run=False,
                          ansible_cfg=None, ansible_timeout=30,
                          reproduce_command=True,
@@ -210,8 +210,6 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
     :param extra_vars_file: Set additional ansible variables using an
                             extravar file.
     :type extra_vars_file: Dictionary
-    :param plan: Plan name (Defaults to "overcloud").
-    :type plan: String
     :param gathering_policy: This setting controls the default policy of
                              fact gathering ('smart', 'implicit', 'explicit').
     :type gathering_facts: String
@@ -409,8 +407,6 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
         env['ANSIBLE_LIBRARY'] = ':'.join(
             [env['ANSIBLE_LIBRARY'], module_path]
         )
-
-    env['TRIPLEO_PLAN_NAME'] = plan
 
     get_uid = int(os.getenv('SUDO_UID', os.getuid()))
     try:
