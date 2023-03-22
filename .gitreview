@@ -1,0 +1,7 @@
+[gerrit]
+host=code.engineering.redhat.com
+port=22
+project=python-tcib.git
+defaultbranch=rhos-18.0-trunk-patches
+defaultremote=rhos
+defaultrebase=1
