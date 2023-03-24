@@ -15,7 +15,7 @@
 
 
 class BaseBuilder(object):
-    """Base Tripleo-Common Image Builder.
+    """Base The Container Image Builder.
 
     For now it does nothing but this interface will allow
     to support multiple builders and not just buildah or docker.

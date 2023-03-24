@@ -40,7 +40,7 @@ DEFAULT_ENV_AUTHFILE = os.environ.get("REGISTRY_AUTH_FILE", DEFAULT_AUTHFILE)
 DEFAULT_CONFIG = "containers.yaml"
 DEFAULT_TCIB_CONFIG_BASE = "tcib"
 SUPPORTED_RHEL_MODULES = ['container-tools', 'mariadb', 'redis', 'virt']
-DEFAULT_CONTAINER_NAMESPACE = "tripleomastercentos9"
+DEFAULT_CONTAINER_NAMESPACE = "podified-master-centos9"
 SHARE_BASE_PATH = os.path.join(sys.prefix, 'share')
 CONTAINER_IMAGES_BASE_PATH = os.path.join(
     SHARE_BASE_PATH, "tcib", "container-images")
@@ -190,7 +190,7 @@ class Build(command.Command):
             "--tag",
             dest="tag",
             metavar="<image-tag>",
-            default="latest",
+            default="current-podified",
             help=_("Image tag (default: %(default)s)"),
         )
         parser.add_argument(
@@ -252,7 +252,7 @@ class Build(command.Command):
             metavar="<work-directory>",
             default="/tmp/container-builds",
             help=_(
-                "TripleO container builds directory, storing configs and "
+                "The container builds directory, storing configs and "
                 "logs for each image and its dependencies. "
                 "(default: %(default)s)"
             ),
@@ -630,7 +630,7 @@ class Build(command.Command):
                 _desc = "OpenStack Platform {}".format(image_parsed_name)
                 label_data = image_config['tcib_labels'] = {
                     "tcib_managed": True,
-                    "maintainer": "OpenStack TripleO Team",
+                    "maintainer": "OpenStack Kubernetes Operator Team",
                     "description": _desc,
                     "summary": _desc,
                     "io.k8s.display-name": _desc,

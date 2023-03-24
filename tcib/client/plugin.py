@@ -52,7 +52,7 @@ def build_option_parser(parser):
         default=utils.env(
             'OS_TCIB_API_VERSION',
             default=DEFAULT_TCIB_API_VERSION),
-        help='TripleO Client API version, default=' +
+        help='TCIB API version, default=' +
              DEFAULT_TCIB_API_VERSION +
              ' (Env: OS_TCIB_API_VERSION)')
     return parser

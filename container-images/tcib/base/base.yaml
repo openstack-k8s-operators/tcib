@@ -57,7 +57,7 @@ tcib_envs:
   LANG: en_US.UTF-8
   container: oci
 tcib_labels:
-  maintainer: OpenStack TripleO team
+  maintainer: OpenStack Kubernetes Operator team
   tcib_managed: True
 tcib_packages:
   common:
