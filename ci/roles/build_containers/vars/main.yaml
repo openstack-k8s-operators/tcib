@@ -1,11 +1,10 @@
 ---
 exclude_containers:
   master:
-    centos9: &exclude_cs9_master_containers
-      - neutron-mlnx-agent
+    centos9: []
   antelope:
-    centos9: *exclude_cs9_master_containers
+    centos9: []
   zed:
-    centos9: *exclude_cs9_master_containers
+    centos9: []
   osp18:
-    redhat9: *exclude_cs9_master_containers
+    redhat9: []
