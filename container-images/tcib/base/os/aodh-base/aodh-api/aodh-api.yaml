@@ -6,5 +6,4 @@ tcib_packages:
   - httpd
   - mod_ssl
   - openstack-aodh-api
-  - python3-ldappool
   - python3-mod_wsgi
