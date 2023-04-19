@@ -11,3 +11,4 @@ tcib_packages:
   - dnsmasq
   - grub2-efi-x64
   - shim
+  - iproute
