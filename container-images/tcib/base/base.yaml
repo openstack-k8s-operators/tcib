@@ -14,14 +14,6 @@ tcib_actions:
     crudini --set /etc/dnf/dnf.conf main plugins 1 &&
     crudini --set /etc/dnf/dnf.conf main skip_missing_names_on_install False &&
     crudini --set /etc/dnf/dnf.conf main tsflags nodocs
-- run: >-
-    if [ '{{ tcib_distro }}' == 'rhel' ] && [ '{{ tcib_release }}' == '8' ]; then
-    {%- if "el" ~ tcib_release in tcib_packages.modules %}
-     {% for item in tcib_packages.modules["el" ~ tcib_release] %}{% set key, value = (item.items() | list).0 %}dnf module -y {{ key }} {{ value }}; {% endfor %}
-    {%- else %}
-      echo "WARNING: No modules defined for el{{ tcib_release}}";
-    {%- endif %}
-    fi
 - run: cp /usr/share/tcib/container-images/kolla/base/uid_gid_manage.sh /usr/local/bin/uid_gid_manage
 - run: chmod 755 /usr/local/bin/uid_gid_manage
 - run: bash /usr/local/bin/uid_gid_manage kolla hugetlbfs libvirt qemu
@@ -34,17 +26,12 @@ tcib_actions:
 - run: chmod 755 /usr/local/bin/kolla_httpd_setup
 - run: cp /usr/share/tcib/container-images/kolla/base/sudoers /etc/sudoers
 - run: chmod 440 /etc/sudoers
-- run: >-
-    if [ '{{ tcib_release }}' == '8' ];then
-    sed -ri '/-session(\s+)optional(\s+)pam_systemd.so/d' /etc/pam.d/system-auth &&
-    dnf install -y curl; fi
 - run: sed -ri '/^(passwd:|group:)/ s/systemd//g' /etc/nsswitch.conf
 - run: dnf install -y {{ tcib_packages['common'] | join(' ') }}
 - run: >-
-    if [ '{{ tcib_release }}' == '9' ];then
     dnf -y reinstall which &&
     rpm -e --nodeps tzdata &&
-    dnf -y install tzdata; fi
+    dnf -y install tzdata
 - run: mkdir -p /openstack
 - run: >-
     if [ '{{ tcib_distro }}' == 'centos' ];then
@@ -73,18 +60,4 @@ tcib_packages:
   - python-tcib-containers
   - util-linux-user
   - which
-  modules:
-    el8:
-      - disable: container-tools:rhel8
-      - disable: virt:rhel
-      - enable: container-tools:{{ tcib_rhel_modules['container-tools'] | default('3.0') }}
-      - enable: mariadb:{{ tcib_rhel_modules['mariadb'] | default('10.3') }}
-      - enable: virt:{{ tcib_rhel_modules['virt'] | default('av') }}
-      - enable: redis:{{ tcib_rhel_modules['redis'] | default('5') }}
-      - enable: nodejs:{{ tcib_rhel_modules['nodejs'] | default('14') }}
-    el9:
-      - disable: virt:rhel
-      - enable: virt:{{ tcib_rhel_modules['virt'] | default('av') }}
-      - enable: redis:{{ tcib_rhel_modules['redis'] | default('5') }}
-      - enable: mariadb:{{ tcib_rhel_modules['mariadb'] | default('10.5') }}
 tcib_stopsignal: SIGTERM

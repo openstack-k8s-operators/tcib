@@ -1,8 +1,5 @@
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage keystone
-- run: >-
-    if [ '{{ tcib_release }}' == '8' ];then
-    dnf module -y enable mod_auth_openidc; fi
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: mkdir -p /var/www/cgi-bin/keystone && chown -R keystone /var/www/cgi-bin/keystone
 - run: cp /usr/share/tcib/container-images/kolla/keystone/extend_start.sh /usr/local/bin/kolla_extend_start
