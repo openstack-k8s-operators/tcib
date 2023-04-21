@@ -2,5 +2,8 @@ tcib_envs:
   MALLOC_ARENA_MAX: 1
   MALLOC_MMAP_THRESHOLD_: 131072
   MALLOC_TRIM_THRESHOLD_: 262144
-tcib_actions: []
+tcib_actions:
+- run: cp /usr/share/tcib/container-images/kolla/cinder-backup/extend_start.sh /usr/local/bin/kolla_extend_start
+- run: cp /usr/share/tcib/container-images/kolla/cinder-backup/cinder-backup-sudoers /etc/sudoers.d/cinder-backup-sudoers
+- run: chmod 755 /usr/local/bin/kolla_extend_start && chmod 440 /etc/sudoers.d/cinder-backup-sudoers
 tcib_user: cinder
