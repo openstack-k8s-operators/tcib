@@ -6,5 +6,5 @@ exclude_containers:
     centos9: []
   zed:
     centos9: []
-  osp18:
+  rhos18:
     rhel9: []
