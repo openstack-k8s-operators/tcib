@@ -191,7 +191,8 @@ class Build(command.Command):
             dest="tag",
             metavar="<image-tag>",
             default="current-podified",
-            help=_("Image tag (default: %(default)s)"),
+            help=_("Image tag suffix. The image label tcib_build_tag will "
+                   "also be set with this value. (default: %(default)s)"),
         )
         parser.add_argument(
             "--prefix",
