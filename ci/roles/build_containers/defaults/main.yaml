@@ -35,7 +35,7 @@ release: "{{ ansible_distribution_major_version }}"
 # Skip or not the build of the images
 # skip_build
 
-# image tag
+# Image tag suffix. The image label tcib_build_tag will also be set with this value.
 image_tag: ''
 
 # Image Prefix

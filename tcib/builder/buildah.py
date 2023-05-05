@@ -179,6 +179,7 @@ class BuildahBuilder(base.BaseBuilder):
         if self.debug:
             # TODO(bogdando): add --log-rusage for newer buildah
             bud_args.extend(['--loglevel=3'])
+        bud_args.extend(['--label', 'tcib_build_tag=%s' % self.tag])
         # TODO(aschultz): drop --format docker when oci format is properly
         # supported by the undercloud registry
         bud_args.extend(['--format', 'docker', '--tls-verify=False',
