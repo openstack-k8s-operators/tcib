@@ -13,4 +13,5 @@ tcib_packages:
   - python3-manilaclient
   - python3-octaviaclient
   - bash-completion
+  - qemu-img
 tcib_user: cloud-admin
