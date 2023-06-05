@@ -1,4 +1,7 @@
 ---
+# NOTE(tonyb):
+# This by default creates an: application/vnd.oci.image.config.v1+json image
+# not a application/vnd.oci.image.manifest.v1+json.
 - import_tasks: precheck.yml
   tags:
     - always
