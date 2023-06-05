@@ -266,6 +266,16 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
                     (timeout, playbook))
         return ('Running Ansible playbook: %s' % playbook)
 
+    def _is_venv():
+        return (hasattr(sys, 'real_prefix') or
+                (hasattr(sys, 'base_prefix') and
+                 sys.base_prefix != sys.prefix))
+
+    def _get_development_prefix():
+        src_file = getattr(sys.modules[__name__], "__file__", "")
+        # Remove 'tcib/client/utils.py' from the src_file
+        return src_file[:-20]
+
     if not playbook_dir:
         playbook_dir = workdir
 
@@ -387,6 +397,9 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
         '/usr/share/ceph-ansible/roles:'
         '/etc/ansible/roles'
     )
+    if _is_venv():
+        roles_path = os.path.join(_get_development_prefix(), 'roles')
+        env['ANSIBLE_ROLES_PATH'] += ":{}".format(roles_path)
     env['ANSIBLE_RETRY_FILES_ENABLED'] = False
     env['ANSIBLE_HOST_KEY_CHECKING'] = False
     env['ANSIBLE_TRANSPORT'] = connection
