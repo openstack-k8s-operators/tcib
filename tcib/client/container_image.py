@@ -748,6 +748,7 @@ class HotFix(command.Command):
     """Hotfix container images with tcib."""
 
     log = logging.getLogger(__name__ + ".HotFix")
+    auth_required = False
 
     def get_parser(self, prog_name):
         parser = super(HotFix, self).get_parser(prog_name)
