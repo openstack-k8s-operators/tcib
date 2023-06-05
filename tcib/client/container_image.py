@@ -826,3 +826,116 @@ class HotFix(command.Command):
                 playbook_dir=tmp,
                 verbosity=utils.playbook_verbosity(self=self),
             )
+
+
+class Update(command.Command):
+    """Update container images with tcib.
+
+    This differs from HotFix as we do not know ahead of time exactly which RPMs
+    will get updated, instead we rely on yum/dnf to make those decisions."""
+
+    log = logging.getLogger(__name__ + ".Update")
+    auth_required = False
+
+    def get_parser(self, prog_name):
+        parser = super(Update, self).get_parser(prog_name)
+        parser.add_argument(
+            "--image",
+            dest="images",
+            metavar="<images>",
+            default=[],
+            action="append",
+            required=True,
+            help=_(
+                "Fully qualified reference to the source image to be "
+                "modified. Can be specified multiple times (one per "
+                "image) (default: %(default)s)."
+            ),
+        )
+        parser.add_argument(
+            "--repos-path",
+            dest="repos_path",
+            metavar="<repos-path>",
+            default=os.path.join(os.getcwd(), "yum.repos.d"),
+            required=True,
+            help=_("Path containing the yum/dnf repo files "
+                   "(default: %(default)s)."),
+        )
+        parser.add_argument(
+            "--enable-repo",
+            dest="enable_repos",
+            metavar="<repo-name>",
+            action="append",
+            required=False,
+            help=_("Yum/DNF reponame to update.  Can be specified multiple "
+                   "times. (default: All repos in <repos-path>)."),
+        )
+        parser.add_argument(
+            "--tag",
+            dest="tag",
+            metavar="<image-tag>",
+            default="latest",  # FIXME(tonyb)
+            help=_("Image hotfix tag (default: %(default)s)"),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        def _find_repo_names(parsed_args):
+            if parsed_args.enable_repos is None:
+                # NOTE(tonyb): This is a shorthand for all
+                # repos in parsed_args.repos_path.
+                r = ['*']
+            else:
+                r = parsed_args.enable_repos
+            return ','.join(r)
+
+        logging.register_options(CONF)
+        logging.setup(CONF, '')
+        self.log.info(parsed_args)
+        with utils.TempDirs(cleanup=False) as tmp:
+            tasks = list()
+            for image in parsed_args.images:
+                tasks.append(
+                    {
+                        "name": "include modify_container_image",
+                        "import_role": {"name": "modify_container_image"},
+                        "vars": {
+                            "container_build_tool": "buildah",
+                            "tasks_from": "yum_update.yml",
+                            "source_image": image,
+                            "yum_repos_dir_path": parsed_args.repos_path,
+                            # NOTE(tonyb): For now the ansible role/tasks use
+                            # update_repo as the key. This call creates
+                            # update_repo (ansible) from
+                            # enable_repos (python/CLI)
+                            "update_repo": _find_repo_names(parsed_args),
+                            "modified_append_tag": "-{}".format(
+                                parsed_args.tag
+                            ),
+                            "modify_dir_path": tmp,
+                        },
+                    }
+                )
+
+            playbook = os.path.join(tmp, "tcib-update-playbook.yaml")
+            playdata = {
+                "name": "Generate Updated Containers",
+                "connection": "local",
+                "hosts": "localhost",
+                "gather_facts": False,
+                "tasks": tasks,
+            }
+
+            with open(playbook, "w") as f:
+                yaml.safe_dump(
+                    [playdata], f, default_flow_style=False, width=4096
+                )
+
+            self.log.debug("Running ansible playbook {}".format(playbook))
+            utils.run_ansible_playbook(
+                playbook=playbook,
+                inventory="localhost",
+                workdir=tmp,
+                playbook_dir=tmp,
+                verbosity=utils.playbook_verbosity(self=self),
+            )
