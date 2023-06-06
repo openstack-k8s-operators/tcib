@@ -36,6 +36,9 @@ RETURN_VALUE=$?
 echo "Generate subunit"
 stestr last --subunit > ${TEMPEST_PATH}testrepository.subunit || true
 
+echo "Generate subunit xml file"
+subunit2junitxml ${TEMPEST_PATH}testrepository.subunit > ${TEMPEST_PATH}tempest_results.xml || true
+
 echo "Generate html result"
 subunit2html ${TEMPEST_PATH}testrepository.subunit ${TEMPEST_PATH}stestr_results.html || true
 
