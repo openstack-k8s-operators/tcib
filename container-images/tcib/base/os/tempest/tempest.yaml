@@ -18,5 +18,7 @@ tcib_packages:
   common:
   - iputils
   - openstack-tempest-all
+  - subunit-filters
+  - python3-subunit
 
 tcib_user: tempest
