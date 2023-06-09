@@ -1,0 +1,6 @@
+---
+- project:
+    name: openstack-k8s-operators/tcib
+    github-check:
+      jobs:
+        - tcib-build-containers

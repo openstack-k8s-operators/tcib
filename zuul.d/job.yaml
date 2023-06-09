@@ -1,0 +1,20 @@
+---
+- job:
+    name: tcib-build-containers
+    parent: cifmw-tcib-base
+    irrelevant-files:
+      - HACKING.rst
+      - AUTHORS
+      - .gitignore
+      - ^README.md$
+      - .*/*.md
+      - .ci-operator.yaml
+      - .pre-commit-config.yaml
+      - .pylintrc
+      - .stestr.conf
+      - .github/workflows
+      - .coveragerc
+      - LICENSE
+      - OWNERS*
+
+
