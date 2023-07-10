@@ -8,6 +8,7 @@ tcib_packages:
   - python3-osc-placement
   - python3-barbicanclient
   - python3-designateclient
+  - python3-glanceclient
   - python3-heatclient
   - python3-ironicclient
   - python3-manilaclient
