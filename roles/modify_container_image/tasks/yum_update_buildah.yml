@@ -110,7 +110,7 @@
       command: >
         buildah run
           --volume {{ yum_update.path }}:/tmp/yum_update.sh:z
-          --volume {{ yum_repos_dir_path }}:/etc/yum.repos.d
+          --volume {{ yum_repos_dir_path }}:/etc/yum.repos.d{{ ':z' if yum_repos_dir_path != "/etc/yum.repos.d"}}
           {% if pkg_mgr_vars_stat.stat.exists %}
           --volume /etc/{{ pkg_mgr_suffix }}/vars:/etc/{{ pkg_mgr_suffix }}/vars
           {% endif %}
