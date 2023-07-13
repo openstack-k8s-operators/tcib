@@ -1,4 +1,7 @@
 ---
+# NOTE(tonyb):
+# This by default creates an: application/vnd.oci.image.config.v1+json image
+# not a application/vnd.oci.image.manifest.v1+json.
 - import_tasks: precheck.yml
   tags:
     - always
@@ -107,7 +110,7 @@
       command: >
         buildah run
           --volume {{ yum_update.path }}:/tmp/yum_update.sh:z
-          --volume {{ yum_repos_dir_path }}:/etc/yum.repos.d
+          --volume {{ yum_repos_dir_path }}:/etc/yum.repos.d{{ ':z' if yum_repos_dir_path != "/etc/yum.repos.d"}}
           {% if pkg_mgr_vars_stat.stat.exists %}
           --volume /etc/{{ pkg_mgr_suffix }}/vars:/etc/{{ pkg_mgr_suffix }}/vars
           {% endif %}
