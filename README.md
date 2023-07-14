@@ -35,8 +35,8 @@ $ sudo openstack tcib container image build --help
 $ # create containers.yaml file
 $ cat containers.yaml
 container_images:
-  - imagename: quay.io/podified-master-centos9/openstack-base:current-podified
-  - imagename: quay.io/podified-master-centos9/openstack-keystone:current-podified
+  - imagename: quay.io/podified-main-centos9/openstack-base:current-podified
+  - imagename: quay.io/podified-main-centos9/openstack-keystone:current-podified
 $ sudo openstack tcib container image build --config-file containers.yaml --repo-dir /tmp/repos/
 ```
 

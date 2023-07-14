@@ -40,7 +40,7 @@ DEFAULT_ENV_AUTHFILE = os.environ.get("REGISTRY_AUTH_FILE", DEFAULT_AUTHFILE)
 DEFAULT_CONFIG = "containers.yaml"
 DEFAULT_TCIB_CONFIG_BASE = "tcib"
 SUPPORTED_RHEL_MODULES = ['container-tools', 'mariadb', 'redis', 'virt']
-DEFAULT_CONTAINER_NAMESPACE = "podified-master-centos9"
+DEFAULT_CONTAINER_NAMESPACE = "podified-main-centos9"
 SHARE_BASE_PATH = os.path.join(sys.prefix, 'share')
 CONTAINER_IMAGES_BASE_PATH = os.path.join(
     SHARE_BASE_PATH, "tcib", "container-images")
