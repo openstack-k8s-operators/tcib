@@ -449,6 +449,7 @@ class Build(command.Command):
         self.config_file = os.path.expanduser(parsed_args.config_file)
         self.config_path = os.path.expanduser(parsed_args.config_path)
         authfile = os.path.expanduser(parsed_args.authfile)
+
         if os.path.exists(authfile):
             os.environ["REGISTRY_AUTH_FILE"] = authfile
         else:
@@ -567,6 +568,23 @@ class Build(command.Command):
                 [i[0] for i in [(k, v) for k, v in image_configs.items()]]
             )
         )
+        tcib_variables = {
+            "workdir": self.image_paths.get(image, work_dir),
+            "tcib_distro": parsed_args.distro,
+            "tcib_release": parsed_args.release,
+            "tcib_path": self.image_paths.get(image, work_dir),
+            "tcib_package": "python-tcib-containers",
+            "ansible_connection": "local",
+        }
+        if parsed_args.tcib_extras:
+            for extras in parsed_args.tcib_extras:
+                key, value = extras.split('=')
+                # Enforce format in order to get some consistency
+                if not key.startswith('tcib_'):
+                    raise ValueError('Wrong key format {key}. '
+                                     'We expect "tcib_" prefix, such as '
+                                     'tcib_{key}'.format(key=key))
+                tcib_variables[key] = value
 
         tcib_inventory = {"all": {"hosts": {}}}
         tcib_inventory_hosts = tcib_inventory["all"]["hosts"]
@@ -588,28 +606,11 @@ class Build(command.Command):
                 )
 
             image_parsed_name = self.imagename_to_regex(imagename=image)
+            image_config["tcib_meta"] = {"name": image_parsed_name}
 
             # For each image we will generate Dockerfiles in the work_dir
             # following a specific directory structured per image
-            image_config.update(
-                {
-                    "workdir": self.image_paths.get(image, work_dir),
-                    "tcib_distro": parsed_args.distro,
-                    "tcib_release": parsed_args.release,
-                    "tcib_path": self.image_paths.get(image, work_dir),
-                    "tcib_meta": {"name": image_parsed_name},
-                    "ansible_connection": "local",
-                }
-            )
-            if parsed_args.tcib_extras:
-                for extras in parsed_args.tcib_extras:
-                    key, value = extras.split('=')
-                    # Enforce format in order to get some consistency
-                    if not key.startswith('tcib_'):
-                        raise ValueError('Wrong key format {key}. '
-                                         'We expect "tcib_" prefix, such as '
-                                         'tcib_{key}'.format(key=key))
-                    image_config[key] = value
+            image_config.update(tcib_variables)
 
             if parsed_args.rhel_modules:
                 rhel_modules = {}
@@ -719,6 +720,10 @@ class Build(command.Command):
         volumes.append(
             f"{parsed_args.repo_dir}:/etc/distro.repos.d:z"
         )
+        if not tcib_variables.get('tcib_package'):
+            volumes.append(
+                f"{parsed_args.config_path}:/usr/share/tcib/container-images:z"
+            )
 
         if not parsed_args.skip_build:
             bb = buildah.BuildahBuilder(
