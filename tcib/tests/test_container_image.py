@@ -205,6 +205,11 @@ class TestContainerImages(utils.TestCommand):
                 '/etc/yum.repos.d:/etc/distro.repos.d:z',
                 builder_obj.volumes
             )
+            self.assertNotIn(
+                '/usr/share/tcib/container-images:'
+                '/usr/share/tcib/container-images:z',
+                builder_obj.volumes
+            )
 
         assert self.mock_buildah.called
 
@@ -236,6 +241,36 @@ class TestContainerImages(utils.TestCommand):
         parsed_args = self.check_parser(self.cmd, arglist, verifylist)
 
         self._take_action(parsed_args=parsed_args)
+
+        assert self.mock_buildah.called
+
+    def test_image_build_with_no_tcib_package(self):
+        arglist = ["--config-file", "config.yaml",
+                   "--tcib-extras", "tcib_package="]
+        verifylist = [
+            ("config_file", "config.yaml"),
+            (
+                "volumes",
+                [
+                    "/etc/pki/rpm-gpg:/etc/pki/rpm-gpg:z",
+                ],
+            ),
+        ]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self._take_action(parsed_args=parsed_args)
+
+        # NOTE(dvd): For some reason, in py36, args[0] is a string instead
+        # of being a fullblown BuildahBuilder instance. I wasn't able to find
+        # the instance anywhere, everything is mocked.
+        builder_obj = self.mock_buildah.call_args.args[0]
+        if not isinstance(builder_obj, str):
+            self.assertIn(
+                '/usr/share/tcib/container-images:'
+                '/usr/share/tcib/container-images:z',
+                builder_obj.volumes
+            )
 
         assert self.mock_buildah.called
 
