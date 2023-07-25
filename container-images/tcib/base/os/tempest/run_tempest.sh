@@ -2,6 +2,7 @@
 
 HOMEDIR=/var/lib/tempest
 TEMPEST_DIR=$HOMEDIR/openshift
+PROFILE_ARG=""
 
 pushd $HOMEDIR
 
@@ -14,11 +15,14 @@ if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     cp ${TEMPEST_PATH}clouds.yaml $HOME/.config/openstack/clouds.yaml
 fi
 
+if [-f ${TEMPEST_PATH}profile.yaml ]; then
+    PROFILE_ARG="--profile ${TEMPEST_PATH}profile.yaml"
+fi
 tempest init openshift
 
 pushd $TEMPEST_DIR
 
-discover-tempest-config --os-cloud $OS_CLOUD --debug --create identity.v3_endpoint_type public
+discover-tempest-config --os-cloud $OS_CLOUD --debug --create identity.v3_endpoint_type public ${PROFILE_ARG}
 
 if [ ! -f ${TEMPEST_PATH}include.txt ]; then
     echo "tempest.api.identity.v3" > ${TEMPEST_PATH}include.txt
