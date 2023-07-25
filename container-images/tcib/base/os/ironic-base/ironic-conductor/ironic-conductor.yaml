@@ -13,7 +13,6 @@ tcib_packages:
   - parted
   - psmisc
   - python3-dracclient
-  - python3-ironic-inspector-client
   - python3-proliantutils
   - python3-pysnmp
   - python3-scciclient
