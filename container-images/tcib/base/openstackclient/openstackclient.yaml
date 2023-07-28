@@ -2,6 +2,7 @@ tcib_actions:
 - run: rm -rf /home/cloud-admin && bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: openstack complete | tee /etc/bash_completion.d/osc.bash_completion > /dev/null
+- run: baremetal complete | tee /etc/bash_completion.d/baremetal.bash_completion > /dev/null
 # ensure "oc rsh" uses bash by default
 - run: rm /bin/sh && ln -s /bin/bash /bin/sh
 tcib_packages:
