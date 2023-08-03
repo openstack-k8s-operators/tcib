@@ -1,7 +1,10 @@
 tcib_actions:
-- run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
+- run: rm -rf /home/cloud-admin && bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: openstack complete | tee /etc/bash_completion.d/osc.bash_completion > /dev/null
+- run: baremetal complete | tee /etc/bash_completion.d/baremetal.bash_completion > /dev/null
+# ensure "oc rsh" uses bash by default
+- run: rm /bin/sh && ln -s /bin/bash /bin/sh
 tcib_packages:
   common:
   - python3-openstackclient
@@ -14,4 +17,8 @@ tcib_packages:
   - python3-manilaclient
   - python3-octaviaclient
   - bash-completion
+  - iputils
 tcib_user: cloud-admin
+tcib_workdir: /home/cloud-admin
+# If the container is run directly, start an interactive session
+tcib_cmd: /usr/bin/bash
