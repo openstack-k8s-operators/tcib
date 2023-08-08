@@ -268,8 +268,21 @@ def validate_source(data):
 
 
 def load_config():
+    def load_from_env():
+        config_raw = os.environ.get("KOLLA_CONFIG")
+        if config_raw is None:
+            return None
+
+        # Attempt to read config
+        try:
+            return json.loads(config_raw)
+        except ValueError:
+            raise InvalidConfig('Invalid json for Kolla config')
+
     def load_from_file():
-        config_file = '/var/lib/kolla/config_files/config.json'
+        config_file = os.environ.get("KOLLA_CONFIG_FILE")
+        if not config_file:
+            config_file = '/var/lib/kolla/config_files/config.json'
         LOG.info("Loading config file at %s", config_file)
 
         # Attempt to read config file
@@ -283,7 +296,9 @@ def load_config():
                 raise InvalidConfig(
                     "Could not read file %s: %r" % (config_file, e))
 
-    config = load_from_file()
+    config = load_from_env()
+    if config is None:
+        config = load_from_file()
 
     LOG.info('Validating config file')
     validate_config(config)
