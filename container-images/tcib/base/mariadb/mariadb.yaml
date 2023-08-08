@@ -19,5 +19,6 @@ tcib_packages:
   - mariadb-server-utils
   - rsync
   - socat
+  - stunnel
   - tar
 tcib_user: mysql
