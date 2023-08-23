@@ -22,7 +22,6 @@ tcib_packages:
   - openvswitch
   - parted
   - python3-libguestfs
-  - python3-oslo-vmware
   - python3-rtslib
   - swtpm
   - swtpm-tools

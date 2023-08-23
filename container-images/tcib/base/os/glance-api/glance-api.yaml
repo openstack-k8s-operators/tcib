@@ -9,7 +9,6 @@ tcib_packages:
   - httpd
   - mod_ssl
   - openstack-glance
-  - python3-oslo-vmware
   - python3-rados
   - python3-rbd
   - qemu-img
