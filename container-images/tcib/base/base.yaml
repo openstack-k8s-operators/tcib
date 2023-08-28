@@ -51,7 +51,6 @@ tcib_packages:
   - ca-certificates
   - dumb-init
   - glibc-langpack-en
-  - iscsi-initiator-utils
   - procps-ng
   - python3
   - sudo
