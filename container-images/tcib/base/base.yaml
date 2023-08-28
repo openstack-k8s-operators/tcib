@@ -54,9 +54,7 @@ tcib_packages:
   - iscsi-initiator-utils
   - procps-ng
   - python3
-  - rsync
   - sudo
-  - tar
   - util-linux-user
   - which
 tcib_stopsignal: SIGTERM
