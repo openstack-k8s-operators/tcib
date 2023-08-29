@@ -15,9 +15,10 @@ if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     cp ${TEMPEST_PATH}clouds.yaml $HOME/.config/openstack/clouds.yaml
 fi
 
-if [-f ${TEMPEST_PATH}profile.yaml ]; then
+if [ -f ${TEMPEST_PATH}profile.yaml ]; then
     PROFILE_ARG="--profile ${TEMPEST_PATH}profile.yaml"
 fi
+
 tempest init openshift
 
 pushd $TEMPEST_DIR
