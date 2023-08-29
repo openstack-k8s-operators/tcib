@@ -3,5 +3,4 @@ tcib_actions:
 tcib_packages:
   common:
   - openstack-ceilometer-notification
-  - python3-pyngus
 tcib_user: ceilometer
