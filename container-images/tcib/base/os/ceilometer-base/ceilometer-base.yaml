@@ -4,5 +4,3 @@ tcib_actions:
 tcib_packages:
   common:
   - openstack-ceilometer-common
-  - python3-oslo-db
-  - python3-tooz
