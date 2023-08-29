@@ -54,7 +54,6 @@ container_images:
 - imagename: quay.io/podified-master-centos9/openstack-neutron-server:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-neutron-metadata-agent-ovn:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-nova-api:current-podified
-- imagename: quay.io/podified-master-centos9/openstack-nova-compute-ironic:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-nova-compute:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-nova-conductor:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-nova-libvirt:current-podified
