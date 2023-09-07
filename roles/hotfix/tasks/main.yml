@@ -1,0 +1,22 @@
+---
+- name: Pull the container image
+  docker_image:
+    name: "{{ container_image_name }}"
+    state: present
+
+- name: Copy the hotfix script to the container
+  copy:
+    src: "{{ hotfix_script_path }}"
+    dest: /hotfix-script.sh
+    mode: '0755'
+
+- name: Run the hotfix script inside the container
+  docker_container:
+    name: hotfix_container
+    image: "{{ container_image_name }}"
+    entrypoint: /hotfix-script.sh
+  register: hotfix_result
+
+- name: Print hotfix result
+  debug:
+    var: hotfix_result---

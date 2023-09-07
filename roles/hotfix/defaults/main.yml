@@ -1,0 +1,6 @@
+---
+# Name of the container image to be hotfixed
+container_image_name: ""
+
+# Path to the hotfix script
+hotfix_script_path: ""

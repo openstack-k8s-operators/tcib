@@ -1,0 +1,9 @@
+---
+- name: Apply Hotfix to Container Image
+  hosts: your_target_hosts
+  become: yes
+  vars:
+    container_image_name: "your_container_image_name"
+    hotfix_script_path: "/path/to/your/hotfix_script.sh"
+  roles:
+    - hotfix_role
