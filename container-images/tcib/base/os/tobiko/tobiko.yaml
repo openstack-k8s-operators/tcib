@@ -1,0 +1,35 @@
+tcib_actions:
+- run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
+- run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/tobiko_sudoers /etc/sudoers.d/tobiko_sudoers
+- run: chmod 440 /etc/sudoers.d/tobiko_sudoers
+- run: cd /var/lib; git clone https://opendev.org/x/tobiko
+  # The following line doesn't work
+  #- run: cat {{ tobiko_config }} >> /var/lib/tobiko/tobiko.conf
+- run: python3 -m pip install --upgrade --user setuptools virtualenv wheel tox stestr
+- run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/run_tobiko.sh /var/lib/tobiko/run_tobiko.sh
+- run: /var/lib/tobiko/tools/install-bindeps.sh
+- run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/run_tobiko.sh /var/lib/tobiko/run_tobiko.sh
+- run: chmod +x /var/lib/tobiko/run_tobiko.sh
+
+tcib_entrypoint: /var/lib/tobiko/run_tobiko.sh
+
+tcib_packages:
+  common:
+  - gcc
+  - git
+  - python3
+  - python3-devel
+  - python3-pip
+  - which
+  - findutils
+
+tcib_user: tobiko
+
+tobiko_config: |
+  [DEFAULT]
+  debug = true
+  log_file = tobiko.log
+
+  [ubuntu]
+  interface_name = enp3s0
