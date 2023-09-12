@@ -3,13 +3,12 @@ tcib_actions:
 - run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/tobiko_sudoers /etc/sudoers.d/tobiko_sudoers
 - run: chmod 440 /etc/sudoers.d/tobiko_sudoers
-- run: cd /var/lib; git clone https://opendev.org/x/tobiko
+- run: git clone https://opendev.org/x/tobiko /opt/tobiko
   # The following line doesn't work
   #- run: cat {{ tobiko_config }} >> /var/lib/tobiko/tobiko.conf
 - run: python3 -m pip install --upgrade --user setuptools virtualenv wheel tox stestr
-- run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/run_tobiko.sh /var/lib/tobiko/run_tobiko.sh
-- run: /var/lib/tobiko/tools/install-bindeps.sh
-- run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/run_tobiko.sh /var/lib/tobiko/run_tobiko.sh
+- run: /opt/tobiko/tools/install-bindeps.sh
+- run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/run_tobiko.sh /opt/tobiko/run_tobiko.sh
 - run: chmod +x /var/lib/tobiko/run_tobiko.sh
 
 tcib_entrypoint: /var/lib/tobiko/run_tobiko.sh
