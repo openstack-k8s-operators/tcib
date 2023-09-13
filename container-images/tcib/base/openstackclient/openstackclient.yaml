@@ -7,6 +7,7 @@ tcib_actions:
 - run: rm /bin/sh && ln -s /bin/bash /bin/sh
 tcib_packages:
   common:
+  - ceph-common
   - python3-openstackclient
   - python3-osc-placement
   - python3-barbicanclient
