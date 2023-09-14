@@ -20,8 +20,8 @@
       - OWNERS*
 
 - job:
-    name: tcib-crc-podified-edpm-deployment
-    parent: cifmw-crc-podified-edpm-deployment
+    name: tcib-podified-multinode-edpm-deployment-crc
+    parent: podified-multinode-edpm-deployment-crc
     irrelevant-files: *if
     vars: &edpm_vars
       cifmw_edpm_prepare_update_os_containers: true

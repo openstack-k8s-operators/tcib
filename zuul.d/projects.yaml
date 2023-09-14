@@ -7,4 +7,4 @@
         - tcib-crc-podified-edpm-baremetal: &content_provider
             dependencies:
               - tcib-build-containers
-        - tcib-crc-podified-edpm-deployment: *content_provider
+        - tcib-podified-multinode-edpm-deployment-crc: *content_provider
