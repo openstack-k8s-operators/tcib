@@ -1,9 +1,11 @@
 #!/bin/sh
 
+set -x
+
 HOMEDIR=/var/lib/tempest
 TEMPEST_DIR=$HOMEDIR/openshift
 PROFILE_ARG=""
-CONCURRENCY=""
+CONCURRENCY="${CONCURRENCY:-}"
 
 pushd $HOMEDIR
 
@@ -33,11 +35,11 @@ if [ ! -f ${TEMPEST_PATH}exclude.txt ]; then
     touch ${TEMPEST_PATH}exclude.txt
 fi
 
-if [ -n ${CONCURRENCY} ]; then
-    CONCURRENCY="--concurrency ${CONCURRENCY}"
+if [ -n "$CONCURRENCY" ]; then
+    CONCURRENCY_ARGS="--concurrency ${CONCURRENCY}"
 fi
 
-tempest run ${CONCURRENCY} \
+tempest run ${CONCURRENCY_ARGS:-} \
     --include-list ${TEMPEST_PATH}include.txt \
     --exclude-list ${TEMPEST_PATH}exclude.txt
 
