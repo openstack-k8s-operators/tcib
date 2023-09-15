@@ -25,6 +25,7 @@ tcib_packages:
   - mod_ssl
   - python3-mod_wsgi
   - python3-PyMySQL
+  - tar
   with_localization:
   - openstack-dashboard
   - openstack-heat-ui

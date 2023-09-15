@@ -8,6 +8,7 @@ tcib_packages:
   common:
   - httpd
   - mod_ssl
+  - iscsi-initiator-utils
   - openstack-glance
   - python3-rados
   - python3-rbd

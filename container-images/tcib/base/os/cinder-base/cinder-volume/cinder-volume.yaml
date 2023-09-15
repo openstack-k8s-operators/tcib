@@ -10,4 +10,5 @@ tcib_actions:
 tcib_packages:
   common:
   - python3-cinderlib
+  - iscsi-initiator-utils
 tcib_user: cinder

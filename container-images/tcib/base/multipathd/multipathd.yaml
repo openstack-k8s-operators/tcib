@@ -3,3 +3,4 @@ tcib_actions:
 tcib_packages:
   common:
   - device-mapper-multipath
+  - iscsi-initiator-utils
