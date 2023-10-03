@@ -4,7 +4,6 @@ approvers:
 - viroel
 - son-vyas
 - rabi
-- kajinamit
 options: {}
 reviewers:
 - rlandy
@@ -12,4 +11,3 @@ reviewers:
 - viroel
 - son-vyas
 - rabi
-- kajinamit
