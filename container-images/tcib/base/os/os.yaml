@@ -6,7 +6,6 @@ tcib_packages:
   - python3-cinderclient
   - python3-designateclient
   - python3-glanceclient
-  - python3-gnocchiclient
   - python3-ironicclient
   - python3-keystoneclient
   - python3-manilaclient
