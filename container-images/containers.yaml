@@ -27,9 +27,6 @@ container_images:
 - imagename: quay.io/podified-master-centos9/openstack-frr:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-ovn-bgp-agent:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-glance-api:current-podified
-- imagename: quay.io/podified-master-centos9/openstack-gnocchi-api:current-podified
-- imagename: quay.io/podified-master-centos9/openstack-gnocchi-metricd:current-podified
-- imagename: quay.io/podified-master-centos9/openstack-gnocchi-statsd:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-haproxy:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-heat-api-cfn:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-heat-api:current-podified
