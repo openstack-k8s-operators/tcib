@@ -20,5 +20,6 @@ tcib_packages:
   - openstack-tempest-all
   - subunit-filters
   - python3-subunit
+  - qemu-img
 
 tcib_user: tempest
