@@ -7,10 +7,8 @@ tcib_actions:
 - run: chmod 440 /etc/sudoers.d/tobiko_sudoers
 - run: mkdir -p /var/lib/tempest/external_files
 - run: chown -R tobiko.tobiko /var/lib/tobiko
-- run: git clone https://opendev.org/x/tobiko /var/lib/tobiko
-  # The following line doesn't work
-  #- run: cat {{ tobiko_config }} >> /var/lib/tobiko/tobiko.conf
-- run: python3 -m pip install --upgrade pip tox
+- run: python3 -m pip install --upgrade pip
+- run: python3 -m pip install 'tox>=3.8,<4.0'
 - run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/run_tobiko.sh /var/lib/tobiko/run_tobiko.sh
 - run: chmod +x /var/lib/tobiko/run_tobiko.sh
 
@@ -31,14 +29,3 @@ tcib_packages:
   - iperf3
 
 tcib_user: tobiko
-
-tobiko_config: |
-  [DEFAULT]
-  debug = true
-  log_file = tobiko.log
-
-  [ubuntu]
-  interface_name = enp3s0
-
-  [keystone]
-  interface = public
