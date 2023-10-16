@@ -4,9 +4,13 @@ TOBIKO_DIR=/var/lib/tobiko
 
 pushd ${TOBIKO_DIR}
 
+export OS_CLOUD=default
+echo "export OS_CLOUD=default" > .bashrc
+
+pushd tobiko
 python3 -m tox -e py3 --notest
-source .tox/py3/bin/activate
-python3 -m stestr run -n tobiko/tobiko/tests/scenario/octavia/test_traffic.py
+sleep 9999999
+python3 -m tox -e scenario
 
 RETURN_VALUE=$?
 
