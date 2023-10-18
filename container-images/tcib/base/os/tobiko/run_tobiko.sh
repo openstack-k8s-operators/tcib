@@ -10,10 +10,11 @@ fi
 pushd ${TOBIKO_DIR}
 
 export OS_CLOUD=default
-echo "export OS_CLOUD=default" > .bashrc
 
-mkdir -p .downloaded-images
-curl https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img -o .downloaded-images/ubuntu-minimal
+if [ ! -z ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} ]; then
+    mkdir -p .downloaded-images
+    curl ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} -o .downloaded-images/ubuntu-minimal
+fi
 
 git clone https://opendev.org/x/tobiko
 
@@ -30,15 +31,15 @@ image_file = /var/lib/tobiko/.downloaded-images/ubuntu-minimal
 [keystone]
 interface = public' > tobiko.conf
 
+if [ ! -z ${TOBIKO_VERSION} ]; then
+    git checkout ${TOBIKO_VERSION}
+fi
 python3 -m tox -e py3 --notest
-sleep 9999999
 python3 -m tox -e scenario
-
 RETURN_VALUE=$?
 
-echo Copying logs file
-# Take care of test results
+echo "Copying logs file"
+cp -rf /var/lib/tobiko/tobiko/.tox/py3/log $TOBIKO_DIR
+
 
 exit ${RETURN_VALUE}
-
-popd

@@ -1,5 +1,7 @@
 tcib_envs:
   USE_EXTERNAL_FILES: true
+  TOBIKO_UBUNTU_MINIMAL_IMAGE_URL: "https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img"
+  TOBIKO_VERSION: "master"
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
