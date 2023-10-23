@@ -9,7 +9,7 @@
 
 - name: Set rpms_list
   set_fact:
-    rpms_list: "{{  context_rpms.files|json_query('[*].path') }}"
+    rpms_list: "{{ context_rpms.files|map(attribute='path') }}"
   when: rpms_path is defined
 
 - name: Copy RPMs to context dir
