@@ -2,6 +2,8 @@ tcib_actions:
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: cd /usr/local; git clone https://opendev.org/openstack/whitebox-tempest-plugin
 - run: cd /usr/local/whitebox-tempest-plugin; pip install -e .
+- run: cd /usr/local; git clone https://github.com/openstack/tempest-stress
+- run: cd /usr/local/tempest-stress; pip install -e .
 
 tcib_packages:
   common:
