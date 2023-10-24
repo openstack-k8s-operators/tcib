@@ -26,19 +26,20 @@ container_images:
 """
 
 MOCK_WALK = [
-    ("", ["base"], [],),
-    ("/base", ["memcached", "openstack"], ["config.yaml", "test.doc"],),
-    ("/base/memcached", [], ["memcached.yaml"],),
-    ("/base/openstack", ["glance", "keystone", "neutron", "nova"], [],),
+    ("/tcib", ["base"], [],),
+    ("/tcib/base", ["memcached", "openstack"], ["config.yaml", "test.doc"],),
+    ("/tcib/base/memcached", [], ["memcached.yaml"],),
+    ("/tcib/base/openstack", ["glance", "keystone", "neutron", "nova"], [],),
     (
-        "/base/openstack/glance",
+        "/tcib/base/openstack/glance",
         [],
         ["glance-registry.yaml", "glance-api.yaml"],
     ),
-    ("/base/openstack/keystone", [], ["keystone.yaml"],),
-    ("/base/openstack/neutron", ["api"], [],),
-    ("/base/openstack/neutron/api", [], ["neutron-api.yml"],),
-    ("/base/openstack/nova", [], [],),
+    ("/tcib/base/openstack/keystone", ["keystone-foo"], ["keystone.yaml"],),
+    ("/tcib/base/openstack/keystone/keystone-foo", [], ["keystone-foo.yaml"],),
+    ("/tcib/base/openstack/neutron", ["api"], [],),
+    ("/tcib/base/openstack/neutron/api", [], ["neutron-api.yml"],),
+    ("/tcib/base/openstack/nova", [], [],),
 ]
 
 
@@ -88,7 +89,8 @@ class TestContainerImages(utils.TestCommand):
         self.cmd = image_build.Build(self.app, None)
 
     def _take_action(self, parsed_args):
-        self.cmd.image_parents = {"keystone": "base"}
+        self.cmd.image_parents = {"keystone": "foo", "foo": "base"}
+        self.cmd.image_levels = {"keystone": 3, "foo": 2, "base": 1}
         mock_open = mock.mock_open(read_data=IMAGE_YAML)
         with mock.patch("os.path.isfile", autospec=True) as mock_isfile:
             mock_isfile.return_value = True
@@ -106,8 +108,26 @@ class TestContainerImages(utils.TestCommand):
     def test_find_image(self):
         mock_open = mock.mock_open(read_data='---\ntcib_option: "data"')
         with mock.patch('builtins.open', mock_open):
-            image = self.cmd.find_image("keystone", "some/path", "base-image")
-        self.assertEqual(image, {"tcib_option": "data"})
+            image = self.cmd.find_image("keystone-foo", "/tcib", "base-image")
+        self.assertEqual({"tcib_option": "data"}, image)
+        self.assertEqual(
+            {
+                'keystone-foo': 'keystone',
+                'keystone': 'openstack',
+                'openstack': 'base',
+                'base': 'base-image'
+            },
+            self.cmd.image_parents
+        )
+        self.assertEqual(
+            {
+                'keystone-foo': 4,
+                'keystone': 3,
+                'openstack': 2,
+                'base': 1
+            },
+            self.cmd.image_levels
+        )
 
     def test_build_tree(self):
         image = self.cmd.build_tree("some/path")
@@ -120,7 +140,7 @@ class TestContainerImages(utils.TestCommand):
                         {
                             "openstack": [
                                 "glance",
-                                "keystone",
+                                {"keystone": ["keystone-foo"]},
                                 {"neutron": ["api"]},
                                 "nova",
                             ]

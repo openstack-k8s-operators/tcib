@@ -58,7 +58,8 @@ class Build(command.Command):
 
     auth_required = False
     identified_images = list()
-    image_parents = collections.OrderedDict()
+    image_parents = dict()
+    image_levels = dict()
     image_paths = dict()
 
     def get_parser(self, prog_name):
@@ -333,8 +334,11 @@ class Build(command.Command):
         """
 
         container_vars = dict()
+        path = os.path.normpath(path)
+        path_level = len(path.split(os.path.sep))
         for root, dirs, files in os.walk(path):
             if os.path.basename(root) == name:
+                level = len(root.split(os.path.sep)) - path_level
                 for file_name in sorted(files):
                     if file_name.endswith(("yaml", "yml")):
                         _option_file = os.path.join(root, file_name)
@@ -345,22 +349,25 @@ class Build(command.Command):
                             _options = yaml.safe_load(f)
                         if _options:
                             container_vars.update(_options)
-
+                        self.image_levels[name] = level
                         base_dir = root
-                        while base_dir != os.sep:
+                        child = name
+                        while True:
                             base_dir = os.path.dirname(base_dir)
+                            if base_dir == path:
+                                self.image_parents[child] = base_image
+                                break
                             base_files = [
                                 i
                                 for i in os.listdir(base_dir)
                                 if i.endswith(("yaml", "yml"))
                             ]
                             if base_files:
-                                self.image_parents[name] = os.path.basename(
-                                    base_dir
-                                )
-                                break
-                        else:
-                            self.image_parents[name] = base_image
+                                parent = os.path.basename(base_dir)
+                                level -= 1
+                                self.image_parents[child] = parent
+                                self.image_levels[parent] = level
+                                child = parent
         else:
             return container_vars
 
@@ -424,7 +431,8 @@ class Build(command.Command):
         config_path_base = os.path.basename(
             os.path.abspath(parsed_args.config_path))
         for image in expected_images:
-            if (image != config_path_base and image not in image_configs):
+            if (image not in (config_path_base, parsed_args.base) and
+                    image not in image_configs):
                 self.log.debug("processing image config %s", image)
                 image_config = self.find_image(
                     image,
@@ -539,29 +547,27 @@ class Build(command.Command):
         #                  prepare array, we walk it back and ensure
         #                  dependencies are also part of the build
         #                  process.
-        image_configs = collections.OrderedDict()  # hash
-        image_configs.update(
+        _image_configs = dict()
+        _image_configs.update(
             self.process_images(
                 expected_images=images_to_prepare,
                 parsed_args=parsed_args,
-                image_configs=image_configs
+                image_configs=_image_configs
             )
         )
-        _parents = self.process_images(
+        _image_configs.update(self.process_images(
             expected_images=list(self.image_parents.values()),
             parsed_args=parsed_args,
-            image_configs=image_configs
+            image_configs=_image_configs
+        ))
+
+        # Traverse the dependency tree breadth-first
+        image_configs = collections.OrderedDict(
+            sorted(
+                _image_configs.items(),
+                key=lambda x: self.image_levels[x[0]]
+            )
         )
-        for key, value in _parents.items():
-            image_configs[key] = value
-            image_configs.move_to_end(key, last=False)
-            images_to_prepare.insert(0, key)
-
-        if "os" in image_configs:  # Second image prepared if found
-            image_configs.move_to_end("os", last=False)
-
-        if "base" in image_configs:  # First image prepared if found
-            image_configs.move_to_end("base", last=False)
 
         self.log.debug(
             "Images being prepared: {}".format(
@@ -715,7 +721,7 @@ class Build(command.Command):
             )
 
         # Ensure anything not intended to be built is excluded
-        excludes.extend(self.rectify_excludes(images_to_prepare))
+        excludes.extend(self.rectify_excludes(image_configs.keys()))
         self.log.info("Images being excluded: {}".format(excludes))
         volumes = parsed_args.volumes
         volumes.append(

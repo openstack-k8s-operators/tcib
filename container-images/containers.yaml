@@ -16,7 +16,6 @@ container_images:
 - imagename: quay.io/podified-master-centos9/openstack-cinder-volume:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-cron:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-designate-api:current-podified
-- imagename: quay.io/podified-master-centos9/openstack-designate-base:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-designate-backend-bind9:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-designate-central:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-designate-mdns:current-podified
