@@ -4,6 +4,7 @@
     parent: cifmw-tcib-base
     vars:
       cifmw_build_containers_registry_namespace: podified-antelope-centos9
+      cifmw_build_containers_install_from_source: true
     irrelevant-files: &if
       - HACKING.rst
       - AUTHORS
@@ -25,6 +26,7 @@
     irrelevant-files: *if
     vars: &edpm_vars
       cifmw_edpm_prepare_update_os_containers: true
+      cifmw_set_openstack_containers_edpm: true
       cifmw_set_openstack_containers_registry: "{{ content_provider_registry_ip }}:5001"
       cifmw_set_openstack_containers_tag_from_md5: true
       cifmw_set_openstack_containers_dlrn_md5_path: "~/ci-framework-data/artifacts/repositories/delorean.repo.md5"
