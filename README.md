@@ -23,14 +23,13 @@ $ sudo dnf -y install ansible-core buildah
 
 3. Define subset of images to build
 
-By default all images will be built as specified
+By default all images and their dependencies will be built as specified
 in `container-images/containers.yaml` This can be limited to a subset of images
-with a custom containers file:
+and their depedencies with a custom containers file:
 
 ```
 $ cat containers.yaml
 container_images:
-  - imagename: quay.io/podified-master-centos9/openstack-base:current-podified
   - imagename: quay.io/podified-master-centos9/openstack-keystone:current-podified
 ```
 
