@@ -4,4 +4,5 @@ tcib_actions:
 tcib_packages:
   common:
   - ovn-bgp-agent
+  - python3-unbound
 tcib_user: ovn-bgp
