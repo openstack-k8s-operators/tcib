@@ -1,11 +1,50 @@
 #!/bin/sh
-
 set -x
 
 HOMEDIR=/var/lib/tempest
 TEMPEST_DIR=$HOMEDIR/openshift
 PROFILE_ARG=""
 CONCURRENCY="${CONCURRENCY:-}"
+
+TEMPESTCONF_ARGS=""
+
+[[ ${TEMPESTCONF_CREATE:=true} == true ]] && TEMPESTCONF_ARGS+="--create "
+[[ ${TEMPESTCONF_INSECURE} == true ]] && TEMPESTCONF_ARGS+="--insecure "
+[[ ${TEMPESTCONF_COLLECT_TIMING} == true ]] && TEMPESTCONF_ARGS+="--collect-timing "
+[[ ${TEMPESTCONF_NO_DEFAULT_DEPLOYER} == true ]] && TEMPESTCONF_ARGS+="--no-default-deployer "
+[[ ${TEMPESTCONF_DEBUG:=true} == true ]] && TEMPESTCONF_ARGS+="--debug "
+[[ ${TEMPESTCONF_VERBOSE} == true ]] && TEMPESTCONF_ARGS+="--verbose "
+[[ ${TEMPESTCONF_NO_RNG} == true ]] && TEMPESTCONF_ARGS+="--no-rng "
+[[ ${TEMPESTCONF_NON_ADMIN} == true ]] && TEMPESTCONF_ARGS+="--non-admin "
+[[ ${TEMPESTCONF_RETRY_IMAGE} == true ]] && TEMPESTCONF_ARGS+="--retry-image "
+[[ ${TEMPESTCONF_CONVERT_TO_RAW} == true ]] && TEMPESTCONF_ARGS+="--convert-to-raw "
+
+[[ ! -z ${TEMPESTCONF_TIMEOUT} ]] && TEMPESTCONF_ARGS+="--timeout ${TEMPESTCONF_TIMEOUT} "
+[[ ! -z ${TEMPESTCONF_OUT} ]] && TEMPESTCONF_ARGS+="--out ${TEMPESTCONF_OUT} "
+[[ ! -z ${TEMPESTCONF_DEPLOYER_INPUT} ]] && TEMPESTCONF_ARGS+="--deployer-input ${TEMPESTCONF_DEPLOYER_INPUT} "
+[[ ! -z ${TEMPESTCONF_TEST_ACCOUNTS} ]] && TEMPESTCONF_ARGS+="--test-accounts ${TEMPESTCONF_TEST_ACCOUNTS} "
+[[ ! -z ${TEMPESTCONF_CREATE_ACCOUNTS_FILE} ]] && TEMPESTCONF_ARGS+="--create-accounts-file ${TEMPESTCONF_CREATE_ACCOUNTS_FILE} "
+[[ ! -z ${TEMPESTCONF_PROFILE} ]] && TEMPESTCONF_ARGS+="--profile ${TEMPESTCONF_PROFILE} "
+[[ ! -z ${TEMPESTCONF_GENERATE_PROFILE} ]] && TEMPESTCONF_ARGS+="--generate-profile ${TEMPESTCONF_GENERATE_PROFILE} "
+[[ ! -z ${TEMPESTCONF_IMAGE_DISK_FORMAT} ]] && TEMPESTCONF_ARGS+="--image-disk-format ${TEMPESTCONF_IMAGE_DISK_FORMAT} "
+[[ ! -z ${TEMPESTCONF_IMAGE} ]] && TEMPESTCONF_ARGS+="--image ${TEMPESTCONF_IMAGE} "
+[[ ! -z ${TEMPESTCONF_FLAVOR_MIN_MEM} ]] && TEMPESTCONF_ARGS+="--flavor-min-mem ${TEMPESTCONF_FLAVOR_MIN_MEM} "
+[[ ! -z ${TEMPESTCONF_FLAVOR_MIN_DISK} ]] && TEMPESTCONF_ARGS+="--flavor-min-disk ${TEMPESTCONF_FLAVOR_MIN_DISK} "
+[[ ! -z ${TEMPESTCONF_NETWORK_ID} ]] && TEMPESTCONF_ARGS+="--network-id ${TEMPESTCONF_NETWORK_ID} "
+
+if [[ ! -z ${TEMPESTCONF_APPEND} ]]; then
+    while IFS= read -r line; do
+        TEMPESTCONF_ARGS+="--append $line "
+    done <<< "$TEMPESTCONF_APPEND"
+fi
+
+if [[ ! -z ${TEMPESTCONF_REMOVE} ]]; then
+    while IFS= read -r line; do
+        TEMPESTCONF_ARGS+="--remove $line "
+    done <<< "$TEMPESTCONF_REMOVE"
+fi
+
+TEMPESTCONF_OVERRIDES="$(echo ${TEMPESTCONF_OVERRIDES} | tr '\n' ' ') identity.v3_endpoint_type public"
 
 pushd $HOMEDIR
 
@@ -18,15 +57,14 @@ if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     cp ${TEMPEST_PATH}clouds.yaml $HOME/.config/openstack/clouds.yaml
 fi
 
-if [ -f ${TEMPEST_PATH}profile.yaml ]; then
-    PROFILE_ARG="--profile ${TEMPEST_PATH}profile.yaml"
+if [ -f ${TEMPEST_PATH}profile.yaml ] && [ -z ${TEMPESTCONF_PROFILE} ]; then
+    TEMPESTCONF_ARGS+="--profile ${TEMPEST_PATH}profile.yaml "
 fi
 
 tempest init openshift
 
 pushd $TEMPEST_DIR
-
-discover-tempest-config --os-cloud $OS_CLOUD --debug --create identity.v3_endpoint_type public ${PROFILE_ARG}
+discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES}
 
 if [ ! -f ${TEMPEST_PATH}include.txt ]; then
     echo "tempest.api.identity.v3" > ${TEMPEST_PATH}include.txt
