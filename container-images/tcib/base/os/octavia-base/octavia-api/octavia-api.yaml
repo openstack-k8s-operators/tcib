@@ -8,5 +8,4 @@ tcib_packages:
   - openstack-octavia-api
   - python3-mod_wsgi
   - python3-ovn-octavia-provider
-  - python3-unbound
 tcib_user: octavia
