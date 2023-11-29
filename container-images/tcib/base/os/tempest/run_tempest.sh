@@ -3,10 +3,12 @@ set -x
 
 HOMEDIR=/var/lib/tempest
 TEMPEST_DIR=$HOMEDIR/openshift
-PROFILE_ARG=""
+TEMPEST_PATH=$HOMEDIR/
 CONCURRENCY="${CONCURRENCY:-}"
-
 TEMPESTCONF_ARGS=""
+TEMPEST_ARGS=""
+
+[[ ! -z ${USE_EXTERNAL_FILES} ]] && TEMPEST_PATH=$HOMEDIR/external_files/
 
 [[ ${TEMPESTCONF_CREATE:=true} == true ]] && TEMPESTCONF_ARGS+="--create "
 [[ ${TEMPESTCONF_INSECURE} == true ]] && TEMPESTCONF_ARGS+="--insecure "
@@ -32,6 +34,18 @@ TEMPESTCONF_ARGS=""
 [[ ! -z ${TEMPESTCONF_FLAVOR_MIN_DISK} ]] && TEMPESTCONF_ARGS+="--flavor-min-disk ${TEMPESTCONF_FLAVOR_MIN_DISK} "
 [[ ! -z ${TEMPESTCONF_NETWORK_ID} ]] && TEMPESTCONF_ARGS+="--network-id ${TEMPESTCONF_NETWORK_ID} "
 
+# Tempest arguments
+[[ ${TEMPEST_SMOKE} == true ]] && TEMPEST_ARGS+="--smoke "
+[[ ${TEMPEST_PARALLEL:=true} == true ]] && TEMPEST_ARGS+="--parallel "
+[[ ${TEMPEST_SERIAL} == true ]] && TEMPEST_ARGS+="--serial "
+
+[[ ! -z ${TEMPEST_INCLUDE_LIST} ]] && TEMPEST_ARGS+="--include-list ${TEMPEST_INCLUDE_LIST} "
+[[ ! -z ${TEMPEST_EXCLUDE_LIST} ]] && TEMPEST_ARGS+="--exclude-list ${TEMPEST_EXCLUDE_LIST} "
+[[ ! -z ${TEMPEST_CONCURRENCY} ]] && TEMPEST_ARGS+="--concurrency ${TEMPEST_CONCURRENCY} "
+[[ ! -z ${TEMPEST_WORKER_FILE} ]] && TEMPEST_ARGS+="--worker-file ${TEMPEST_WORKER_FILE} "
+[[ -z ${TEMPEST_INCLUDE_LIST} ]] && TEMPEST_ARGS+="--include-list ${TEMPEST_PATH}include.txt "
+[[ -z ${TEMPEST_EXCLUDE_LIST} ]] && TEMPEST_ARGS+="--exclude-list ${TEMPEST_PATH}exclude.txt "
+
 if [[ ! -z ${TEMPESTCONF_APPEND} ]]; then
     while IFS= read -r line; do
         TEMPESTCONF_ARGS+="--append $line "
@@ -46,13 +60,15 @@ fi
 
 TEMPESTCONF_OVERRIDES="$(echo ${TEMPESTCONF_OVERRIDES} | tr '\n' ' ') identity.v3_endpoint_type public"
 
+if [ -n "$CONCURRENCY" ] && [ -z ${TEMPEST_CONCURRENCY} ]; then
+    TEMPEST_ARGS+="--concurrency ${CONCURRENCY} "
+fi
+
 pushd $HOMEDIR
 
 export OS_CLOUD=default
 
-TEMPEST_PATH=$HOMEDIR/
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
-    TEMPEST_PATH=$HOMEDIR/external_files/
     mkdir -p $HOME/.config/openstack
     cp ${TEMPEST_PATH}clouds.yaml $HOME/.config/openstack/clouds.yaml
 fi
@@ -61,25 +77,20 @@ if [ -f ${TEMPEST_PATH}profile.yaml ] && [ -z ${TEMPESTCONF_PROFILE} ]; then
     TEMPESTCONF_ARGS+="--profile ${TEMPEST_PATH}profile.yaml "
 fi
 
+if [ ! -f ${TEMPEST_PATH}include.txt ] && [ -z ${TEMPEST_INCLUDE_LIST} ]; then
+    echo "tempest.api.identity.v3" > ${TEMPEST_PATH}include.txt
+fi
+
+if [ ! -f ${TEMPEST_PATH}exclude.txt ] && [ -z ${TEMPEST_EXCLUDE_LIST} ]; then
+    touch ${TEMPEST_PATH}exclude.txt
+fi
+
 tempest init openshift
 
 pushd $TEMPEST_DIR
 discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES}
 
-if [ ! -f ${TEMPEST_PATH}include.txt ]; then
-    echo "tempest.api.identity.v3" > ${TEMPEST_PATH}include.txt
-fi
-if [ ! -f ${TEMPEST_PATH}exclude.txt ]; then
-    touch ${TEMPEST_PATH}exclude.txt
-fi
-
-if [ -n "$CONCURRENCY" ]; then
-    CONCURRENCY_ARGS="--concurrency ${CONCURRENCY}"
-fi
-
-tempest run ${CONCURRENCY_ARGS:-} \
-    --include-list ${TEMPEST_PATH}include.txt \
-    --exclude-list ${TEMPEST_PATH}exclude.txt
+tempest run ${TEMPEST_ARGS}
 
 RETURN_VALUE=$?
 
