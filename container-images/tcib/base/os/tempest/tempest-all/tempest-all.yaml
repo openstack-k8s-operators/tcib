@@ -17,7 +17,7 @@ tcib_entrypoint: /var/lib/tempest/run_tempest.sh
 tcib_packages:
   common:
   - iputils
-  - openstack-tempest
+  - openstack-tempest-all
   - subunit-filters
   - python3-subunit
   - qemu-img
