@@ -14,10 +14,12 @@ tcib_actions:
 
 tcib_entrypoint: /var/lib/tempest/run_tempest.sh
 
+# TODO(arxcruz): ADd openstack-tempest-all again once tempest-whitebox
+# package is available on rhel
 tcib_packages:
   common:
   - iputils
-  - openstack-tempest-all
+  - openstack-tempest
   - subunit-filters
   - python3-subunit
   - qemu-img
