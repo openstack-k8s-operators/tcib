@@ -2,6 +2,7 @@ tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage placement
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: sed -i -r 's,^(Listen 80),#\1,' /etc/httpd/conf/httpd.conf  && sed -i -r 's,^(Listen 443),#\1,' /etc/httpd/conf.d/ssl.conf
+- run: rm -f /etc/httpd/conf.d/00-placement-api.conf
 tcib_packages:
   common:
   - httpd
