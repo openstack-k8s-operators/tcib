@@ -3,6 +3,8 @@ tcib_envs:
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: cd /usr/local; git clone https://opendev.org/openstack/whitebox-tempest-plugin
+- run: cd /usr/local/whitebox-tempest-plugin; pip install -e .
 - run: cp /usr/share/tcib/container-images/tcib/base/os/tempest/tempest_sudoers /etc/sudoers.d/tempest_sudoers
 - run: chmod 440 /etc/sudoers.d/tempest_sudoers
 - run: mkdir -p /var/lib/tempest/external_files
@@ -21,5 +23,6 @@ tcib_packages:
   - subunit-filters
   - python3-subunit
   - qemu-img
+  - python3-pip
 
 tcib_user: tempest
