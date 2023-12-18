@@ -47,7 +47,7 @@ crudini --set tobiko.conf DEFAULT log_file ${TOBIKO_LOGFILE}
 [ ! -z ${TOBIKO_DEBUG} ] && crudini --set tobiko.conf DEFAULT debug true
 # testcase
 crudini --set tobiko.conf testcase timeout ${TOBIKO_TESTCASE_TIMEOUT}
-crudini --set tobiko.conf testcase timeout ${TOBIKO_TESTRUNNER_TIMEOUT}
+crudini --set tobiko.conf testcase test_runner_timeout ${TOBIKO_TESTRUNNER_TIMEOUT}
 # ubuntu
 crudini --set tobiko.conf ubuntu interface_name ${TOBIKO_UBUNTU_INTERFACE_NAME}
 [ ! -z ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} ] && crudini --set tobiko.conf ubuntu image_file ${TOBIKO_DIR}/.downloaded-images/ubuntu-minimal
