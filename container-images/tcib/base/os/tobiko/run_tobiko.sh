@@ -2,6 +2,9 @@
 
 TOBIKO_DIR=/var/lib/tobiko
 
+# assert mandatory variables have been set
+[ -z ${TOBIKO_TESTENV} ] && echo "TOBIKO_TESTENV not set" && exit 1
+
 # obtain clouds.yaml from external_files directory
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     mkdir -p $TOBIKO_DIR/.config/openstack
@@ -30,9 +33,7 @@ TOBIKO_TESTRUNNER_TIMEOUT="${TOBIKO_TESTRUNNER_TIMEOUT:-14400.0}"
 [ ! -z ${TOBIKO_PYTEST_ADDOPTS} ] && export PYTEST_ADDOPTS=${TOBIKO_PYTEST_ADDOPTS}
 [ ! -z ${TOBIKO_REPORT_DIR} ] && export TOX_REPORT_DIR=${TOBIKO_REPORT_DIR}
 [ ! -z ${TOBIKO_RUN_TESTS_TIMEOUT} ] && export TOX_RUN_TESTS_TIMEOUT=${TOBIKO_RUN_TESTS_TIMEOUT}
-
-# assert mandatory variables have been set
-[ -z ${TOBIKO_TESTENV} ] && echo "TOBIKO_TESTENV not set" && exit 1
+[ ! -z ${TOBIKO_PREVENT_CREATE} ] && export TOBIKO_PREVENT_CREATE=${TOBIKO_PREVENT_CREATE}
 
 pushd ${TOBIKO_DIR}
 git clone https://opendev.org/x/tobiko
