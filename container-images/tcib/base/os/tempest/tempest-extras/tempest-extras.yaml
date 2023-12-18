@@ -6,6 +6,8 @@ tcib_actions:
 - run: cd /usr/local/tempest-stress; pip install -e .
 - run: cd /usr/local; git clone https://opendev.org/openstack/manila-tempest-plugin.git
 - run: cd /usr/local/manila-tempest-plugin; pip install -e .
+- run: cd /usr/local; git clone https://opendev.org/openstack/barbican-tempest-plugin.git
+- run: cd /usr/local/barbican-tempest-plugin; pip install -e .
 
 tcib_packages:
   common:
