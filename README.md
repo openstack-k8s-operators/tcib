@@ -62,6 +62,20 @@ $ openstack tcib container image build --config-file containers.yaml --repo-dir 
 
 The `--tcib-extras tcib_package=` is required so that non-template files are sourced from the local `container-images/kolla` instead of from the `python-tcib-containers` package in the container build.
 
+## Matching container images to tcib commits
+
+1. Look at the container image in quay.io
+   (e.g. https://quay.io/repository/podified-antelope-centos9/openstack-tempest-extras?tab=tags)
+   and take the tag you want to translate to tcib commit.
+2. The tag is the commit hash in https://trunk.rdoproject.org/centos9-antelope/current-podified/
+   (e.g. https://trunk.rdoproject.org/centos9-antelope/current-podified/8f/cc/8fcc848d6c766b48142f0ffef9e34937/)
+3. Look into the `delorean.repo` file and search for `delorean-component-podified`, the file will point to the
+   tcib repo hash
+   (e.g. https://trunk.rdoproject.org/centos9-antelope/component/podified/7b/f4/7bf4dba1708c55fa9b3a0c929f18084c85bfe3d6_dbfdef11)
+
+You can also map the quay.io tag to a set of jobs that did the build via
+`https://trunk.rdoproject.org/api-centos9-antelope/api/civotes_agg_detail.html?ref_hash=<quay.io tag>`
+
 ## License
 
 * Free software: Apache license
