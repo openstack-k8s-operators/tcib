@@ -9,6 +9,5 @@ tcib_actions:
 - run: chmod 755 /usr/local/bin/kolla_extend_start && chmod 440 /etc/sudoers.d/cinder-volume-sudoers
 tcib_packages:
   common:
-  - python3-cinderlib
   - iscsi-initiator-utils
 tcib_user: cinder
