@@ -28,6 +28,5 @@ tcib_packages:
   - iputils
   - guestfs-tools
   - iperf3
-  - crudini
 
 tcib_user: tobiko
