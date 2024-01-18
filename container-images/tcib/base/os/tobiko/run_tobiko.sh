@@ -28,10 +28,12 @@ git clone https://opendev.org/x/tobiko
 pushd tobiko
 git checkout ${TOBIKO_VERSION}
 
-# obtain clouds.yaml and tobiko.conf from external_files directory
+# obtain clouds.yaml, id_ecdsa and tobiko.conf from external_files directory
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     mkdir -p $TOBIKO_DIR/.config/openstack
-    cp $TOBIKO_DIR/external_files/clouds.yaml $HOME/.config/openstack/
+    cp $TOBIKO_DIR/external_files/clouds.yaml $TOBIKO_DIR/.config/openstack/
+    mkdir -p $TOBIKO_DIR/.ssh
+    cp $TOBIKO_DIR/external_files/id_ecdsa* $TOBIKO_DIR/.ssh/
     cp $TOBIKO_DIR/external_files/tobiko.conf .
 fi
 
