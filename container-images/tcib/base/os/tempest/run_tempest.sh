@@ -239,7 +239,7 @@ function generate_test_results {
 
 export OS_CLOUD=default
 
-if [ ! -z ${USE_EXTERNAL_FILES} ]; then
+if [ ! -z ${USE_EXTERNAL_FILES} ] && [ ! -f $HOME/.config/openstack/clouds.yaml ]; then
     mkdir -p $HOME/.config/openstack
     cp ${TEMPEST_PATH}clouds.yaml $HOME/.config/openstack/clouds.yaml
 fi

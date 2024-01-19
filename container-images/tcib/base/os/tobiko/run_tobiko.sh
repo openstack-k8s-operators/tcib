@@ -1,12 +1,14 @@
 #!/bin/sh
 
+set -x
+
 TOBIKO_DIR=/var/lib/tobiko
 
 # assert mandatory variables have been set
 [ -z ${TOBIKO_TESTENV} ] && echo "TOBIKO_TESTENV not set" && exit 1
 
 # download Ubuntu minimal image used by the Tobiko scenario tests, if needed
-if [ ! -z ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} ]; then
+if [ ! -z ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} ] && [ ! -f ${TOBIKO_DIR}/.downloaded-images/ubuntu-minimal ]; then
     mkdir -p ${TOBIKO_DIR}/.downloaded-images
     curl ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} -o ${TOBIKO_DIR}/.downloaded-images/ubuntu-minimal
 fi
@@ -30,8 +32,10 @@ git checkout ${TOBIKO_VERSION}
 
 # obtain clouds.yaml, id_ecdsa and tobiko.conf from external_files directory
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
-    mkdir -p $TOBIKO_DIR/.config/openstack
-    cp $TOBIKO_DIR/external_files/clouds.yaml $TOBIKO_DIR/.config/openstack/
+    if [ ! -f $TOBIKO_DIR/.config/openstack/clouds.yaml ]; then
+        mkdir -p $TOBIKO_DIR/.config/openstack
+        cp $TOBIKO_DIR/external_files/clouds.yaml $TOBIKO_DIR/.config/openstack/
+    fi
     mkdir -p $TOBIKO_DIR/.ssh
     cp $TOBIKO_DIR/external_files/id_ecdsa* $TOBIKO_DIR/.ssh/
     cp $TOBIKO_DIR/external_files/tobiko.conf .
