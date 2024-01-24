@@ -8,6 +8,8 @@ tcib_actions:
 - run: cd /usr/local/manila-tempest-plugin; pip install -e .
 - run: cd /usr/local; git clone https://opendev.org/openstack/barbican-tempest-plugin.git
 - run: cd /usr/local/barbican-tempest-plugin; pip install -e .
+- run: cd /usr/local; git clone https://opendev.org/openstack/neutron-tempest-plugin.git
+- run: cd /usr/local/neutron-tempest-plugin; pip install -e .
 
 tcib_packages:
   common:
