@@ -16,11 +16,16 @@ tcib_packages:
   - python3-heatclient
   - python3-ironicclient
   - python3-manilaclient
-  - python3-observabilityclient
   - python3-octaviaclient
   - python3-aodhclient
   - bash-completion
   - iputils
+  #rhel: We can uncomment this when we have rhel specific pkgs
+  x86_64:
+  - python3-observabilityclient
+  el8:
+  - python3-observabilityclient
+
 tcib_user: cloud-admin
 tcib_workdir: /home/cloud-admin
 # If the container is run directly, start an interactive session
