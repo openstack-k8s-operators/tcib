@@ -17,7 +17,7 @@
 
 # "container_image_build" will search for and load any operating system variable file
 
-- name: "Ensure {{ tcib_path }} exists"
+- name: "Ensure {{ tcib_path }} exist"
   file:
     path: "{{ tcib_path }}"
     state: "directory"
