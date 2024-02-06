@@ -16,8 +16,7 @@ tcib_packages:
   - python3-heatclient
   - python3-ironicclient
   - python3-manilaclient
-  # TODO: Add it back once observability package is available
-  # - python3-observabilityclient
+  - python3-observabilityclient
   - python3-octaviaclient
   - python3-aodhclient
   - bash-completion
