@@ -25,4 +25,5 @@ tcib_packages:
   - swtpm-tools
   - targetcli
   - xfsprogs
+  - "libvirt-libs\<9.10.0"
 tcib_user: nova
