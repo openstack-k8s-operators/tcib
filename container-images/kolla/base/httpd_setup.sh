@@ -14,7 +14,8 @@ if [[ "$(whoami)" == 'root' ]]; then
     # on startup:
     #   SSLCertificateFile: file '/etc/pki/tls/certs/localhost.crt' does not exist or is empty
     # Work around this by generating certificates manually.
-    if [[ ! -e /etc/pki/tls/certs/localhost.crt ]]; then
+    if grep -q -E '^SSLCertificateFile \/etc\/pki\/tls\/certs\/localhost\.crt$' /etc/httpd/conf.d/ssl.conf && \
+            [[ ! -e /etc/pki/tls/certs/localhost.crt ]]; then
         /usr/libexec/httpd-ssl-gencerts
     fi
 fi
