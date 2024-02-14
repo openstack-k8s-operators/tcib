@@ -188,7 +188,7 @@ function run_git_tempest {
             popd
         fi
 
-        pip install ./$plugin_name
+        pip install -chttps://releases.openstack.org/constraints/upper/2023.1 ./$plugin_name
     done
 
     pushd $HOMEDIR
