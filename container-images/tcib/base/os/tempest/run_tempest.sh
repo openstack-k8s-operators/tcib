@@ -150,13 +150,17 @@ IFS=$OLD_IFS
 
 if [[ ! -z ${TEMPESTCONF_APPEND} ]]; then
     while IFS= read -r line; do
-        TEMPESTCONF_ARGS+="--append $line "
+        [[ ! -n "$line" ]] && continue
+        arr_line=( $line )
+        TEMPESTCONF_ARGS+="--append ${arr_line[0]}=${arr_line[1]} "
     done <<< "$TEMPESTCONF_APPEND"
 fi
 
 if [[ ! -z ${TEMPESTCONF_REMOVE} ]]; then
     while IFS= read -r line; do
-        TEMPESTCONF_ARGS+="--remove $line "
+        [[ ! -n "$line" ]] && continue
+        arr_line=( $line )
+        TEMPESTCONF_ARGS+="--remove ${arr_line[0]}=${arr_line[1]} "
     done <<< "$TEMPESTCONF_REMOVE"
 fi
 
