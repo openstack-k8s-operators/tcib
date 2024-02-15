@@ -28,5 +28,6 @@ tcib_packages:
   - iputils
   - guestfs-tools
   - iperf3
+  - tcpdump
 
 tcib_user: tobiko
