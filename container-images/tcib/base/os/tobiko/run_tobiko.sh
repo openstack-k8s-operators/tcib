@@ -16,6 +16,7 @@ fi
 # set default values for the required variables
 TOBIKO_VERSION=${TOBIKO_VERSION:-master}
 TOBIKO_PRIVATE_KEY_FILE=${TOBIKO_PRIVATE_KEY_FILE:-id_ecdsa}
+TOBIKO_OCP_CLIENT_TGZ=${TOBIKO_OCP_CLIENT_TGZ:-"https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz"}
 
 # export OS_CLOUD variable
 [ ! -z ${TOBIKO_OS_CLOUD} ] && export OS_CLOUD=${TOBIKO_OS_CLOUD} || export OS_CLOUD=default
@@ -40,6 +41,9 @@ if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     sudo chown tobiko:tobiko $TOBIKO_DIR/.ssh/${TOBIKO_PRIVATE_KEY_FILE}*
     cp $TOBIKO_DIR/external_files/tobiko.conf .
 fi
+
+# install openshift client
+which oc || curl -s -L ${TOBIKO_OCP_CLIENT_TGZ} | sudo tar -zxvf - -C /usr/local/bin/
 
 # run tobiko tests
 python3 -m tox -e ${TOBIKO_TESTENV}
