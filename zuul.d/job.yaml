@@ -5,6 +5,8 @@
     vars:
       cifmw_build_containers_registry_namespace: podified-antelope-centos9
       cifmw_build_containers_install_from_source: true
+      cifmw_repo_setup_output: "/etc/yum.repos.d"
+      cifmw_build_containers_repo_dir:  "{{ cifmw_repo_setup_output }}"
     irrelevant-files: &if
       - HACKING.rst
       - AUTHORS
