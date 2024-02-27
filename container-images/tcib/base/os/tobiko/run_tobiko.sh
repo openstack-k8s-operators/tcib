@@ -17,6 +17,7 @@ fi
 TOBIKO_VERSION=${TOBIKO_VERSION:-master}
 TOBIKO_PRIVATE_KEY_FILE=${TOBIKO_PRIVATE_KEY_FILE:-id_ecdsa}
 TOBIKO_OCP_CLIENT_TGZ=${TOBIKO_OCP_CLIENT_TGZ:-"https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz"}
+TOBIKO_KEYS_FOLDER=${TOBIKO_KEYS_FOLDER:-${TOBIKO_DIR}/external_files}
 
 # export OS_CLOUD variable
 [ ! -z ${TOBIKO_OS_CLOUD} ] && export OS_CLOUD=${TOBIKO_OS_CLOUD} || export OS_CLOUD=default
@@ -37,7 +38,7 @@ if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     mkdir -p $TOBIKO_DIR/.config/openstack
     cp $TOBIKO_DIR/external_files/clouds.yaml $TOBIKO_DIR/.config/openstack/
     mkdir -p $TOBIKO_DIR/.ssh
-    sudo cp $TOBIKO_DIR/external_files/${TOBIKO_PRIVATE_KEY_FILE}* $TOBIKO_DIR/.ssh/
+    sudo cp ${TOBIKO_KEYS_FOLDER}/${TOBIKO_PRIVATE_KEY_FILE}* $TOBIKO_DIR/.ssh/
     sudo chown tobiko:tobiko $TOBIKO_DIR/.ssh/${TOBIKO_PRIVATE_KEY_FILE}*
     cp $TOBIKO_DIR/external_files/tobiko.conf .
 fi
