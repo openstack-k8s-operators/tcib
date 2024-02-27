@@ -52,7 +52,6 @@ container_images:
 - imagename: quay.io/podified-master-centos9/openstack-nova-api:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-nova-compute:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-nova-conductor:current-podified
-- imagename: quay.io/podified-master-centos9/openstack-nova-libvirt:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-nova-novncproxy:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-nova-scheduler:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-octavia-api:current-podified
