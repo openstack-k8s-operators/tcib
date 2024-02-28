@@ -232,6 +232,16 @@ function run_rpm_tempest {
 function generate_test_results {
     pushd $TEMPEST_DIR
 
+    echo "Excluded tests"
+    if [ ! -z ${TEMPEST_EXCLUDE_LIST} ]; then
+        echo "$(cat ${TEMPEST_EXCLUDE_LIST})"
+    fi
+
+    echo "Included tests"
+    if [ ! -z ${TEMPEST_INCLUDE_LIST} ]; then
+        echo "$(cat ${TEMPEST_INCLUDE_LIST})"
+    fi
+
     echo "Generate subunit"
     stestr last --subunit > ${TEMPEST_PATH}testrepository.subunit || true
 
