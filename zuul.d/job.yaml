@@ -30,8 +30,16 @@
       cifmw_set_openstack_containers_registry: "{{ content_provider_registry_ip }}:5001"
       cifmw_set_openstack_containers_tag_from_md5: true
       cifmw_set_openstack_containers_dlrn_md5_path: "~/ci-framework-data/artifacts/repositories/delorean.repo.md5"
-      cifmw_tempest_registry: "{{ content_provider_registry_ip }}:5001"
-      cifmw_tempest_image_tag: "{{ cifmw_repo_setup_full_hash }}"
+      cifmw_run_test_role: test_operator
+      cifmw_run_tempest: true
+      cifmw_test_operator_tempest_registry: "{{ content_provider_registry_ip }}:5001"
+      cifmw_test_operator_tempest_image_tag: "{{ cifmw_repo_setup_full_hash }}"
+      cifmw_test_operator_tempest_include_list: |
+        tempest.scenario.test_network_basic_ops.TestNetworkBasicOps
+      cifmw_run_tobiko: true
+      cifmw_test_operator_tobiko_registry: "{{ content_provider_registry_ip }}:5001"
+      cifmw_test_operator_tobiko_image_tag: "{{ cifmw_repo_setup_full_hash }}"
+      cifmw_test_operator_tobiko_testenv: "sanity"
 
 - job:
     name: tcib-crc-podified-edpm-baremetal
