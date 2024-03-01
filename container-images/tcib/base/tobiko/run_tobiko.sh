@@ -18,6 +18,7 @@ TOBIKO_VERSION=${TOBIKO_VERSION:-master}
 TOBIKO_PRIVATE_KEY_FILE=${TOBIKO_PRIVATE_KEY_FILE:-id_ecdsa}
 TOBIKO_OCP_CLIENT_TGZ=${TOBIKO_OCP_CLIENT_TGZ:-"https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz"}
 TOBIKO_KEYS_FOLDER=${TOBIKO_KEYS_FOLDER:-${TOBIKO_DIR}/external_files}
+TOBIKO_LOGS_DIR_NAME=${TOBIKO_LOGS_DIR_NAME:-"tobiko"}
 
 # export OS_CLOUD variable
 [ ! -z ${TOBIKO_OS_CLOUD} ] && export OS_CLOUD=${TOBIKO_OS_CLOUD} || export OS_CLOUD=default
@@ -58,11 +59,11 @@ RETURN_VALUE=$?
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     echo "Copying logs file"
     LOG_DIR=${TOX_REPORT_DIR:-/var/lib/tobiko/tobiko/.tox/${TOBIKO_TESTENV}/log}
-    sudo cp -rf ${LOG_DIR} ${TOBIKO_DIR}/external_files/
+    sudo cp -rf ${LOG_DIR} ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
     if [ -f tobiko.conf ]; then
-        sudo cp tobiko.conf ${TOBIKO_DIR}/external_files/
+        sudo cp tobiko.conf ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
     elif [ -f /etc/tobiko/tobiko.conf ]; then
-        sudo cp /etc/tobiko/tobiko.conf ${TOBIKO_DIR}/external_files/
+        sudo cp /etc/tobiko/tobiko.conf ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
     fi
 fi
 
