@@ -3,26 +3,33 @@ tcib_actions:
 # this need to happen after installing nova-compute because the distgit does usermod to add libvirt/qemu groups
 - run: bash /usr/local/bin/uid_gid_manage nova
 - run: rm -f /etc/machine-id
-- run: if [ -f /usr/share/qemu/firmware/50-edk2-ovmf-cc.json ] && [ -f /usr/share/qemu/firmware/50-edk2-ovmf-amdsev.json ]; then jq ".mapping[\"nvram-template\"] = $(jq ".mapping[\"nvram-template\"]" /usr/share/qemu/firmware/50-edk2-ovmf-cc.json)" /usr/share/qemu/firmware/50-edk2-ovmf-amdsev.json > /tmp/50-edk2-ovmf-amdsev_.json && mv -f /tmp/50-edk2-ovmf-amdsev_.json /usr/share/qemu/firmware/50-edk2-ovmf-amdsev.json; fi
 tcib_packages:
   common:
-  - ceph-common
-  - device-mapper-multipath
+  # libguestfs is not need as nova only uses if for file injection
+  # which is not supported. parted is only used by 2 functions in nova
+  # neither of which are used called out side of tests.
+  # e2fsprogs and xfsprogs are needed for nova-compute to create ephemeral disks
   - e2fsprogs
-  - jq
+  - xfsprogs
+  # xorriso is needed for nova-compute to create the config drives
   - xorriso
+  # iscsi-initiator-utils, nfs-utils, targetcli and nvme-cli are by os-brick
   - iscsi-initiator-utils
   - nfs-utils
+  - targetcli
   - nvme-cli
-  - openssh-server
+  # device-mapper-multipath is needed for os-brick to support multipath
+  - device-mapper-multipath
+  # ceph-common is needed for nova-compute to use ceph as a backend
+  - ceph-common
+  # we need ssh client for live and cold migration
+  - openssh-clients
   - openstack-nova-compute
-  - openstack-nova-migration
+  # os-vif only needs openvswitch lib for the python bindings but that is not available
+  # as a separate package, so we need to install the whole openvswitch package...
+  # this pulls in a lot of dependencies, including dpdk... but we can't do anything about it
   - openvswitch
-  - parted
-  - python3-libguestfs
-  - python3-rtslib
   - swtpm
   - swtpm-tools
-  - targetcli
-  - xfsprogs
+
 tcib_user: nova
