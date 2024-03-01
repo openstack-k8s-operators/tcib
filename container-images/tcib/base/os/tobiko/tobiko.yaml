@@ -29,5 +29,6 @@ tcib_packages:
   - guestfs-tools
   - iperf3
   - tcpdump
+  - podman
 
 tcib_user: tobiko
