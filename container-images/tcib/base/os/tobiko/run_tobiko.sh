@@ -8,7 +8,7 @@ TOBIKO_DIR=/var/lib/tobiko
 [ -z "${TOBIKO_TESTENV}" ] && echo "TOBIKO_TESTENV not set" && exit 1
 
 # download Ubuntu minimal image used by the Tobiko scenario tests, if needed
-if [ ! -z ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} ]; then
+if [ ! -z ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} ] && [ ! -f ${TOBIKO_DIR}/.downloaded-images/ubuntu-minimal ]; then
     mkdir -p ${TOBIKO_DIR}/.downloaded-images
     curl ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} -o ${TOBIKO_DIR}/.downloaded-images/ubuntu-minimal
 fi
@@ -35,8 +35,10 @@ git checkout ${TOBIKO_VERSION}
 
 # obtain clouds.yaml, ssh private/public keys and tobiko.conf from external_files directory
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
-    mkdir -p $TOBIKO_DIR/.config/openstack
-    cp $TOBIKO_DIR/external_files/clouds.yaml $TOBIKO_DIR/.config/openstack/
+    if [ ! -f $TOBIKO_DIR/.config/openstack/clouds.yaml ]; then
+        mkdir -p $TOBIKO_DIR/.config/openstack
+        cp $TOBIKO_DIR/external_files/clouds.yaml $TOBIKO_DIR/.config/openstack/
+    fi
     mkdir -p $TOBIKO_DIR/.ssh
     sudo cp ${TOBIKO_KEYS_FOLDER}/${TOBIKO_PRIVATE_KEY_FILE}* $TOBIKO_DIR/.ssh/
     sudo chown tobiko:tobiko $TOBIKO_DIR/.ssh/${TOBIKO_PRIVATE_KEY_FILE}*
