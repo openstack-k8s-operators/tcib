@@ -234,12 +234,12 @@ function generate_test_results {
 
     echo "Excluded tests"
     if [ ! -z ${TEMPEST_EXCLUDE_LIST} ]; then
-        echo "$(cat ${TEMPEST_EXCLUDE_LIST})"
+        cat ${TEMPEST_EXCLUDE_LIST}
     fi
 
     echo "Included tests"
     if [ ! -z ${TEMPEST_INCLUDE_LIST} ]; then
-        echo "$(cat ${TEMPEST_INCLUDE_LIST})"
+        cat ${TEMPEST_INCLUDE_LIST}
     fi
 
     echo "Generate subunit"
