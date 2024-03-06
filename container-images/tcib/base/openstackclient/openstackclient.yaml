@@ -15,6 +15,7 @@ tcib_packages:
   - python3-glanceclient
   - python3-heatclient
   - python3-ironicclient
+  - python3-ironic-inspector-client
   - python3-manilaclient
   - python3-observabilityclient
   - python3-octaviaclient
