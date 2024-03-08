@@ -35,12 +35,16 @@ git checkout ${TOBIKO_VERSION}
 
 # obtain clouds.yaml, ssh private/public keys and tobiko.conf from external_files directory
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
-    mkdir -p $TOBIKO_DIR/.config/openstack
-    cp $TOBIKO_DIR/external_files/clouds.yaml $TOBIKO_DIR/.config/openstack/
-    mkdir -p $TOBIKO_DIR/.ssh
-    sudo cp ${TOBIKO_KEYS_FOLDER}/${TOBIKO_PRIVATE_KEY_FILE}* $TOBIKO_DIR/.ssh/
-    sudo chown tobiko:tobiko $TOBIKO_DIR/.ssh/${TOBIKO_PRIVATE_KEY_FILE}*
-    cp $TOBIKO_DIR/external_files/tobiko.conf .
+    if [ -f $TOBIKO_DIR/external_files/clouds.yaml ]; then
+        mkdir -p $TOBIKO_DIR/.config/openstack
+        cp $TOBIKO_DIR/external_files/clouds.yaml $TOBIKO_DIR/.config/openstack/
+    fi
+    if [ -f ${TOBIKO_KEYS_FOLDER}/${TOBIKO_PRIVATE_KEY_FILE} ]; then
+        mkdir -p $TOBIKO_DIR/.ssh
+        sudo cp ${TOBIKO_KEYS_FOLDER}/${TOBIKO_PRIVATE_KEY_FILE}* $TOBIKO_DIR/.ssh/
+        sudo chown tobiko:tobiko $TOBIKO_DIR/.ssh/${TOBIKO_PRIVATE_KEY_FILE}*
+    fi
+    [ -f $TOBIKO_DIR/external_files/tobiko.conf ] && cp $TOBIKO_DIR/external_files/tobiko.conf .
 fi
 
 # install openshift client
@@ -53,9 +57,13 @@ RETURN_VALUE=$?
 # copy logs to external_files
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     echo "Copying logs file"
-    LOG_DIR=${TOX_REPORT_DIR:-/var/lib/tobiko/tobiko/.tox/py3/log}
+    LOG_DIR=${TOX_REPORT_DIR:-/var/lib/tobiko/tobiko/.tox/${TOBIKO_TESTENV}/log}
     sudo cp -rf ${LOG_DIR} ${TOBIKO_DIR}/external_files/
-    sudo cp tobiko.conf ${TOBIKO_DIR}/external_files/
+    if [ -f tobiko.conf ]; then
+        sudo cp tobiko.conf ${TOBIKO_DIR}/external_files/
+    elif [ -f /etc/tobiko/tobiko.conf ]; then
+        sudo cp /etc/tobiko/tobiko.conf ${TOBIKO_DIR}/external_files/
+    fi
 fi
 
 exit ${RETURN_VALUE}
