@@ -7,4 +7,5 @@ tcib_packages:
   - mod_ssl
   - openstack-ironic-inspector
   - openstack-ironic-inspector-dnsmasq
+  - iproute
 tcib_user: ironic-inspector
