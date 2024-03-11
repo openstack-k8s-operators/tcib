@@ -9,7 +9,7 @@ tcib_actions:
 - run: mkdir -p /var/lib/tempest/external_files
 - run: chown -R tobiko.tobiko /var/lib/tobiko
 - run: python3 -m pip install --upgrade pip
-- run: python3 -m pip install 'tox>=3.8,<4.0'
+- run: python3 -m pip install --allowerasing 'tox==4.13'
 - run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/run_tobiko.sh /var/lib/tobiko/run_tobiko.sh
 - run: chmod +x /var/lib/tobiko/run_tobiko.sh
 
