@@ -4,13 +4,13 @@ tcib_envs:
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
-- run: cp /usr/share/tcib/container-images/tcib/base/tobiko/tobiko_sudoers /etc/sudoers.d/tobiko_sudoers
+- run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/tobiko_sudoers /etc/sudoers.d/tobiko_sudoers
 - run: chmod 440 /etc/sudoers.d/tobiko_sudoers
 - run: mkdir -p /var/lib/tempest/external_files
 - run: chown -R tobiko.tobiko /var/lib/tobiko
 - run: python3 -m pip install --upgrade pip
-- run: python3 -m pip install 'tox>=4.13'
-- run: cp /usr/share/tcib/container-images/tcib/base/tobiko/run_tobiko.sh /var/lib/tobiko/run_tobiko.sh
+- run: python3 -m pip install 'tox>=3.8,<4.0'
+- run: cp /usr/share/tcib/container-images/tcib/base/os/tobiko/run_tobiko.sh /var/lib/tobiko/run_tobiko.sh
 - run: chmod +x /var/lib/tobiko/run_tobiko.sh
 
 tcib_entrypoint: /var/lib/tobiko/run_tobiko.sh
