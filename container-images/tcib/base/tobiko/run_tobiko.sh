@@ -58,7 +58,8 @@ RETURN_VALUE=$?
 # copy logs to external_files
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     echo "Copying logs file"
-    LOG_DIR=${TOX_REPORT_DIR:-/var/lib/tobiko/tobiko/.tox/${TOBIKO_TESTENV}/log}
+    TOBIKO_TESTENV_ARR=($TOBIKO_TESTENV)
+    LOG_DIR=${TOX_REPORT_DIR:-/var/lib/tobiko/tobiko/.tox/${TOBIKO_TESTENV_ARR}/log}
     sudo cp -rf ${LOG_DIR} ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
     if [ -f tobiko.conf ]; then
         sudo cp tobiko.conf ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
