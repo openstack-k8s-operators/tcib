@@ -2,6 +2,7 @@
 - job:
     name: tcib-build-containers
     parent: cifmw-tcib-base
+    nodeset: centos-stream-9-vexxhost
     vars:
       cifmw_build_containers_registry_namespace: podified-antelope-centos9
       cifmw_build_containers_install_from_source: true
