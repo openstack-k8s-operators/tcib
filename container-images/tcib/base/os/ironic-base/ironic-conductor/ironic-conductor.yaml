@@ -9,7 +9,6 @@ tcib_packages:
   - ipmitool
   - openssh-clients
   - openstack-ironic-conductor
-  - openstack-ironic-staging-drivers
   - parted
   - psmisc
   - python3-dracclient
