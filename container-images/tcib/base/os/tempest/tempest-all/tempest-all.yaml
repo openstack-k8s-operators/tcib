@@ -1,6 +1,7 @@
 tcib_envs:
   USE_EXTERNAL_FILES: true
   TEMPESTCONF_OCTAVIA_TEST_SERVER_PATH: /usr/libexec/octavia-tempest-plugin-tests-httpd
+  TEMPEST_OCP_CLIENT_TGZ: https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf

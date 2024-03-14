@@ -259,6 +259,10 @@ function generate_test_results {
 
 export OS_CLOUD=default
 
+if [ ! -z ${TEMPEST_OCP_CLIENT_TGZ} ]; then
+    which oc || curl -s -L ${TEMPEST_OCP_CLIENT_TGZ} | sudo tar -zxvf - -C /usr/local/bin/
+fi
+
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     mkdir -p $HOME/.config/openstack
     cp ${TEMPEST_PATH}clouds.yaml $HOME/.config/openstack/clouds.yaml
