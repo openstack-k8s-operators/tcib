@@ -17,6 +17,7 @@ tcib_packages:
   - python3-sushy
   - python3-systemd
   - qemu-img
+  - syslinux-nonlinux
   - util-linux
   - xfsprogs
 tcib_user: ironic
