@@ -170,6 +170,27 @@ if [[ ! -z ${TEMPESTCONF_REMOVE} ]]; then
     done <<< "$TEMPESTCONF_REMOVE"
 fi
 
+if [[ ! -z ${TEMPEST_WHITEBOX_NEUTRON_IMAGE_URL} ]]; then
+
+    TEMPEST_WHITEBOX_NEUTRON_FLAVOR_ID=100
+
+    if [ ! -f "whitebox_neutron_tempest_plugin_image.qcow2" ]; then
+        sudo curl -o whitebox_neutron_tempest_plugin_image.qcow2 ${TEMPEST_WHITEBOX_NEUTRON_IMAGE_URL}
+    fi
+
+    if ! openstack image list --os-cloud default -f value -c Name | grep whitebox_neutron_tempest_plugin_image >/dev/null; then
+        openstack image create --os-cloud default --disk-format qcow2 --container-format bare\
+                --file whitebox_neutron_tempest_plugin_image.qcow2 whitebox_neutron_tempest_plugin_image
+    fi
+    TEMPEST_WHITEBOX_NEUTRON_IMAGE_ID=`openstack image list --os-cloud default --name whitebox_neutron_tempest_plugin_image -f value -c ID`
+
+    if ! openstack flavor list --os-cloud default -f value -c ID | grep ${TEMPEST_WHITEBOX_NEUTRON_FLAVOR_ID} >/dev/null; then
+      openstack flavor create --os-cloud default --public advanced-flavor --id ${TEMPEST_WHITEBOX_NEUTRON_FLAVOR_ID} --ram 1024 --disk 10 --vcpus 1
+    fi
+
+    TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_ref ${TEMPEST_WHITEBOX_NEUTRON_IMAGE_ID} "
+    TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_flavor_ref ${TEMPEST_WHITEBOX_NEUTRON_FLAVOR_ID}"
+fi
 
 if [ -n "$CONCURRENCY" ] && [ -z ${TEMPEST_CONCURRENCY} ]; then
     TEMPEST_ARGS+="--concurrency ${CONCURRENCY} "
