@@ -170,10 +170,38 @@ if [[ ! -z ${TEMPESTCONF_REMOVE} ]]; then
     done <<< "$TEMPESTCONF_REMOVE"
 fi
 
-
 if [ -n "$CONCURRENCY" ] && [ -z ${TEMPEST_CONCURRENCY} ]; then
     TEMPEST_ARGS+="--concurrency ${CONCURRENCY} "
 fi
+
+function generate_extra_tempest_configuration {
+    TEMPEST_NEUTRON_IMAGE=neutron_tempest_plugin_image
+    TEMPEST_NEUTRON_FLAVOR_ID=100
+
+    if [ ! -f "$TEMPEST_NEUTRON_IMAGE.qcow2" ]; then
+        sudo curl -o "$TEMPEST_NEUTRON_IMAGE.qcow2" ${TEMPEST_NEUTRON_IMAGE_URL}
+    fi
+
+    if ! openstack image list --os-cloud default -f value -c Name | grep ${TEMPEST_NEUTRON_IMAGE} >/dev/null; then
+        openstack image create \
+                --os-cloud default \
+                --disk-format qcow2 \
+                --container-format bare \
+                --file "$TEMPEST_NEUTRON_IMAGE.qcow2" ${TEMPEST_NEUTRON_IMAGE}
+    fi
+    TEMPEST_NEUTRON_IMAGE_ID=$(openstack image list --os-cloud default --name ${TEMPEST_NEUTRON_IMAGE} -f value -c ID)
+
+    if ! openstack flavor list --os-cloud default -f value -c ID | grep ${TEMPEST_NEUTRON_FLAVOR_ID} >/dev/null; then
+        openstack flavor create \
+                --os-cloud default \
+                --public advanced-flavor \
+                --id ${TEMPEST_NEUTRON_FLAVOR_ID} \
+                --ram 1024 --disk 10 --vcpus 1
+    fi
+
+    TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_ref ${TEMPEST_NEUTRON_IMAGE_ID} "
+    TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_flavor_ref ${TEMPEST_NEUTRON_FLAVOR_ID}"
+}
 
 function run_git_tempest {
     mkdir -p $TEMPEST_EXTERNAL_PLUGIN_DIR
@@ -258,6 +286,10 @@ function generate_test_results {
 }
 
 export OS_CLOUD=default
+
+if [[ ! -z ${TEMPEST_NEUTRON_IMAGE_URL} ]]; then
+    generate_extra_tempest_configuration
+fi
 
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     mkdir -p $HOME/.config/openstack
