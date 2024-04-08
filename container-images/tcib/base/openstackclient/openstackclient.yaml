@@ -22,6 +22,7 @@ tcib_packages:
   - python3-aodhclient
   - bash-completion
   - iputils
+  - ipmitool
 tcib_user: cloud-admin
 tcib_workdir: /home/cloud-admin
 # If the container is run directly, start an interactive session
