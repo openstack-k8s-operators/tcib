@@ -4,7 +4,3 @@
     github-check:
       jobs:
         - tcib-build-containers
-        - tcib-crc-podified-edpm-baremetal: &content_provider
-            dependencies:
-              - tcib-build-containers
-        - tcib-podified-multinode-edpm-deployment-crc: *content_provider
