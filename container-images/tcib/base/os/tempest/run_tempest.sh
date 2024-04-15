@@ -94,6 +94,17 @@ TEMPEST_DIR=$HOMEDIR/openshift
 CONCURRENCY="${CONCURRENCY:-}"
 TEMPESTCONF_ARGS=""
 TEMPEST_ARGS=""
+TEMPEST_DEBUG_MODE="${TEMPEST_DEBUG_MODE:-false}"
+
+function catch_error_if_debug {
+    echo "File run_tempest.sh has run into an error!"
+    sleep infinity
+}
+
+# Catch errors when in debug mode
+if [ ${TEMPEST_DEBUG_MODE} == true ]; then
+    trap catch_error_if_debug ERR
+fi
 
 [[ -z ${TEMPEST_WORKFLOW_STEP_DIR_NAME} ]] && TEMPEST_WORKFLOW_STEP_DIR_NAME="tempest"
 [[ ! -z ${USE_EXTERNAL_FILES} ]] && TEMPEST_PATH=$HOMEDIR/external_files/
@@ -383,7 +394,7 @@ if [[ ! -z ${TEMPEST_NEUTRON_IMAGE_URL} ]]; then
     generate_extra_tempest_configuration
 fi
 
-if [ ! -z ${USE_EXTERNAL_FILES} ]; then
+if [ ! -z ${USE_EXTERNAL_FILES} ] && [ -e ${TEMPEST_PATH}clouds.yaml ]; then
     mkdir -p $HOME/.config/openstack
     cp ${TEMPEST_PATH}clouds.yaml $HOME/.config/openstack/clouds.yaml
 fi
@@ -417,5 +428,10 @@ else
 fi
 
 generate_test_results
+
+# Keep pod in running state when in debug mode
+if [ ${TEMPEST_DEBUG_MODE} == true ]; then
+    sleep infinity
+fi
 
 exit ${RETURN_VALUE}
