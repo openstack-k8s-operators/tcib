@@ -7,16 +7,9 @@ TOBIKO_DIR=/var/lib/tobiko
 # assert mandatory variables have been set
 [ -z "${TOBIKO_TESTENV}" ] && echo "TOBIKO_TESTENV not set" && exit 1
 
-# download Ubuntu minimal image used by the Tobiko scenario tests, if needed
-if [ ! -z ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} ]; then
-    mkdir -p ${TOBIKO_DIR}/.downloaded-images
-    curl ${TOBIKO_UBUNTU_MINIMAL_IMAGE_URL} -o ${TOBIKO_DIR}/.downloaded-images/ubuntu-minimal
-fi
-
 # set default values for the required variables
 TOBIKO_VERSION=${TOBIKO_VERSION:-master}
 TOBIKO_PRIVATE_KEY_FILE=${TOBIKO_PRIVATE_KEY_FILE:-id_ecdsa}
-TOBIKO_OCP_CLIENT_TGZ=${TOBIKO_OCP_CLIENT_TGZ:-"https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz"}
 TOBIKO_KEYS_FOLDER=${TOBIKO_KEYS_FOLDER:-${TOBIKO_DIR}/external_files}
 TOBIKO_LOGS_DIR_NAME=${TOBIKO_LOGS_DIR_NAME:-"tobiko"}
 
@@ -30,8 +23,9 @@ TOBIKO_LOGS_DIR_NAME=${TOBIKO_LOGS_DIR_NAME:-"tobiko"}
 [ ! -z ${TOBIKO_NUM_PROCESSES} ] && export TOX_NUM_PROCESSES=${TOBIKO_NUM_PROCESSES}
 
 pushd ${TOBIKO_DIR}
-git clone https://opendev.org/x/tobiko
+sudo chown tobiko:tobiko -R tobiko
 pushd tobiko
+[ ! -z ${TOBIKO_UPDATE_REPO} ] && git pull --rebase
 git checkout ${TOBIKO_VERSION}
 
 # obtain clouds.yaml, ssh private/public keys and tobiko.conf from external_files directory
@@ -47,9 +41,6 @@ if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     fi
     [ -f $TOBIKO_DIR/external_files/tobiko.conf ] && cp $TOBIKO_DIR/external_files/tobiko.conf .
 fi
-
-# install openshift client
-which oc || curl -s -L ${TOBIKO_OCP_CLIENT_TGZ} | sudo tar -zxvf - -C /usr/local/bin/
 
 # run tobiko tests
 python3 -m tox -e ${TOBIKO_TESTENV}
