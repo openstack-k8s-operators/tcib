@@ -127,7 +127,7 @@ TEMPESTCONF_OVERRIDES="$(echo ${TEMPESTCONF_OVERRIDES} | tr '\n' ' ') identity.v
 # Octavia test-server is built as part of the installation of the python3-octavia-tests-tempest
 # https://github.com/rdo-packages/octavia-tempest-plugin-distgit/blob/rpm-master/python-octavia-tests-tempest.spec#L127
 if [[ ! -z ${TEMPESTCONF_OCTAVIA_TEST_SERVER_PATH} ]]; then
-    TEMPESTCONF_OVERRIDES+="load_balancer.test_server_path ${TEMPESTCONF_OCTAVIA_TEST_SERVER_PATH}"
+    TEMPESTCONF_OVERRIDES+="load_balancer.test_server_path ${TEMPESTCONF_OCTAVIA_TEST_SERVER_PATH} "
 fi
 
 # Tempest arguments
@@ -201,7 +201,7 @@ function generate_extra_tempest_configuration {
     fi
 
     TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_ref ${TEMPEST_NEUTRON_IMAGE_ID} "
-    TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_flavor_ref ${TEMPEST_NEUTRON_FLAVOR_ID}"
+    TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_flavor_ref ${TEMPEST_NEUTRON_FLAVOR_ID} "
 }
 
 function run_git_tempest {
