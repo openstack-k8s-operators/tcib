@@ -64,7 +64,6 @@ container_images:
 - imagename: quay.io/podified-master-centos9/openstack-ovn-sb-db-server:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-placement-api:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-rabbitmq:current-podified
-- imagename: quay.io/podified-master-centos9/openstack-redis:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-swift-account:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-swift-container:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-swift-object:current-podified
