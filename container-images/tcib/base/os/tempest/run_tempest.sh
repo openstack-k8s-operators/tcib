@@ -188,7 +188,7 @@ function generate_extra_tempest_configuration {
                 --os-cloud default \
                 --disk-format qcow2 \
                 --container-format bare \
-                --file "$TEMPEST_NEUTRON_IMAGE.qcow2" ${TEMPEST_NEUTRON_IMAGE}
+                --file "$TEMPEST_NEUTRON_IMAGE.qcow2" --public ${TEMPEST_NEUTRON_IMAGE}
     fi
     TEMPEST_NEUTRON_IMAGE_ID=$(openstack image list --os-cloud default --name ${TEMPEST_NEUTRON_IMAGE} -f value -c ID)
 
