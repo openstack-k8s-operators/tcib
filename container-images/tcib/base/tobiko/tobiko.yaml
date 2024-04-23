@@ -8,7 +8,7 @@ tcib_actions:
 - run: mkdir -p /var/lib/tempest/external_files
 - run: chown -R tobiko.tobiko /var/lib/tobiko
 - run: >-
-    if [ '{{ tcib_distro }}' == 'rhel' ];then
+    if [ '{{ tcib_distro }}' == 'redhat' ];then
     if [ -n "$(rpm -qa redhat-release)" ];then dnf -y remove python3-chardet; fi ; fi
 - run: >-
     curl -s -L
