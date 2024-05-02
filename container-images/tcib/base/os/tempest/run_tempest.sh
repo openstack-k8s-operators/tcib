@@ -179,11 +179,10 @@ function generate_extra_tempest_configuration {
     TEMPEST_NEUTRON_IMAGE=neutron_tempest_plugin_image
     TEMPEST_NEUTRON_FLAVOR_ID=100
 
-    if [ ! -f "$TEMPEST_NEUTRON_IMAGE.qcow2" ]; then
-        sudo curl -o "$TEMPEST_NEUTRON_IMAGE.qcow2" ${TEMPEST_NEUTRON_IMAGE_URL}
-    fi
-
     if ! openstack image list --os-cloud default -f value -c Name | grep ${TEMPEST_NEUTRON_IMAGE} >/dev/null; then
+        if [ ! -f "$TEMPEST_NEUTRON_IMAGE.qcow2" ]; then
+            sudo curl -o "$TEMPEST_NEUTRON_IMAGE.qcow2" ${TEMPEST_NEUTRON_IMAGE_URL}
+        fi
         openstack image create \
                 --os-cloud default \
                 --disk-format qcow2 \
