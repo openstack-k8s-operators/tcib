@@ -136,12 +136,40 @@ TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL="${TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL:-}"
 TEMPEST_EXTERNAL_PLUGIN_REFSPEC="${TEMPEST_EXTERNAL_PLUGIN_REFSPEC:-}"
 TEMPEST_EXTERNAL_PLUGIN_DIR=/var/lib/tempest/external-plugins
 
+TEMPEST_EXTRA_IMAGES_URL="${TEMPEST_EXTRA_IMAGES_URL:-}"
+TEMPEST_EXTRA_IMAGES_DISK_FORMAT="${TEMPEST_EXTRA_IMAGES_DISK_FORMAT:-}"
+TEMPEST_EXTRA_IMAGES_OS_CLOUD="${TEMPEST_EXTRA_IMAGES_OS_CLOUD:-}"
+TEMPEST_EXTRA_IMAGES_ID="${TEMPEST_EXTRA_IMAGES_ID:-}"
+TEMPEST_EXTRA_IMAGES_NAME="${TEMPEST_EXTRA_IMAGES_NAME:-}"
+TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT="${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT:-}"
+
+TEMPEST_EXTRA_IMAGES_FLAVOR_ID="${TEMPEST_EXTRA_IMAGES_FLAVOR_ID:-}"
+TEMPEST_EXTRA_IMAGES_FLAVOR_RAM="${TEMPEST_EXTRA_IMAGES_FLAVOR_RAM:-}"
+TEMPEST_EXTRA_IMAGES_FLAVOR_DISK="${TEMPEST_EXTRA_IMAGES_FLAVOR_DISK:-}"
+TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS="${TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS:-}"
+TEMPEST_EXTRA_IMAGES_FLAVOR_NAME="${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME:-}"
+TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD="${TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD:-}"
+
 # Convert comma separated lists to arrays
 OLD_IFS=$IFS
 IFS=","
 read -ra TEMPEST_EXTERNAL_PLUGIN_GIT_URL <<< $TEMPEST_EXTERNAL_PLUGIN_GIT_URL
 read -ra TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL <<< $TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL
 read -ra TEMPEST_EXTERNAL_PLUGIN_REFSPEC <<< $TEMPEST_EXTERNAL_PLUGIN_REFSPEC
+
+read -ra TEMPEST_EXTRA_IMAGES_URL <<< ${TEMPEST_EXTRA_IMAGES_URL:-}
+read -ra TEMPEST_EXTRA_IMAGES_DISK_FORMAT <<< $TEMPEST_EXTRA_IMAGES_DISK_FORMAT
+read -ra TEMPEST_EXTRA_IMAGES_OS_CLOUD <<< $TEMPEST_EXTRA_IMAGES_OS_CLOUD
+read -ra TEMPEST_EXTRA_IMAGES_ID <<< $TEMPEST_EXTRA_IMAGES_ID
+read -ra TEMPEST_EXTRA_IMAGES_NAME <<< $TEMPEST_EXTRA_IMAGES_NAME
+read -ra TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT <<< $TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT
+
+read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_ID <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_ID
+read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_RAM <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_RAM
+read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_DISK <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_DISK
+read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS
+read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_NAME <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_NAME
+read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD
 IFS=$OLD_IFS
 
 [[ ${TEMPEST_SMOKE} == true ]] && TEMPEST_ARGS+="--smoke "
@@ -175,6 +203,8 @@ if [ -n "$CONCURRENCY" ] && [ -z ${TEMPEST_CONCURRENCY} ]; then
     TEMPEST_ARGS+="--concurrency ${CONCURRENCY} "
 fi
 
+# NOTE(lpiwowar): TEMPEST_NEUTRON_IMAGE_URL is deprecated. This function
+# should be removed once everyone migrates to TEMPEST_EXTRA_IMAGES_NAME.
 function generate_extra_tempest_configuration {
     TEMPEST_NEUTRON_IMAGE=neutron_tempest_plugin_image
     TEMPEST_NEUTRON_FLAVOR_ID=100
@@ -201,6 +231,59 @@ function generate_extra_tempest_configuration {
 
     TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_ref ${TEMPEST_NEUTRON_IMAGE_ID} "
     TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_flavor_ref ${TEMPEST_NEUTRON_FLAVOR_ID} "
+}
+
+function upload_extra_images {
+    for image_index in "${!TEMPEST_EXTRA_IMAGES_NAME[@]}"; do
+        if ! openstack image show ${TEMPEST_EXTRA_IMAGES_NAME[image_index]}; then
+            image_create_params=()
+
+            [[ ! -f "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" ]] && \
+                sudo curl -o "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" "${TEMPEST_EXTRA_IMAGES_URL}"
+
+            [[ ${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]} != "-" ]] && \
+                image_create_params+=(--disk-format ${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]})
+
+            [[ ${TEMPEST_EXTRA_IMAGES_OS_CLOUD[image_index]} != "-" ]] && \
+                image_create_params+=(--os-cloud ${TEMPEST_EXTRA_IMAGES_OS_CLOUD[image_index]})
+
+            [[ ${TEMPEST_EXTRA_IMAGES_ID[image_index]} != "-" ]] && \
+                image_create_params+=(--id ${TEMPEST_EXTRA_IMAGES_ID[image_index]})
+
+            [[ ${TEMPEST_EXTRA_IMAGES_NAME[image_index]} != "-" ]] && \
+                image_create_params+=(--file ${TEMPEST_EXTRA_IMAGES_NAME[image_index]})
+
+            [[ ${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]} != "-" ]] && \
+                image_create_params+=(--container-format ${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]})
+
+            image_create_params+=(--public ${TEMPEST_EXTRA_IMAGES_NAME[image_index]})
+            openstack image create ${image_create_params[@]}
+        fi
+
+        if ! openstack flavor show ${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]}; then
+            flavor_create_params=()
+
+            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_ID[image_index]} != "-" ]] && \
+                flavor_create_params+=(--id ${TEMPEST_EXTRA_IMAGES_FLAVOR_ID[image_index]})
+
+            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_RAM[image_index]} != "-" ]] && \
+                flavor_create_params+=(--ram ${TEMPEST_EXTRA_IMAGES_FLAVOR_RAM[image_index]})
+
+            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_DISK[image_index]} != "-" ]] && \
+                flavor_create_params+=(--disk ${TEMPEST_EXTRA_IMAGES_FLAVOR_DISK[image_index]})
+
+            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS[image_index]} != "-" ]] && \
+                flavor_create_params+=(--vcpus ${TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS[image_index]})
+
+            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]} != "-" ]] && \
+                flavor_create_params+=(--public ${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]})
+
+            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD[image_index]} != "-" ]] && \
+                flavor_create_params+=(--os-cloud ${TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD[image_index]})
+
+            openstack flavor create ${flavor_create_params[@]}
+        fi
+    done
 }
 
 function run_git_tempest {
@@ -290,6 +373,12 @@ function generate_test_results {
 
 export OS_CLOUD=default
 
+if [[ ! ${#TEMPEST_EXTRA_IMAGES_NAME[@]} -eq 0 ]]; then
+    upload_extra_images
+fi
+
+# NOTE(lpiwowar): TEMPEST_NEUTRON_IMAGE_URL is deprecated. This if-statement
+# should be removed once everyone migrates to TEMPEST_EXTRA_IMAGES_NAME.
 if [[ ! -z ${TEMPEST_NEUTRON_IMAGE_URL} ]]; then
     generate_extra_tempest_configuration
 fi
