@@ -1,0 +1,40 @@
+tcib_envs:
+  USE_EXTERNAL_FILES: true
+tcib_actions:
+- run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
+- run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: python3 -m pip install --upgrade pip
+- run: pip install {{ tcib_packages.pip_packages | join(' ') }}
+- run: cp /usr/share/tcib/container-images/tcib/base/os/horizontest/horizontest_sudoers /etc/sudoers.d/horizontest_sudoers
+- run: chmod 440 /etc/sudoers.d/horizontest_sudoers
+- run: mkdir -p /var/lib/horizontest/external_files
+- run: chown -R horizontest.horizontest /var/lib/horizontest
+- run: >-
+    curl -s -L
+    https://github.com/mozilla/geckodriver/releases/download/v0.29.0/geckodriver-v0.29.0-linux64.tar.gz
+    | tar -zxvf - -C /usr/local/bin/
+- run: curl -OL http://download.cirros-cloud.net/0.6.2/cirros-0.6.2-x86_64-disk.img -o /var/lib/horizontest/cirros-0.6.2-x86_64-disk
+- run: cp /usr/share/tcib/container-images/tcib/base/os/horizontest/run_horizontest.sh /var/lib/horizontest/run_horizontest.sh
+- run: chmod +x /var/lib/horizontest/run_horizontest.sh
+
+tcib_entrypoint: /var/lib/horizontest/run_horizontest.sh
+
+tcib_packages:
+  common:
+  - git
+  - python3-pip
+  - xorg-x11-server-Xvfb
+  - firefox
+  pip_packages:
+  - pytest==7.3.2
+  - pytest-django
+  - pytest-html
+  - Django==2.2.28
+  - horizon
+  - selenium==3.141.0
+  - testtools
+  - xvfbwrapper
+  - junit2html
+  - urllib3==1.26.18
+
+tcib_user: horizontest
