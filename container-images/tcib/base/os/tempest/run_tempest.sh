@@ -173,7 +173,7 @@ read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_O
 IFS=$OLD_IFS
 
 [[ ${TEMPEST_SMOKE} == true ]] && TEMPEST_ARGS+="--smoke "
-[[ ${TEMPEST_PARALLEL:=true} == true ]] && TEMPEST_ARGS+="--parallel "
+[[ ${TEMPEST_PARALLEL} == true ]] && TEMPEST_ARGS+="--parallel "
 [[ ${TEMPEST_SERIAL} == true ]] && TEMPEST_ARGS+="--serial "
 
 [[ ! -z ${TEMPEST_INCLUDE_LIST} ]] && TEMPEST_ARGS+="--include-list ${TEMPEST_INCLUDE_LIST} "
