@@ -214,36 +214,6 @@ if [ -n "$CONCURRENCY" ] && [ -z ${TEMPEST_CONCURRENCY} ]; then
     TEMPEST_ARGS+="--concurrency ${CONCURRENCY} "
 fi
 
-# NOTE(lpiwowar): TEMPEST_NEUTRON_IMAGE_URL is deprecated. This function
-# should be removed once everyone migrates to TEMPEST_EXTRA_IMAGES_NAME.
-function generate_extra_tempest_configuration {
-    TEMPEST_NEUTRON_IMAGE=neutron_tempest_plugin_image
-    TEMPEST_NEUTRON_FLAVOR_ID=100
-
-    if ! openstack image list --os-cloud default -f value -c Name | grep ${TEMPEST_NEUTRON_IMAGE} >/dev/null; then
-        if [ ! -f "$TEMPEST_NEUTRON_IMAGE.qcow2" ]; then
-            sudo curl -o "$TEMPEST_NEUTRON_IMAGE.qcow2" ${TEMPEST_NEUTRON_IMAGE_URL}
-        fi
-        openstack image create \
-                --os-cloud default \
-                --disk-format qcow2 \
-                --container-format bare \
-                --file "$TEMPEST_NEUTRON_IMAGE.qcow2" --public ${TEMPEST_NEUTRON_IMAGE}
-    fi
-    TEMPEST_NEUTRON_IMAGE_ID=$(openstack image list --os-cloud default --name ${TEMPEST_NEUTRON_IMAGE} -f value -c ID)
-
-    if ! openstack flavor list --os-cloud default -f value -c ID | grep ${TEMPEST_NEUTRON_FLAVOR_ID} >/dev/null; then
-        openstack flavor create \
-                --os-cloud default \
-                --public advanced-flavor \
-                --id ${TEMPEST_NEUTRON_FLAVOR_ID} \
-                --ram 1024 --disk 10 --vcpus 1
-    fi
-
-    TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_ref ${TEMPEST_NEUTRON_IMAGE_ID} "
-    TEMPESTCONF_OVERRIDES+="neutron_plugin_options.advanced_image_flavor_ref ${TEMPEST_NEUTRON_FLAVOR_ID} "
-}
-
 function upload_extra_images {
     for image_index in "${!TEMPEST_EXTRA_IMAGES_NAME[@]}"; do
         if ! openstack image show ${TEMPEST_EXTRA_IMAGES_NAME[image_index]}; then
@@ -386,12 +356,6 @@ export OS_CLOUD=default
 
 if [[ ! ${#TEMPEST_EXTRA_IMAGES_NAME[@]} -eq 0 ]]; then
     upload_extra_images
-fi
-
-# NOTE(lpiwowar): TEMPEST_NEUTRON_IMAGE_URL is deprecated. This if-statement
-# should be removed once everyone migrates to TEMPEST_EXTRA_IMAGES_NAME.
-if [[ ! -z ${TEMPEST_NEUTRON_IMAGE_URL} ]]; then
-    generate_extra_tempest_configuration
 fi
 
 if [ ! -z ${USE_EXTERNAL_FILES} ] && [ -e ${TEMPEST_PATH}clouds.yaml ]; then
