@@ -238,7 +238,7 @@ function upload_extra_images {
                 image_create_params+=(--container-format ${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]})
 
             image_create_params+=(--public ${TEMPEST_EXTRA_IMAGES_NAME[image_index]})
-            openstack image create ${image_create_params[@]}
+            openstack image create --import ${image_create_params[@]}
         fi
 
         if ! openstack flavor show ${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]}; then
