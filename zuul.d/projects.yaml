@@ -3,8 +3,22 @@
     name: openstack-k8s-operators/tcib
     github-check:
       jobs:
-        - tcib-build-containers
-        - tcib-crc-podified-edpm-baremetal: &content_provider
-            dependencies:
-              - tcib-build-containers
-        - tcib-podified-multinode-edpm-deployment-crc: *content_provider
+        - openstack-meta-content-provider:
+            irrelevant-files: &if
+              - HACKING.rst
+              - AUTHORS
+              - .gitignore
+              - ^README.md$
+              - .*/*.md
+              - .ci-operator.yaml
+              - .pre-commit-config.yaml
+              - .pylintrc
+              - .stestr.conf
+              - .github/workflows
+              - .coveragerc
+              - LICENSE
+              - OWNERS*
+        - tcib-crc-podified-edpm-baremetal:
+            irrelevant-files: *if
+        - tcib-podified-multinode-edpm-deployment-crc:
+            irrelevant-files: *if
