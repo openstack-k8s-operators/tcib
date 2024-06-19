@@ -300,8 +300,8 @@ function run_git_tempest {
     tempest init openshift
     pushd $TEMPEST_DIR
 
-    discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES}
-    tempest run ${TEMPEST_ARGS}
+    discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
+    && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
 
     deactivate
@@ -319,8 +319,8 @@ function run_rpm_tempest {
     # Install additional plugins from .rpms plus their dependencies
     [ ${#TEMPEST_EXTRA_RPMS[@]} -ne 0 ] && sudo dnf install -y ${TEMPEST_EXTRA_RPMS[@]}
 
-    discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES}
-    tempest run ${TEMPEST_ARGS}
+    discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
+    && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
 
     popd
