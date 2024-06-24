@@ -1,0 +1,21 @@
+tcib_envs:
+  USE_EXTERNAL_FILES: true
+tcib_actions:
+- run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
+- run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: cp /usr/share/tcib/container-images/tcib/base/os/rally/rally_sudoers /etc/sudoers.d/rally_sudoers
+- run: chmod 440 /etc/sudoers.d/rally_sudoers
+- run: mkdir -p /var/lib/rally/external_files
+- run: mkdir -p /var/lib/kolla/config_files
+- run: chown -R rally.rally /var/lib/rally
+- run: touch /var/lib/kolla/config_files/config.json
+- run: cp /usr/share/tcib/container-images/tcib/base/os/rally/run_rally.sh /var/lib/rally/run_rally.sh
+- run: chmod +x /var/lib/rally/run_rally.sh
+
+tcib_entrypoint: /var/lib/rally/run_rally.sh
+
+tcib_packages:
+  common:
+  - openstack-rally
+
+tcib_user: rally
