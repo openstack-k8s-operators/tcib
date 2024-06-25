@@ -11,6 +11,7 @@ PROJECT_NAME=horizontest
 USER_NAME=horizontest
 PASSWORD=horizontest
 FLAVOR_NAME=m1.tiny
+GROUP_NAME=admins
 
 # assert mandatory variables have been set
 [[ -z ${ADMIN_USERNAME} ]] && echo "ADMIN_USERNAME not set" && exit 1
@@ -56,6 +57,11 @@ function create_custom_resources {
                 --public ${FLAVOR_NAME} \
                 --ram 512 --disk 1 --vcpus 1
     fi
+
+    if ! openstack group show --os-cloud default ${GROUP_NAME}; then
+        openstack group create \
+                --os-cloud default ${GROUP_NAME}
+    fi
 }
 
 function delete_custom_resources {
@@ -77,6 +83,11 @@ function delete_custom_resources {
     if openstack flavor show --os-cloud default ${FLAVOR_NAME}; then
         openstack flavor delete \
                 --os-cloud default ${FLAVOR_NAME}
+    fi
+
+    if openstack group show --os-cloud default ${GROUP_NAME}; then
+        openstack group delete \
+                --os-cloud default ${GROUP_NAME}
     fi
 }
 
