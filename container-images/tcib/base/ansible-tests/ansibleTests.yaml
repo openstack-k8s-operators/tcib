@@ -1,0 +1,24 @@
+tcib_envs:
+  USE_EXTERNAL_FILES: true
+tcib_actions:
+- run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
+- run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: pip3 install ansible==2.9.27 openstacksdk
+- run: cp /usr/share/tcib/container-images/tcib/base/ansible-tests/run_ansible.sh /var/lib/ansible/run_ansible.sh
+- run: chmod +x /var/lib/ansible/run_ansible.sh
+- run: chown -R ansible:ansible /var/lib/ansible
+
+tcib_entrypoint: /var/lib/ansible/run_ansible.sh
+
+tcib_packages:
+  common:
+  - gcc
+  - git
+  - python3
+  - python3-devel
+  - python3-pip
+  - python3-setuptools
+  - libffi-devel
+  - rsync
+
+tcib_user: ansible

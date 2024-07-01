@@ -70,6 +70,7 @@ _SUPPORTED_USERS['swift']='swift 42445 42445 /var/lib/swift kolla'
 _SUPPORTED_USERS['tempest']='tempest 42480 42480 /var/lib/tempest kolla'
 _SUPPORTED_USERS['tobiko']='tobiko 42495 42495 /var/lib/tobiko kolla'
 _SUPPORTED_USERS['tss']='tss 59 59'
+_SUPPORTED_USERS['ansible']='ansible 227 227 /var/lib/ansible kolla'
 
 for _USER_TO_CREATE in $_USERS_TO_CREATE; do
     # Initialize computed args
