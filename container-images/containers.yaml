@@ -32,6 +32,7 @@ container_images:
 - imagename: quay.io/podified-master-centos9/openstack-heat-api:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-heat-engine:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-horizon:current-podified
+- imagename: quay.io/podified-master-centos9/openstack-horizontest:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-ironic-api:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-ironic-conductor:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-ironic-inspector:current-podified
