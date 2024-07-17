@@ -6,12 +6,16 @@ HORIZONTEST_DIR=/var/lib/horizontest
 HORIZON_LOGS_DIR_NAME=${HORIZON_LOGS_DIR_NAME:-"horizon"}
 IMAGE_FILE="/var/lib/horizontest/cirros-0.6.2-x86_64-disk.img"
 IMAGE_FILE_NAME=cirros-0.6.2-x86_64-disk
+IMAGE_FILE_NAME_WITH_SIZE="cirros-0.6.2-x86_64-disk (20.4 MB)"
 IMAGE_URL=http://download.cirros-cloud.net/0.6.2/cirros-0.6.2-x86_64-disk.img
 PROJECT_NAME=horizontest
 USER_NAME=horizontest
 PASSWORD=horizontest
 FLAVOR_NAME=m1.tiny
 GROUP_NAME=admins
+SELENIUM_EXPLICIT_WAIT=180
+SELENIUM_PAGE_TIMEOUT=120
+SELENIUM_IMPLICIT_WAIT=30
 
 # assert mandatory variables have been set
 [[ -z ${ADMIN_USERNAME} ]] && echo "ADMIN_USERNAME not set" && exit 1
@@ -109,6 +113,12 @@ crudini --set horizon.conf identity password ${PASSWORD}
 crudini --set horizon.conf identity home_project ${PROJECT_NAME}
 crudini --set horizon.conf identity admin_username ${ADMIN_USERNAME}
 crudini --set horizon.conf identity admin_password ${ADMIN_PASSWORD}
+crudini --set horizon.conf image http_image ${IMAGE_URL}
+crudini --set horizon.conf image images_list ${IMAGE_FILE_NAME}
+crudini --set horizon.conf launch_instances image_name "${IMAGE_FILE_NAME_WITH_SIZE}"
+crudini --set horizon.conf selenium explicit_wait ${SELENIUM_EXPLICIT_WAIT}
+crudini --set horizon.conf selenium page_timeout ${SELENIUM_PAGE_TIMEOUT}
+crudini --set horizon.conf selenium implicit_wait ${SELENIUM_IMPLICIT_WAIT}
 popd
 
 # run horizon selenium tests
