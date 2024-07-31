@@ -39,7 +39,6 @@ _SUPPORTED_USERS['ceilometer']='ceilometer 42405 42405 /var/lib/ceilometer kolla
 _SUPPORTED_USERS['cinder']='cinder 42407 42407 /var/lib/cinder kolla'
 _SUPPORTED_USERS['cloud-admin']='cloud-admin 42401 42401 /home/cloud-admin kolla'
 _SUPPORTED_USERS['designate']='designate 42411 42411 /var/lib/designate kolla'
-_SUPPORTED_USERS['etcd']='etcd 42413 42413 /var/lib/etcd kolla'
 _SUPPORTED_USERS['frrvty']='frrvty 42483 42483'
 _SUPPORTED_USERS['frr']='frr 42484 42484 /var/run/frr kolla,frrvty'
 _SUPPORTED_USERS['glance']='glance 42415 42415 /var/lib/glance kolla'
