@@ -134,3 +134,5 @@ mkdir -p ${LOG_DIR}
 sudo cp -rf ${HORIZONTEST_DIR}/horizon/test_reports/* ${LOG_DIR}
 
 delete_custom_resources
+
+exit ${RETURN_VALUE}
