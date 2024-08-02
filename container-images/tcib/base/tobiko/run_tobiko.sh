@@ -3,6 +3,17 @@
 set -x
 
 TOBIKO_DIR=/var/lib/tobiko
+TOBIKO_DEBUG_MODE="${TOBIKO_DEBUG_MODE:-false}"
+
+function catch_error_if_debug {
+    echo "File run_tobiko.sh has run into an error!"
+    sleep infinity
+}
+
+# Catch errors when in debug mode
+if [ ${TOBIKO_DEBUG_MODE} == true ]; then
+    trap catch_error_if_debug ERR
+fi
 
 # assert mandatory variables have been set
 [ -z "${TOBIKO_TESTENV}" ] && echo "TOBIKO_TESTENV not set" && exit 1
@@ -57,6 +68,12 @@ if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     elif [ -f /etc/tobiko/tobiko.conf ]; then
         sudo cp /etc/tobiko/tobiko.conf ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
     fi
+fi
+
+
+# Keep pod in running state when in debug mode
+if [ ${TOBIKO_DEBUG_MODE} == true ]; then
+    sleep infinity
 fi
 
 exit ${RETURN_VALUE}
