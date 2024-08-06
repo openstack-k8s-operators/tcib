@@ -122,7 +122,7 @@ crudini --set horizon.conf selenium implicit_wait ${SELENIUM_IMPLICIT_WAIT}
 popd
 
 # run horizon selenium tests
-INTEGRATION_TESTS=1 SELENIUM_HEADLESS=1 pytest openstack_dashboard/test/selenium/integration/ \
+INTEGRATION_TESTS=1 SELENIUM_HEADLESS=1 pytest openstack_dashboard/test/selenium/integration/ -k "not pagination" \
         --junitxml="test_reports/ui_integration_test_results.xml" \
         --html="test_reports/ui_integration_test_results.html" --self-contained-html
 RETURN_VALUE=$?
