@@ -25,6 +25,11 @@ SELENIUM_IMPLICIT_WAIT=30
 [[ -z ${REPO_URL} ]] && REPO_URL="https://review.opendev.org/openstack/horizon"
 [[ -z ${HORIZON_REPO_BRANCH} ]] && HORIZON_REPO_BRANCH="master"
 
+#This function is temporarily added until tempest cleanup is implemented
+function clean_leftover_images {
+    openstack image list -c Name -f value --os-cloud default | xargs -I {} openstack image delete {} --os-cloud default
+}
+
 function create_custom_resources {
     if ! openstack image show --os-cloud default ${IMAGE_FILE_NAME} ; then
         if [ ! -f "$IMAGE_FILE" ]; then
@@ -102,6 +107,7 @@ pushd horizon
 git pull --rebase
 git checkout ${HORIZON_REPO_BRANCH}
 
+clean_leftover_images
 create_custom_resources
 pushd ${HORIZONTEST_DIR}/horizon/openstack_dashboard/test/integration_tests/
 
