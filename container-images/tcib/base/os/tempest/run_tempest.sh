@@ -95,6 +95,7 @@ CONCURRENCY="${CONCURRENCY:-}"
 TEMPESTCONF_ARGS=""
 TEMPEST_ARGS=""
 TEMPEST_DEBUG_MODE="${TEMPEST_DEBUG_MODE:-false}"
+TEMPEST_IMAGE_CREATE_TIMEOUT="${TEMPEST_IMAGE_CREATE_TIMEOUT:-300}"
 
 function catch_error_if_debug {
     echo "File run_tempest.sh has run into an error!"
@@ -217,6 +218,10 @@ if [ -n "$CONCURRENCY" ] && [ -z ${TEMPEST_CONCURRENCY} ]; then
     TEMPEST_ARGS+="--concurrency ${CONCURRENCY} "
 fi
 
+function get_image_status {
+    openstack image show $IMAGE_ID -f value -c status
+}
+
 function upload_extra_images {
     for image_index in "${!TEMPEST_EXTRA_IMAGES_NAME[@]}"; do
         if ! openstack image show ${TEMPEST_EXTRA_IMAGES_NAME[image_index]}; then
@@ -241,7 +246,19 @@ function upload_extra_images {
                 image_create_params+=(--container-format ${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]})
 
             image_create_params+=(--public ${TEMPEST_EXTRA_IMAGES_NAME[image_index]})
-            openstack image create --import ${image_create_params[@]}
+            IMAGE_ID=$(openstack image create --import ${image_create_params[@]} -f value -c id)
+            STATUS=$(get_image_status)
+            START_TIME=$(date +%s)
+            while [ "$STATUS" != "active" ]; do
+                echo "Current status: $STATUS. Waiting for image to become active..."
+                sleep 5
+                if [ $(($(date +%s) - $START_TIME)) -gt $TEMPEST_IMAGE_CREATE_TIMEOUT ]; then
+                    echo "Error: Image creation exceeded the timeout period of $TEMPEST_IMAGE_CREATE_TIMEOUT seconds."
+                    exit 1
+                fi
+                STATUS=$(get_image_status)
+            done
+            echo "Image $IMAGE_ID is now active."
         fi
 
         if ! openstack flavor show ${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]}; then
