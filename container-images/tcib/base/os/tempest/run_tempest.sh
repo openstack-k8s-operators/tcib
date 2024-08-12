@@ -369,6 +369,9 @@ function generate_test_results {
     echo "Generate html result"
     subunit2html ${TEMPEST_LOGS_DIR}testrepository.subunit ${TEMPEST_LOGS_DIR}stestr_results.html || true
 
+    # NOTE: Remove cirros image before copying of the logs.
+    rm ${TEMPEST_DIR}/etc/*.img
+
     echo Copying logs file
     cp -rf ${TEMPEST_DIR}/* ${TEMPEST_LOGS_DIR}
 
