@@ -23,7 +23,6 @@ container_images:
 - imagename: quay.io/podified-master-centos9/openstack-designate-producer:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-designate-sink:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-designate-worker:current-podified
-- imagename: quay.io/podified-master-centos9/openstack-etcd:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-frr:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-ovn-bgp-agent:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-glance-api:current-podified
