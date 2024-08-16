@@ -162,6 +162,7 @@ TEMPEST_EXTRA_IMAGES_FLAVOR_DISK="${TEMPEST_EXTRA_IMAGES_FLAVOR_DISK:-}"
 TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS="${TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS:-}"
 TEMPEST_EXTRA_IMAGES_FLAVOR_NAME="${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME:-}"
 TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD="${TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD:-}"
+TEMPEST_EXTRA_IMAGES_CREATE_TIMEOUT="${TEMPEST_EXTRA_IMAGES_CREATE_TIMEOUT:-}"
 
 # Convert comma separated lists to arrays
 OLD_IFS=$IFS
@@ -177,6 +178,7 @@ read -ra TEMPEST_EXTRA_IMAGES_OS_CLOUD <<< $TEMPEST_EXTRA_IMAGES_OS_CLOUD
 read -ra TEMPEST_EXTRA_IMAGES_ID <<< $TEMPEST_EXTRA_IMAGES_ID
 read -ra TEMPEST_EXTRA_IMAGES_NAME <<< $TEMPEST_EXTRA_IMAGES_NAME
 read -ra TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT <<< $TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT
+read -ra TEMPEST_EXTRA_IMAGES_CREATE_TIMEOUT <<< $TEMPEST_EXTRA_IMAGES_CREATE_TIMEOUT
 
 read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_ID <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_ID
 read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_RAM <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_RAM
@@ -241,7 +243,19 @@ function upload_extra_images {
                 image_create_params+=(--container-format ${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]})
 
             image_create_params+=(--public ${TEMPEST_EXTRA_IMAGES_NAME[image_index]})
-            openstack image create --import ${image_create_params[@]}
+            IMAGE_ID=$(openstack image create --import ${image_create_params[@]} -f value -c id)
+            STATUS=$(get_image_status)
+            START_TIME=$(date +%s)
+            while [ "$STATUS" != "active" ]; do
+                echo "Current status: $STATUS. Waiting for image to become active..."
+                sleep 5
+                if [ $(($(date +%s) - $START_TIME)) -gt ${TEMPEST_EXTRA_IMAGES_CREATE_TIMEOUT[image_index]} ]; then
+                    echo "Error: Image creation exceeded the timeout period of ${TEMPEST_EXTRA_IMAGES_CREATE_TIMEOUT[image_index]} seconds."
+                    exit 1
+                fi
+                STATUS=$(get_image_status)
+            done
+            echo "Image $IMAGE_ID is now active."
         fi
 
         if ! openstack flavor show ${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]}; then
