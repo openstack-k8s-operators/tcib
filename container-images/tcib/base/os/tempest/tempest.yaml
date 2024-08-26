@@ -17,7 +17,8 @@ tcib_entrypoint: /var/lib/tempest/run_tempest.sh
 tcib_packages:
   common:
   - iputils
-  - openstack-tempest
+  - https://ykarel.fedorapeople.org/testrpms/python3-tempest-39.0.0-18.0.20240717114716.5b9b80e.el9osttrunk.noarch.rpm
+  - https://ykarel.fedorapeople.org/testrpms/openstack-tempest-39.0.0-18.0.20240717114716.5b9b80e.el9osttrunk.noarch.rpm
   - subunit-filters
   - python3-subunit
   - qemu-img
