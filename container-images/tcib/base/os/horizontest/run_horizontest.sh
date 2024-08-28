@@ -33,7 +33,7 @@ function clean_leftover_images {
 function create_custom_resources {
     if ! openstack image show --os-cloud default ${IMAGE_FILE_NAME} ; then
         if [ ! -f "$IMAGE_FILE" ]; then
-            sudo curl -o "$IMAGE_FILE" -OL ${IMAGE_URL}
+            curl -o "$IMAGE_FILE" -OL ${IMAGE_URL}
         fi
         openstack image create \
                 --os-cloud default \
@@ -102,7 +102,7 @@ function delete_custom_resources {
 
 pushd ${HORIZONTEST_DIR}
 git clone ${REPO_URL} ${HORIZONTEST_DIR}/horizon
-sudo chown -R horizontest:horizontest horizon
+chown -R horizontest:horizontest horizon
 pushd horizon
 git pull --rebase
 git checkout ${HORIZON_REPO_BRANCH}
@@ -137,7 +137,7 @@ RETURN_VALUE=$?
 echo "Copying logs file"
 LOG_DIR=${HORIZONTEST_DIR}/external_files/${HORIZON_LOGS_DIR_NAME}/
 mkdir -p ${LOG_DIR}
-sudo cp -rf ${HORIZONTEST_DIR}/horizon/test_reports/* ${LOG_DIR}
+cp -rf ${HORIZONTEST_DIR}/horizon/test_reports/* ${LOG_DIR}
 
 delete_custom_resources
 
