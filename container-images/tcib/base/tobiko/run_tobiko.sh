@@ -34,7 +34,7 @@ TOBIKO_LOGS_DIR_NAME=${TOBIKO_LOGS_DIR_NAME:-"tobiko"}
 [ ! -z ${TOBIKO_NUM_PROCESSES} ] && export TOX_NUM_PROCESSES=${TOBIKO_NUM_PROCESSES}
 
 pushd ${TOBIKO_DIR}
-sudo chown tobiko:tobiko -R tobiko
+chown tobiko:tobiko -R tobiko
 pushd tobiko
 [ ! -z ${TOBIKO_UPDATE_REPO} ] && git pull --rebase
 git checkout ${TOBIKO_VERSION}
@@ -47,8 +47,8 @@ if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     fi
     if [ -f ${TOBIKO_KEYS_FOLDER}/${TOBIKO_PRIVATE_KEY_FILE} ]; then
         mkdir -p $TOBIKO_DIR/.ssh
-        sudo cp ${TOBIKO_KEYS_FOLDER}/${TOBIKO_PRIVATE_KEY_FILE}* $TOBIKO_DIR/.ssh/
-        sudo chown tobiko:tobiko $TOBIKO_DIR/.ssh/${TOBIKO_PRIVATE_KEY_FILE}*
+        cp ${TOBIKO_KEYS_FOLDER}/${TOBIKO_PRIVATE_KEY_FILE}* $TOBIKO_DIR/.ssh/
+        chown tobiko:tobiko $TOBIKO_DIR/.ssh/${TOBIKO_PRIVATE_KEY_FILE}*
     fi
     [ -f $TOBIKO_DIR/external_files/tobiko.conf ] && cp $TOBIKO_DIR/external_files/tobiko.conf .
 fi
@@ -62,11 +62,11 @@ if [ ! -z ${USE_EXTERNAL_FILES} ]; then
     echo "Copying logs file"
     TOBIKO_TESTENV_ARR=($TOBIKO_TESTENV)
     LOG_DIR=${TOX_REPORT_DIR:-/var/lib/tobiko/tobiko/.tox/${TOBIKO_TESTENV_ARR}/log}
-    sudo cp -rf ${LOG_DIR} ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
+    cp -rf ${LOG_DIR} ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
     if [ -f tobiko.conf ]; then
-        sudo cp tobiko.conf ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
+        cp tobiko.conf ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
     elif [ -f /etc/tobiko/tobiko.conf ]; then
-        sudo cp /etc/tobiko/tobiko.conf ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
+        cp /etc/tobiko/tobiko.conf ${TOBIKO_DIR}/external_files/${TOBIKO_LOGS_DIR_NAME}/
     fi
 fi
 

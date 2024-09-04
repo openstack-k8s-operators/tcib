@@ -229,7 +229,7 @@ function upload_extra_images {
             image_create_params=()
 
             [[ ! -f "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" ]] && \
-                sudo curl -o "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" "${TEMPEST_EXTRA_IMAGES_URL[image_index]}"
+                curl -o "${HOMEDIR}/${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" "${TEMPEST_EXTRA_IMAGES_URL[image_index]}"
 
             [[ ${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]} != "-" ]] && \
                 image_create_params+=(--disk-format ${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]})
@@ -241,7 +241,7 @@ function upload_extra_images {
                 image_create_params+=(--id ${TEMPEST_EXTRA_IMAGES_ID[image_index]})
 
             [[ ${TEMPEST_EXTRA_IMAGES_NAME[image_index]} != "-" ]] && \
-                image_create_params+=(--file ${TEMPEST_EXTRA_IMAGES_NAME[image_index]})
+                image_create_params+=(--file "${HOMEDIR}/${TEMPEST_EXTRA_IMAGES_NAME[image_index]}")
 
             [[ ${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]} != "-" ]] && \
                 image_create_params+=(--container-format ${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]})
@@ -410,9 +410,9 @@ fi
 if [ -f ${HOMEDIR}/id_ecdsa ]; then
     mkdir -p ${HOMEDIR}/.ssh
     cp ${HOMEDIR}/id_ecdsa ${HOMEDIR}/.ssh/id_ecdsa
-    sudo chmod 700 ${HOMEDIR}/.ssh
-    sudo chmod 600 ${HOMEDIR}/.ssh/id_ecdsa
-    sudo chown -R tempest:tempest ${HOMEDIR}/.ssh
+    chmod 700 ${HOMEDIR}/.ssh
+    chmod 600 ${HOMEDIR}/.ssh/id_ecdsa
+    chown -R tempest:tempest ${HOMEDIR}/.ssh
 fi
 
 if [ -z $TEMPEST_EXTERNAL_PLUGIN_GIT_URL ]; then
