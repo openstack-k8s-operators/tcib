@@ -318,7 +318,7 @@ function run_git_tempest {
     tempest init openshift
     pushd $TEMPEST_DIR
 
-    discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
+    eval discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
 
@@ -340,7 +340,7 @@ function run_rpm_tempest {
     # List Tempest packages
     rpm -qa | grep tempest
 
-    discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
+    eval discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
 
