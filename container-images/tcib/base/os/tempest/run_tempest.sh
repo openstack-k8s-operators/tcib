@@ -288,6 +288,16 @@ function upload_extra_images {
     done
 }
 
+
+# This function ensures all arguments are handled properly:
+# - Embedded quotes are preserved, e.g. "Some string"
+# - Special bash characters don't need to be escaped, e.g. cubswin:)
+function discover_tempest_config {
+    cat <<EOF | xargs discover-tempest-config
+$*
+EOF
+}
+
 function run_git_tempest {
     mkdir -p $TEMPEST_EXTERNAL_PLUGIN_DIR
     pushd $TEMPEST_EXTERNAL_PLUGIN_DIR
@@ -318,7 +328,7 @@ function run_git_tempest {
     tempest init openshift
     pushd $TEMPEST_DIR
 
-    eval discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
+    discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
 
@@ -340,7 +350,7 @@ function run_rpm_tempest {
     # List Tempest packages
     rpm -qa | grep tempest
 
-    eval discover-tempest-config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
+    discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
 
