@@ -364,14 +364,10 @@ function generate_test_results {
     TEMPEST_LOGS_DIR=${TEMPEST_PATH}${TEMPEST_WORKFLOW_STEP_DIR_NAME}/
     mkdir -p ${TEMPEST_LOGS_DIR}
 
-    echo "Generate subunit"
-    stestr last --subunit > ${TEMPEST_LOGS_DIR}testrepository.subunit || true
-
-    echo "Generate subunit xml file"
-    subunit2junitxml ${TEMPEST_LOGS_DIR}testrepository.subunit > ${TEMPEST_LOGS_DIR}tempest_results.xml || true
-
-    echo "Generate html result"
-    subunit2html ${TEMPEST_LOGS_DIR}testrepository.subunit ${TEMPEST_LOGS_DIR}stestr_results.html || true
+    echo "Generate subunit, then xml and html results"
+    stestr last --subunit > ${TEMPEST_LOGS_DIR}testrepository.subunit \
+    && (subunit2junitxml ${TEMPEST_LOGS_DIR}testrepository.subunit > ${TEMPEST_LOGS_DIR}tempest_results.xml || true) \
+    && subunit2html ${TEMPEST_LOGS_DIR}testrepository.subunit ${TEMPEST_LOGS_DIR}stestr_results.html || true
 
     # NOTE: Remove cirros image before copying of the logs.
     rm ${TEMPEST_DIR}/etc/*.img
