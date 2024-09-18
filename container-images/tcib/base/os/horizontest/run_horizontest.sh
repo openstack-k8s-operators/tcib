@@ -16,6 +16,7 @@ GROUP_NAME=admins
 SELENIUM_EXPLICIT_WAIT=180
 SELENIUM_PAGE_TIMEOUT=120
 SELENIUM_IMPLICIT_WAIT=30
+HORIZONTEST_DEBUG_MODE="${HORIZONTEST_DEBUG_MODE:-false}"
 
 # assert mandatory variables have been set
 [[ -z ${ADMIN_USERNAME} ]] && echo "ADMIN_USERNAME not set" && exit 1
@@ -24,6 +25,16 @@ SELENIUM_IMPLICIT_WAIT=30
 [[ -z ${AUTH_URL} ]] && echo "AUTH_URL not set" && exit 1
 [[ -z ${REPO_URL} ]] && REPO_URL="https://review.opendev.org/openstack/horizon"
 [[ -z ${HORIZON_REPO_BRANCH} ]] && HORIZON_REPO_BRANCH="master"
+
+function catch_error_if_debug {
+    echo "File run_horizontest.sh has run into an error!"
+    sleep infinity
+}
+
+# Catch errors when in debug mode
+if [ ${HORIZONTEST_DEBUG_MODE} == true ]; then
+    trap catch_error_if_debug ERR
+fi
 
 #This function is temporarily added until tempest cleanup is implemented
 function clean_leftover_images {
@@ -140,5 +151,10 @@ mkdir -p ${LOG_DIR}
 cp -rf ${HORIZONTEST_DIR}/horizon/test_reports/* ${LOG_DIR}
 
 delete_custom_resources
+
+# Keep pod in running state when in debug mode
+if [ ${HORIZONTEST_DEBUG_MODE} == true ]; then
+    sleep infinity
+fi
 
 exit ${RETURN_VALUE}
