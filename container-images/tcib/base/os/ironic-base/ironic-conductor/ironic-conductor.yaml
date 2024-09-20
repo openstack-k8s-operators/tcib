@@ -2,22 +2,13 @@ tcib_actions:
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 tcib_packages:
   common:
-  - xorriso
-  - dosfstools
   - e2fsprogs
   - gdisk
-  - ipmitool
   - openssh-clients
   - openstack-ironic-conductor
   - parted
   - psmisc
-  - python3-dracclient
-  - python3-proliantutils
-  - python3-scciclient
-  - python3-sushy
   - python3-systemd
-  - qemu-img
-  - syslinux-nonlinux
   - util-linux
   - xfsprogs
 tcib_user: ironic
