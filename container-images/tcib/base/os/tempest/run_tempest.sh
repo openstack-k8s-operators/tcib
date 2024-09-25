@@ -95,6 +95,7 @@ CONCURRENCY="${CONCURRENCY:-}"
 TEMPESTCONF_ARGS=""
 TEMPEST_ARGS=""
 TEMPEST_DEBUG_MODE="${TEMPEST_DEBUG_MODE:-false}"
+TEMPEST_CLEANUP="${TEMPEST_CLEANUP:-false}"
 
 function catch_error_if_debug {
     echo "File run_tempest.sh has run into an error!"
@@ -328,9 +329,27 @@ function run_git_tempest {
     tempest init openshift
     pushd $TEMPEST_DIR
 
+    # We're running cleanup only under certain circumstances
+    if [[ ${TEMPEST_CLEANUP} == true ]]; then
+        # generate a simple tempest.conf so that we can run --init-saved-state
+        discover-tempest-config
+        # let's remove the images that discover-tempest-config creates by default
+        # so that the're not part of the saved_state.json and can be deleted
+        # by tempest cleanup later
+        openstack image list -c Name -f value | grep cirros | xargs -I {} openstack image delete {}
+        tempest cleanup --init-saved-state
+    fi
+
+    upload_extra_images
+
     discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
+
+    # Run tempest cleanup to delete any leftover resources when not in debug mode
+    if [[ ${TEMPEST_CLEANUP} == true ]]; then
+        tempest cleanup
+    fi
 
     deactivate
 
@@ -350,9 +369,27 @@ function run_rpm_tempest {
     # List Tempest packages
     rpm -qa | grep tempest
 
+    # We're running cleanup only under certain circumstances
+    if [[ ${TEMPEST_CLEANUP} == true ]]; then
+        # generate a simple tempest.conf so that we can run --init-saved-state
+        discover-tempest-config
+        # let's remove the images that discover-tempest-config creates by default
+        # so that the're not part of the saved_state.json and can be deleted
+        # by tempest cleanup later
+        openstack image list -c Name -f value | grep cirros | xargs -I {} openstack image delete {}
+        tempest cleanup --init-saved-state
+    fi
+
+    upload_extra_images
+
     discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
+
+    # Run tempest cleanup to delete any leftover resources when not in debug mode
+    if [[ ${TEMPEST_CLEANUP} == true ]]; then
+        tempest cleanup
+    fi
 
     popd
     popd
@@ -389,10 +426,6 @@ function generate_test_results {
 }
 
 export OS_CLOUD=default
-
-if [[ ! ${#TEMPEST_EXTRA_IMAGES_NAME[@]} -eq 0 ]]; then
-    upload_extra_images
-fi
 
 if [ ! -z ${USE_EXTERNAL_FILES} ] && [ -e ${TEMPEST_PATH}clouds.yaml ]; then
     mkdir -p $HOME/.config/openstack
