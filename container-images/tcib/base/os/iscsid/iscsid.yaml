@@ -8,3 +8,4 @@ tcib_packages:
   - iscsi-initiator-utils
   - python3-rtslib
   - targetcli
+  - socat
