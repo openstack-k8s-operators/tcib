@@ -33,3 +33,4 @@ tcib_packages:
   - openstack-manila-ui
   - openstack-octavia-ui
   - openstack-designate-ui
+  - openstack-watcher-ui
