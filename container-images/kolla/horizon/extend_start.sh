@@ -80,6 +80,18 @@ function config_octavia_dashboard {
         "${SITE_PACKAGES}/openstack_dashboard/local/enabled/_1482_project_load_balancer_panel.py"
 }
 
+function config_watcher_dashboard {
+    for file in ${SITE_PACKAGES}/watcher_dashboard/local/enabled/_*[^__].py; do
+        config_dashboard "${ENABLE_WATCHER}" \
+            "${SITE_PACKAGES}/watcher_dashboard/local/enabled/${file##*/}" \
+            "${SITE_PACKAGES}/openstack_dashboard/local/enabled/${file##*/}"
+    done
+
+    config_dashboard "${ENABLE_WATCHER}" \
+        "${SITE_PACKAGES}/watcher_dashboard/conf/watcher_policy.json" \
+        "/etc/openstack-dashboard/watcher_policy.json"
+}
+
 # Regenerate the compressed javascript and css if any configuration files have
 # changed.  Use a static modification date when generating the tarball
 # so that we only trigger on content changes.
@@ -105,6 +117,7 @@ config_heat_dashboard
 config_ironic_dashboard
 config_manila_ui
 config_octavia_dashboard
+config_watcher_dashboard
 
 if settings_changed; then
     ${MANAGE_PY} collectstatic --noinput --clear
