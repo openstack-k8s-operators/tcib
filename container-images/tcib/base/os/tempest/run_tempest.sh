@@ -416,8 +416,8 @@ function generate_test_results {
     && (subunit2junitxml ${TEMPEST_LOGS_DIR}testrepository.subunit > ${TEMPEST_LOGS_DIR}tempest_results.xml || true) \
     && subunit2html ${TEMPEST_LOGS_DIR}testrepository.subunit ${TEMPEST_LOGS_DIR}stestr_results.html || true
 
-    # NOTE: Remove cirros image before copying of the logs.
-    rm ${TEMPEST_DIR}/etc/*.img
+    # NOTE: Remove images before copying of the logs.
+    rm ${TEMPEST_DIR}/etc/*.{img,qcow2}
 
     echo Copying logs file
     cp -rf ${TEMPEST_DIR}/* ${TEMPEST_LOGS_DIR}
