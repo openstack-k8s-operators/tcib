@@ -12,3 +12,5 @@ tcib_packages:
   - grub2-efi-x64
   - shim
   - iproute
+  - dosfstools
+  - mtools
