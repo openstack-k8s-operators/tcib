@@ -12,7 +12,6 @@ tcib_packages:
   - openstack-ironic-conductor
   - parted
   - psmisc
-  - python3-dracclient
   - python3-proliantutils
   - python3-scciclient
   - python3-sushy
