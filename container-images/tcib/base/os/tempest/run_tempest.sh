@@ -88,6 +88,8 @@
 
 set -x
 
+echo "foobar"
+
 HOMEDIR=/var/lib/tempest
 TEMPEST_PATH=$HOMEDIR/
 TEMPEST_DIR=$HOMEDIR/openshift
