@@ -331,8 +331,14 @@ function run_git_tempest {
 
     # We're running cleanup only under certain circumstances
     if [[ ${TEMPEST_CLEANUP} == true ]]; then
+        # discover-tempest-config needs 2 flavors it can't run without. When ran without "--create"
+        # param, it can't create the flavors itself and fails.
+        # Let's create 2 flavors and delete them afterwards to leave the system intact.
+        openstack flavor create --ram 128 --disk 1 --ephemeral 0 --vcpus 1 tempestconf_small
+        openstack flavor create --ram 192 --disk 1 --ephemeral 0 --vcpus 1 tempestconf_medium
         # generate a simple tempest.conf so that we can run --init-saved-state
         discover-tempest-config
+        openstack flavor delete tempestconf_small tempestconf_medium
         # let's remove the images that discover-tempest-config creates by default
         # so that the're not part of the saved_state.json and can be deleted
         # by tempest cleanup later
@@ -371,8 +377,14 @@ function run_rpm_tempest {
 
     # We're running cleanup only under certain circumstances
     if [[ ${TEMPEST_CLEANUP} == true ]]; then
+        # discover-tempest-config needs 2 flavors it can't run without. When ran without "--create"
+        # param, it can't create the flavors itself and fails.
+        # Let's create 2 flavors and delete them afterwards to leave the system intact.
+        openstack flavor create --ram 128 --disk 1 --ephemeral 0 --vcpus 1 tempestconf_small
+        openstack flavor create --ram 192 --disk 1 --ephemeral 0 --vcpus 1 tempestconf_medium
         # generate a simple tempest.conf so that we can run --init-saved-state
         discover-tempest-config
+        openstack flavor delete tempestconf_small tempestconf_medium
         # let's remove the images that discover-tempest-config creates by default
         # so that the're not part of the saved_state.json and can be deleted
         # by tempest cleanup later
