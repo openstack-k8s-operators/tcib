@@ -1,0 +1,12 @@
+network:
+  version: 2
+  vlans:
+    vlan101:
+      dhcp4: true
+      dhcp4-overrides:
+        use-routes: false
+      dhcp6: true
+      dhcp6-overrides:
+        use-routes: false
+      id: 101
+      link: enp3s0

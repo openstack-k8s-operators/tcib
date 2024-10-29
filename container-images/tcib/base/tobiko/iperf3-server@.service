@@ -1,0 +1,12 @@
+[Unit]
+Description=iperf3 server on port %i
+After=syslog.target network.target
+
+[Service]
+ExecStart=/usr/bin/iperf3 -s -p %i
+Restart=always
+User=root
+
+[Install]
+WantedBy=multi-user.target
+DefaultInstance=5201
