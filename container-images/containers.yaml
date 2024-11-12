@@ -45,6 +45,7 @@ container_images:
 - imagename: quay.io/podified-master-centos9/openstack-mariadb:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-memcached:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-multipathd:current-podified
+- imagename: quay.io/podified-master-centos9/openstack-netutils:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-neutron-dhcp-agent:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-neutron-sriov-agent:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-neutron-server:current-podified
