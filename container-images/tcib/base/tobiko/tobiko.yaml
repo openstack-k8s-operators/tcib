@@ -14,6 +14,7 @@ tcib_actions:
     https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz
     | tar -zxvf - -C /usr/local/bin/
 - run: 'git clone https://opendev.org/x/tobiko /var/lib/tobiko/tobiko'
+- run: 'pip install -e /var/lib/tobiko/tobiko -c /var/lib/tobiko/tobiko/upper-constraints.txt -r /var/lib/tobiko/tobiko/extra-requirements.txt'
 - run: >-
     mkdir -p /var/lib/tobiko/.downloaded-images && curl
     https://cloud-images.ubuntu.com/minimal/releases/jammy/release/ubuntu-22.04-minimal-cloudimg-amd64.img
