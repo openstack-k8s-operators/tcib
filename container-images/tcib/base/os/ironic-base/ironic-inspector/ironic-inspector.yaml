@@ -8,4 +8,5 @@ tcib_packages:
   - openstack-ironic-inspector
   - openstack-ironic-inspector-dnsmasq
   - iproute
+  - inotify-tools
 tcib_user: ironic-inspector
