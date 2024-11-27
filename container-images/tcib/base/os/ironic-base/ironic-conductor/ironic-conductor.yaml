@@ -15,6 +15,7 @@ tcib_packages:
   - python3-proliantutils
   - python3-scciclient
   - python3-sushy
+  - python3-sushy-oem-idrac
   - python3-systemd
   - qemu-img
   - syslinux-nonlinux
