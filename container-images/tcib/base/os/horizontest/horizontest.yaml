@@ -13,11 +13,11 @@ tcib_actions:
     curl -s -L
     https://github.com/mozilla/geckodriver/releases/download/v0.29.0/geckodriver-v0.29.0-linux64.tar.gz
     | tar -zxvf - -C /usr/local/bin/
-- run: curl -OL http://download.cirros-cloud.net/0.6.2/cirros-0.6.2-x86_64-disk.img -o /var/lib/horizontest/cirros-0.6.2-x86_64-disk
-- run: cp /usr/share/tcib/container-images/tcib/base/os/horizontest/run_horizontest.sh /var/lib/horizontest/run_horizontest.sh
-- run: chmod +x /var/lib/horizontest/run_horizontest.sh
+- run: curl -OL http://download.cirros-cloud.net/0.6.2/cirros-0.6.2-x86_64-disk.img -o /usr/local/share/cirros-0.6.2-x86_64-disk
+- run: cp /usr/share/tcib/container-images/tcib/base/os/horizontest/run_horizontest.sh /usr/local/bin/run_horizontest.sh
+- run: chmod +x /usr/local/bin/run_horizontest.sh
 
-tcib_entrypoint: /var/lib/horizontest/run_horizontest.sh
+tcib_entrypoint: /usr/local/bin/run_horizontest.sh
 
 tcib_packages:
   common:
