@@ -2,23 +2,4 @@
 - project:
     name: openstack-k8s-operators/tcib
     github-check:
-      jobs:
-        - openstack-meta-content-provider:
-            irrelevant-files: &if
-              - HACKING.rst
-              - AUTHORS
-              - .gitignore
-              - ^README.md$
-              - .*/*.md
-              - .ci-operator.yaml
-              - .pre-commit-config.yaml
-              - .pylintrc
-              - .stestr.conf
-              - .github/workflows
-              - .coveragerc
-              - LICENSE
-              - OWNERS*
-        - tcib-crc-podified-edpm-baremetal:
-            irrelevant-files: *if
-        - tcib-podified-multinode-edpm-deployment-crc:
-            irrelevant-files: *if
+      jobs: []

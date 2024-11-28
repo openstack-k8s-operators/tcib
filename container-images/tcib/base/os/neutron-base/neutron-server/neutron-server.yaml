@@ -1,6 +1,7 @@
 tcib_actions:
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: sed -i -r 's,^(Listen 80),#\1,' /etc/httpd/conf/httpd.conf  && sed -i -r 's,^(Listen 443),#\1,' /etc/httpd/conf.d/ssl.conf
+# run: sed -i "s/delete', lazy='joined'/delete', lazy='dynamic'/" /usr/lib/python3.9/site-packages/neutron/db/models/securitygroup.py
 tcib_packages:
   common:
   - httpd
