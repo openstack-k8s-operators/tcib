@@ -4,9 +4,6 @@ set -x
 
 HORIZONTEST_DIR=/var/lib/horizontest
 HORIZON_LOGS_DIR_NAME=${HORIZON_LOGS_DIR_NAME:-"horizon"}
-IMAGE_FILE="/var/lib/horizontest/cirros-0.6.2-x86_64-disk.img"
-IMAGE_FILE_NAME=cirros-0.6.2-x86_64-disk
-IMAGE_FILE_NAME_WITH_SIZE="cirros-0.6.2-x86_64-disk (20.4 MB)"
 IMAGE_URL=http://download.cirros-cloud.net/0.6.2/cirros-0.6.2-x86_64-disk.img
 PROJECT_NAME=horizontest
 USER_NAME=horizontest
@@ -17,6 +14,12 @@ SELENIUM_EXPLICIT_WAIT=180
 SELENIUM_PAGE_TIMEOUT=120
 SELENIUM_IMPLICIT_WAIT=30
 HORIZONTEST_DEBUG_MODE="${HORIZONTEST_DEBUG_MODE:-false}"
+IMAGE_FILE_NAME=cirros-0.6.2-x86_64-disk
+IMAGE_FILE_NAME_WITH_SIZE="cirros-0.6.2-x86_64-disk (20.4 MB)"
+IMAGE_FILE="/usr/local/share/${IMAGE_FILE_NAME}"
+if [[ ! -f "${IMAGE_FILE}" ]]; then
+    IMAGE_FILE="/var/lib/horizontest/${IMAGE_FILE_NAME}"
+fi
 
 # assert mandatory variables have been set
 [[ -z ${ADMIN_USERNAME} ]] && echo "ADMIN_USERNAME not set" && exit 1

@@ -3,6 +3,7 @@
 set -x
 
 TOBIKO_DIR=/var/lib/tobiko
+TOBIKO_SRC_DIR=/usr/local/src/tobiko
 TOBIKO_DEBUG_MODE="${TOBIKO_DEBUG_MODE:-false}"
 
 function catch_error_if_debug {
@@ -34,6 +35,7 @@ TOBIKO_LOGS_DIR_NAME=${TOBIKO_LOGS_DIR_NAME:-"tobiko"}
 [ ! -z ${TOBIKO_NUM_PROCESSES} ] && export TOX_NUM_PROCESSES=${TOBIKO_NUM_PROCESSES}
 
 pushd ${TOBIKO_DIR}
+cp -r ${TOBIKO_SRC_DIR} tobiko
 chown tobiko:tobiko -R tobiko
 pushd tobiko
 [ ! -z ${TOBIKO_UPDATE_REPO} ] && git pull --rebase

@@ -9,10 +9,10 @@ tcib_actions:
 - run: mkdir -p /var/lib/kolla/config_files
 - run: chown -R tempest.tempest /var/lib/tempest
 - run: touch /var/lib/kolla/config_files/config.json
-- run: cp /usr/share/tcib/container-images/tcib/base/os/tempest/run_tempest.sh /var/lib/tempest/run_tempest.sh
-- run: chmod +x /var/lib/tempest/run_tempest.sh
+- run: cp /usr/share/tcib/container-images/tcib/base/os/tempest/run_tempest.sh /usr/local/bin/run_tempest.sh
+- run: chmod +x /usr/local/bin/run_tempest.sh
 
-tcib_entrypoint: /var/lib/tempest/run_tempest.sh
+tcib_entrypoint: /usr/local/bin/run_tempest.sh
 
 tcib_packages:
   common:
