@@ -6,7 +6,6 @@ tcib_packages:
   - dosfstools
   - e2fsprogs
   - gdisk
-  - inotify-tools
   - ipmitool
   - openssh-clients
   - openstack-ironic-conductor
