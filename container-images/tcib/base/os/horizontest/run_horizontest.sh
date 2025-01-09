@@ -20,6 +20,17 @@ IMAGE_FILE="/usr/local/share/${IMAGE_FILE_NAME}"
 if [[ ! -f "${IMAGE_FILE}" ]]; then
     IMAGE_FILE="/var/lib/horizontest/${IMAGE_FILE_NAME}"
 fi
+SUBNET_NAME=public_subnet
+PROJECT_NAME_XPATH="//span[@class='rcueicon rcueicon-folder-open']/ancestor::li"
+HELP_SEQUENCE=".//*[normalize-space()='Help']"
+HELP_URL="https://docs.redhat.com/en/documentation/red_hat_openstack_services_on_openshift/"
+TEST_MATERIAL_THEME=False
+USER_NAME_XPATH="//span[@class='rcueicon rcueicon-user']/ancestor::li"
+BROWSE_LEFT_PANEL_MAIN="Project,Project,Project,Project,Project,Project,Project,Project,Project,Project,Project,Project,Project,Project,Project,Project,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Admin,Identity,Identity,Identity,Identity,Identity"
+BROWSE_LEFT_PANEL_SEC="Project,None,None,None,None,None,Volumes,Volumes,Network,Network,Network,Network,Network,Network,Network,Object Store,None,Compute,Compute,Compute,Compute,Compute,Volume,Volume,Volume,Volume,Network,Network,Network,Network,Network,System,System,System,None,None,None,None,None"
+BLP_SEC_LINE_XPATH=".//*[@class='navbar primary persistent-secondary']"
+BLP_SEC_LINE_REQ_BTN=".//*[@class='navbar primary persistent-secondary']//a[normalize-space()='{sec_panel}']//ancestor::li"
+BLP_SIDEBAR_XPATH=".//*[@class='navbar primary persistent-secondary']//a[normalize-space()='{sec_panel}']//ancestor::li//*[@class='dropdown-menu']"
 
 # assert mandatory variables have been set
 [[ -z ${ADMIN_USERNAME} ]] && echo "ADMIN_USERNAME not set" && exit 1
@@ -128,6 +139,7 @@ pushd ${HORIZONTEST_DIR}/horizon/openstack_dashboard/test/integration_tests/
 # set variables in horizon.conf
 crudini --set horizon.conf dashboard dashboard_url ${DASHBOARD_URL}/dashboard/
 crudini --set horizon.conf dashboard auth_url ${AUTH_URL}
+crudini --set horizon.conf dashboard help_url ${HELP_URL}
 crudini --set horizon.conf identity username ${USER_NAME}
 crudini --set horizon.conf identity password ${PASSWORD}
 crudini --set horizon.conf identity home_project ${PROJECT_NAME}
@@ -139,6 +151,16 @@ crudini --set horizon.conf launch_instances image_name "${IMAGE_FILE_NAME_WITH_S
 crudini --set horizon.conf selenium explicit_wait ${SELENIUM_EXPLICIT_WAIT}
 crudini --set horizon.conf selenium page_timeout ${SELENIUM_PAGE_TIMEOUT}
 crudini --set horizon.conf selenium implicit_wait ${SELENIUM_IMPLICIT_WAIT}
+crudini --set horizon.conf network subnet_name ${SUBNET_NAME}
+crudini --set horizon.conf theme project_name_xpath "${PROJECT_NAME_XPATH}"
+crudini --set horizon.conf theme help_sequence "${HELP_SEQUENCE}"
+crudini --set horizon.conf theme test_material_theme "${TEST_MATERIAL_THEME}"
+crudini --set horizon.conf theme user_name_xpath "${USER_NAME_XPATH}"
+crudini --set horizon.conf theme browse_left_panel_main "${BROWSE_LEFT_PANEL_MAIN}"
+crudini --set horizon.conf theme browse_left_panel_sec "${BROWSE_LEFT_PANEL_SEC}"
+crudini --set horizon.conf theme b_l_p_sec_line_xpath "${BLP_SEC_LINE_XPATH}"
+crudini --set horizon.conf theme b_l_p_sec_line_req_btn "${BLP_SEC_LINE_REQ_BTN}"
+crudini --set horizon.conf theme b_l_p_sidebar_xpath "${BLP_SIDEBAR_XPATH}"
 popd
 
 # run horizon selenium tests
