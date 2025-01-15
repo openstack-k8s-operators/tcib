@@ -18,6 +18,8 @@ SELENIUM_PAGE_TIMEOUT=120
 SELENIUM_IMPLICIT_WAIT=30
 HORIZONTEST_DEBUG_MODE="${HORIZONTEST_DEBUG_MODE:-false}"
 
+# This is an empty test PR
+
 # assert mandatory variables have been set
 [[ -z ${ADMIN_USERNAME} ]] && echo "ADMIN_USERNAME not set" && exit 1
 [[ -z ${ADMIN_PASSWORD} ]] && echo "ADMIN_PASSWORD not set" && exit 1
