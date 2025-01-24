@@ -7,6 +7,8 @@ HASH_PATH=/var/lib/kolla/.settings.md5sum.txt
 MANAGE_PY="/usr/bin/python3 /usr/bin/manage.py"
 PYTHON_VERSION=$(python3 --version | awk '{print $2}' | awk -F'.' '{print $1"."$2}')
 SITE_PACKAGES="/usr/lib/python${PYTHON_VERSION}/site-packages"
+# There may not be ENABLE_WATCHER variable. Defaulting it to no.
+ENABLE_WATCHER="${ENABLE_WATCHER:-no}"
 
 if [[ -f /etc/openstack-dashboard/custom_local_settings ]]; then
     CUSTOM_SETTINGS_FILE="${SITE_PACKAGES}/openstack_dashboard/local/custom_local_settings.py"
@@ -80,6 +82,17 @@ function config_octavia_dashboard {
         "${SITE_PACKAGES}/openstack_dashboard/local/enabled/_1482_project_load_balancer_panel.py"
 }
 
+function config_watcher_dashboard {
+    # Do nothing if the watcher-dashboard is not installed
+    if [ -d ${SITE_PACKAGES}/watcher_dashboard ] ; then
+        for file in ${SITE_PACKAGES}/watcher_dashboard/local/enabled/_*[^__].py; do
+            config_dashboard "${ENABLE_WATCHER}" \
+                "${SITE_PACKAGES}/watcher_dashboard/local/enabled/${file##*/}" \
+                "${SITE_PACKAGES}/openstack_dashboard/local/enabled/${file##*/}"
+        done
+    fi
+}
+
 # Regenerate the compressed javascript and css if any configuration files have
 # changed.  Use a static modification date when generating the tarball
 # so that we only trigger on content changes.
@@ -105,6 +118,7 @@ config_heat_dashboard
 config_ironic_dashboard
 config_manila_ui
 config_octavia_dashboard
+config_watcher_dashboard
 
 if settings_changed; then
     ${MANAGE_PY} collectstatic --noinput --clear
