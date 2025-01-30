@@ -14,6 +14,8 @@ SELENIUM_EXPLICIT_WAIT=180
 SELENIUM_PAGE_TIMEOUT=120
 SELENIUM_IMPLICIT_WAIT=30
 HORIZONTEST_DEBUG_MODE="${HORIZONTEST_DEBUG_MODE:-false}"
+EXTRA_FLAG="${EXTRA_FLAG:-"not pagination"}"
+PROJECT_NAME_XPATH="${PROJECT_NAME_XPATH:-"//span[@class='rcueicon rcueicon-folder-open']/ancestor::li"}"
 IMAGE_FILE_NAME=cirros-0.6.2-x86_64-disk
 IMAGE_FILE_NAME_WITH_SIZE="cirros-0.6.2-x86_64-disk (20.4 MB)"
 IMAGE_FILE="/usr/local/share/${IMAGE_FILE_NAME}"
@@ -21,7 +23,6 @@ if [[ ! -f "${IMAGE_FILE}" ]]; then
     IMAGE_FILE="/var/lib/horizontest/${IMAGE_FILE_NAME}"
 fi
 SUBNET_NAME=public_subnet
-PROJECT_NAME_XPATH="//span[@class='rcueicon rcueicon-folder-open']/ancestor::li"
 HELP_SEQUENCE=".//*[normalize-space()='Help']"
 HELP_URL="https://docs.redhat.com/en/documentation/red_hat_openstack_services_on_openshift/"
 TEST_MATERIAL_THEME=False
@@ -164,7 +165,7 @@ crudini --set horizon.conf theme b_l_p_sidebar_xpath "${BLP_SIDEBAR_XPATH}"
 popd
 
 # run horizon selenium tests
-INTEGRATION_TESTS=1 SELENIUM_HEADLESS=1 pytest openstack_dashboard/test/selenium/integration/ -k "not pagination" \
+INTEGRATION_TESTS=1 SELENIUM_HEADLESS=1 pytest openstack_dashboard/test/selenium/integration/ -k "${EXTRA_FLAG}" \
         --junitxml="test_reports/ui_integration_test_results.xml" \
         --html="test_reports/ui_integration_test_results.html" --self-contained-html
 RETURN_VALUE=$?
