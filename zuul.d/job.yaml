@@ -23,38 +23,11 @@
       cifmw_test_operator_stages:
         - name: tempest
           type: tempest
-        - name: tobiko
-          type: tobiko
       cifmw_test_operator_tempest_registry: "{{ content_provider_os_registry_url | split('/') | first }}"
       cifmw_test_operator_tempest_namespace: "{{ content_provider_os_registry_url | split('/') | last }}"
       cifmw_test_operator_tempest_image_tag: "{{ content_provider_dlrn_md5_hash }}"
       cifmw_test_operator_tempest_include_list: |
         tempest.scenario.test_network_basic_ops.TestNetworkBasicOps
-      cifmw_test_operator_tobiko_registry: "{{ cifmw_test_operator_tempest_registry }}"
-      cifmw_test_operator_tobiko_namespace: "{{ cifmw_test_operator_tempest_namespace }}"
-      cifmw_test_operator_tobiko_image_tag: "{{ content_provider_dlrn_md5_hash }}"
-      cifmw_test_operator_tobiko_workflow:
-        - stepName: sanity
-          testenv: sanity
-        - stepName: scenario-nova
-          testenv: nova
-      # enabling heat is needed for some tobiko tests
-      cifmw_edpm_prepare_kustomizations:
-        - apiVersion: kustomize.config.k8s.io/v1beta1
-          kind: Kustomization
-          namespace: openstack
-          patches:
-          - patch: |-
-              apiVersion: core.openstack.org/v1beta1
-              kind: OpenStackControlPlane
-              metadata:
-                name: unused
-              spec:
-                heat:
-                  enabled: true
-            target:
-              kind: OpenStackControlPlane
-
 
 - job:
     name: tcib-crc-podified-edpm-baremetal
