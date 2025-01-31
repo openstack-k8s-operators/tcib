@@ -36,3 +36,45 @@
       - openstack-meta-content-provider
     irrelevant-files: *irrelevant_files
     vars: *edpm_vars
+
+- job:
+    name: tcib-podified-multinode-edpm-deployment-crc-tobiko
+    parent: tcib-podified-multinode-edpm-deployment-crc
+    files:
+      - ^container-images/tcib/base/tobiko/
+      - ^zuul.d/
+    vars:
+      cifmw_test_operator_stages:
+        - name: tobiko
+          type: tobiko
+      cifmw_test_operator_tobiko_registry: "{{ cifmw_test_operator_tempest_registry }}"
+      cifmw_test_operator_tobiko_namespace: "{{ cifmw_test_operator_tempest_namespace }}"
+      cifmw_test_operator_tobiko_image_tag: "{{ content_provider_dlrn_md5_hash }}"
+      cifmw_test_operator_tobiko_workflow:
+        - stepName: sanity
+          testenv: sanity
+          numProcesses: 2
+        - stepName: scenario-nova
+          testenv: nova
+          numProcesses: 1
+      # remove `cifmw_test_operator_tobiko_override_conf` when ticket TOBIKO-142 is resolved
+      cifmw_test_operator_tobiko_override_conf:
+        advanced_vm:
+          username: fedora
+          image_url: https://kaplonski.pl/files/Customized-Fedora-Cloud-Base-Generic-41-1.4.x86_64.qcow2
+      # enabling heat is needed for some tobiko tests
+      cifmw_edpm_prepare_kustomizations:
+        - apiVersion: kustomize.config.k8s.io/v1beta1
+          kind: Kustomization
+          namespace: openstack
+          patches:
+          - patch: |-
+              apiVersion: core.openstack.org/v1beta1
+              kind: OpenStackControlPlane
+              metadata:
+                name: unused
+              spec:
+                heat:
+                  enabled: true
+            target:
+              kind: OpenStackControlPlane
