@@ -3,7 +3,9 @@ tcib_envs:
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
-- run: pip3 install ansible==2.9.27 openstacksdk
+- run: pip3 install ansible openstacksdk
+- run: cp /usr/share/tcib/container-images/tcib/base/ansible-tests/ansible_sudoers /etc/sudoers.d/ansible_sudoers
+- run: chmod 440 /etc/sudoers.d/ansible_sudoers
 - run: cp /usr/share/tcib/container-images/tcib/base/ansible-tests/run_ansible.sh /usr/local/bin/run_ansible.sh
 - run: chmod +x /usr/local/bin/run_ansible.sh
 - run: chown -R ansible:ansible /var/lib/ansible
