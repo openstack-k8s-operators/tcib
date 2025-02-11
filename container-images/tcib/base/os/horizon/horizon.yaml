@@ -5,9 +5,6 @@ tcib_actions:
     mv /tmp/macros.image-language-conf /etc/rpm &&
     dnf -y install {{ tcib_packages.common | join(' ') }} &&
     dnf clean all && rm -rf /var/cache/dnf
-# Note(chandankumar): Remove it once openstack-watcher-ui package is available downstream.
-- run: >-
-    if [ '{{ tcib_distro }}' == 'centos' ];then dnf -y install openstack-watcher-ui && dnf clean all && rm -rf /var/cache/dnf; fi
 - run: cp /usr/share/tcib/container-images/kolla/horizon/extend_start.sh /usr/local/bin/kolla_extend_start
 - run: chmod 755 /usr/local/bin/kolla_extend_start
 - run: >-
@@ -36,3 +33,4 @@ tcib_packages:
   - openstack-manila-ui
   - openstack-octavia-ui
   - openstack-designate-ui
+  - openstack-watcher-ui
