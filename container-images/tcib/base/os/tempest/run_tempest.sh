@@ -110,6 +110,8 @@ fi
 [[ -z ${TEMPEST_WORKFLOW_STEP_DIR_NAME} ]] && TEMPEST_WORKFLOW_STEP_DIR_NAME="tempest"
 [[ ! -z ${USE_EXTERNAL_FILES} ]] && TEMPEST_PATH=$HOMEDIR/external_files/
 
+TEMPEST_LOGS_DIR=${TEMPEST_PATH}${TEMPEST_WORKFLOW_STEP_DIR_NAME}/
+
 [[ ${TEMPESTCONF_CREATE:=true} == true ]] && TEMPESTCONF_ARGS+="--create "
 [[ ${TEMPESTCONF_INSECURE} == true ]] && TEMPESTCONF_ARGS+="--insecure "
 [[ ${TEMPESTCONF_COLLECT_TIMING} == true ]] && TEMPESTCONF_ARGS+="--collect-timing "
@@ -408,8 +410,10 @@ function generate_test_results {
         cat ${TEMPEST_INCLUDE_LIST}
     fi
 
-    TEMPEST_LOGS_DIR=${TEMPEST_PATH}${TEMPEST_WORKFLOW_STEP_DIR_NAME}/
     mkdir -p ${TEMPEST_LOGS_DIR}
+
+    echo "Generate file containing failing tests"
+    stestr failing --list | sed 's/\[.*\]//g' > ${TEMPEST_LOGS_DIR}stestr_failing.txt
 
     echo "Generate subunit, then xml and html results"
     stestr last --subunit > ${TEMPEST_LOGS_DIR}testrepository.subunit \
@@ -465,6 +469,14 @@ generate_test_results
 # Keep pod in running state when in debug mode
 if [ ${TEMPEST_DEBUG_MODE} == true ]; then
     sleep infinity
+fi
+
+if [ ! -z ${TEMPEST_EXPECTED_FAILURES_LIST} ]; then
+    echo "Failing tests marked as expected failures"
+    grep -Fxf ${TEMPEST_EXPECTED_FAILURES_LIST} ${TEMPEST_LOGS_DIR}stestr_failing.txt
+    if ! grep -Fxv -q -f ${TEMPEST_EXPECTED_FAILURES_LIST} ${TEMPEST_LOGS_DIR}stestr_failing.txt ; then
+        RETURN_VALUE=0
+    fi
 fi
 
 exit ${RETURN_VALUE}
