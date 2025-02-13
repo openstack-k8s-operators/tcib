@@ -22,3 +22,5 @@
             irrelevant-files: *if
         - tcib-podified-multinode-edpm-deployment-crc:
             irrelevant-files: *if
+        - tcib-podified-multinode-edpm-deployment-crc-tobiko:
+            irrelevant-files: *if
