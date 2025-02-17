@@ -34,6 +34,10 @@ set -ev
 {% for key, value in tcib_args.items() %}
 export {{ key }}={{ value | to_json }}
 {% endfor %}
+{% if tcib_builder | length > 0 %}
+BUILDER_CONTAINER=$(buildah from {{ tcib_builder }})
+BUILDER_MOUNTPOINT=$(buildah mount ${BUILDER_CONTAINER})
+{% endif %}
 CONTAINER=$(buildah from {{ tcib_from }})
 MOUNTPOINT=$(buildah mount ${CONTAINER})
 {% for key, value in tcib_labels.items() %}
@@ -75,6 +79,11 @@ buildah add ${CONTAINER} {{ item }}
 {% for item in tcib_copies %}
 buildah copy ${CONTAINER} {{ item }}
 {% endfor %}
+{% if tcib_builder | length > 0 and tcib_builder_copies | length > 0 %}
+{% for key, value in tcib_builder_copies.items() %}
+buildah copy ${CONTAINER} {{ key }} {{ value }}
+{% endfor %}
+{% endif %}
 {% for item in tcib_runs %}
 {%   if item is iterable and item is not string %}
 buildah run ${CONTAINER} {{ item | join(' ') }}

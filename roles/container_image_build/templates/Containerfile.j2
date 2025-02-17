@@ -13,6 +13,9 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+{% if tcib_builder | length > 0 %}
+FROM {{ tcib_builder }} as builder
+{% endif %}
 FROM {{ tcib_from }}
 {% for key, value in tcib_args.items() %}
 ARG {{ key }}={{ value | to_json }}
@@ -42,6 +45,11 @@ EXPOSE {{ item }}
 {% for item in tcib_copies %}
 COPY {{ item }}
 {% endfor %}
+{% if tcib_builder | length > 0 and tcib_builder_copies | length > 0 %}
+{% for key, value in tcib_builder_copies.items() %}
+COPY --from=builder {{ key }} {{ value }}
+{% endfor %}
+{% endif %}
 {% if tcib_shell | length > 0 %}
 SHELL {{ tcib_shell.split() | to_json }}
 {% endif %}

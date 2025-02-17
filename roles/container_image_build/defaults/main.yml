@@ -76,3 +76,9 @@ tcib_actions: []
 
 # List of Strings, optional, <item>, Collects file from the host and stores them in the build directory.
 tcib_gather_files: []
+
+# String, Optional, 'item', Additional params to copy content from different container using buildah multi stage build, implements
+tcib_builder: ''
+
+# Dictionary, single level key:value pairs, optional, key as a source file name and value as a destination file name
+tcib_builder_copies: {}
