@@ -25,3 +25,6 @@ tcib_packages:
   - qemu-img
 
 tcib_user: tempest
+tcib_builder: '{{ tempest_prometheus_image | default("quay.io/prometheus/prometheus:latest") }}'
+tcib_builder_copies:
+  /bin/promtool: /bin/promtool
