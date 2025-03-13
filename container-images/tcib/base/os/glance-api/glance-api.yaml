@@ -3,7 +3,8 @@ tcib_actions:
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: cp /usr/share/tcib/container-images/kolla/glance-api/extend_start.sh /usr/local/bin/kolla_extend_start
 - run: chmod 755 /usr/local/bin/kolla_extend_start
-- run: sed -i -r 's,^(Listen 80),#\1,' /etc/httpd/conf/httpd.conf &&  sed -i -r 's,^(Listen 443),#\1,' /etc/httpd/conf.d/ssl.conf
+- run: mkdir -p /var/www/cgi-bin/glance && cp -a /usr/bin/glance-wsgi-api /var/www/cgi-bin/glance/glance-wsgi && sed -i -r 's,^(Listen 80),#\1,' /etc/httpd/conf/httpd.conf &&  sed -i -r 's,^(Listen 443),#\1,' /etc/httpd/conf.d/ssl.conf
+- run: chown -R glance /var/www/cgi-bin/glance && chmod 755 /var/www/cgi-bin/glance/glance-wsgi
 tcib_packages:
   common:
   - httpd
