@@ -35,7 +35,7 @@ fi
 
 # Install collections from requirements.yaml if the file exists
 if [[ -f "$ANSIBLE_DIR/requirements.yaml" ]]; then
-    ansible-galaxy collection install -r "$ANSIBLE_DIR/requirements.yaml"
+    ansible-galaxy install -r "$ANSIBLE_DIR/requirements.yaml"
 else
     echo "requirements.yaml doesn't exist, skipping requirements installation"
 fi
