@@ -18,7 +18,7 @@
               - .coveragerc
               - LICENSE
               - OWNERS*
-        - tcib-crc-podified-edpm-baremetal:
-            irrelevant-files: *if
+        #- tcib-crc-podified-edpm-baremetal:
+        #    irrelevant-files: *if
         - tcib-podified-multinode-edpm-deployment-crc:
             irrelevant-files: *if

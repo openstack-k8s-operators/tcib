@@ -21,7 +21,7 @@
     vars: &edpm_vars
       cifmw_run_test_role: test_operator
       cifmw_test_operator_stages:
-        - name: FVTAnsibleTest
+        - name: "fvtansibletests"
           type: ansibletest
       cifmw_test_operator_tempest_registry: "{{ content_provider_os_registry_url | split('/') | first }}"
       cifmw_test_operator_tempest_namespace: "{{ content_provider_os_registry_url | split('/') | last }}"

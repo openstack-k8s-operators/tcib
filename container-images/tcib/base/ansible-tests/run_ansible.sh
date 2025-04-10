@@ -60,3 +60,8 @@ ansible-playbook "$POD_ANSIBLE_PLAYBOOK" $ANSIBLE_DEBUG -i $ANSIBLE_DIR/inventor
 # Currently, the report-results has to be separate since the custom junit plugin will only create the XML files once the playbook is completed.
 # After FVT tests are run, there still needs to be a separate hook to check the results (including fetching the results from the pod)
 #  or else there needs to be some mechanism here to check the results.
+# the testoperator expects results files to be in /var/lib/AnsibleTests/external_files/ and this will get copied to cifmw-data/logs
+# So the sequence here should be: configure the FVTs to use /var/lib/AnsibleTests/external_files/ as the output dir
+# Run the playbook
+# run report_results to make the pod fail
+cp ~/.ansible.log/ /var/lib/AnsibleTests/external_files/
