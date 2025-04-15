@@ -17,7 +17,7 @@ fi
 # Clone the Ansible repository
 #git clone "$POD_ANSIBLE_GIT_REPO" "$ANSIBLE_DIR"
 # This should be passed in via the appropriate vars
-git clone "http://github.com/infrawatch/feature-verification-tests" "$ANSIBLE_DIR"/feature-verification-tests
+git clone -b "efoley/run_fvt_in_test_operator" "http://github.com/infrawatch/feature-verification-tests" "$ANSIBLE_DIR"/feature-verification-tests
 ls "$ANSIBLE_DIR"
 
 # Handle extra vars file if provided
