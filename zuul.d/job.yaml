@@ -30,9 +30,11 @@
       cifmw_test_operator_tempest_include_list: |
         tempest.scenario.test_network_basic_ops.TestNetworkBasicOps
       #cifmw_test_operator_ansibletest_ansible_extra_vars: |
+      # These configs are usually pulled in from the cifmw artifacts directory, and this should eventually get passed in properly.
       cifmw_test_operator_ansibletest_ansible_var_files: |
         cifmw_openshift_kubeconfig: "{{ cifmw_openshift_kubeconfig }}"
         cifmw_path: "{{ cifmw_path }}"
+        patch_observabilityclient: true
       cifmw_build_containers_config_file: "{{ ansible_user_dir }}/{{ zuul.projects['github.com/openstack-k8s-operators/tcib'].src_dir }}/containers.yaml"
 
 - job:
