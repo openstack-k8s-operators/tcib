@@ -33,6 +33,7 @@
       cifmw_test_operator_ansibletest_ansible_var_files: |
         cifmw_openshift_kubeconfig: "{{ cifmw_openshift_kubeconfig }}"
         cifmw_path: "{{ cifmw_path }}"
+      cifmw_build_containers_config_file: "{{ ansible_user_dir }}/{{ zuul.projects['github.com/openstack-k8s-operators/tcib'].src_dir }}/containers.yaml"
 
 - job:
     name: tcib-crc-podified-edpm-baremetal
