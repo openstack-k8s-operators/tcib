@@ -2,7 +2,6 @@ tcib_envs:
   USE_EXTERNAL_FILES: true
   TEMPESTCONF_OCTAVIA_TEST_SERVER_PATH: /usr/libexec/octavia-tempest-plugin-tests-httpd
 tcib_actions:
-- run: crudini --set /etc/dnf/dnf.conf main install_weak_deps True
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: cp /usr/share/tcib/container-images/tcib/base/os/tempest/tempest_sudoers /etc/sudoers.d/tempest_sudoers
