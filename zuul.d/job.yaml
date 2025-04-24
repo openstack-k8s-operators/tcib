@@ -36,8 +36,7 @@
         cifmw_path: "{{ cifmw_path }}"
         patch_observabilityclient: true
         cifmw_target_hook_host: controller
-        cifmw_test_operator_ansibletest_ansible_inventory: |
-          {{ lookup('ansible.builtin.file', '/home/zuul/ci-framework-data/artifacts/zuul_inventory.yml') }}
+      cifmw_test_operator_ansibletest_ansible_inventory: "{{ lookup('ansible.builtin.file', '/home/zuul/ci-framework-data/artifacts/zuul_inventory.yml') }}"
       cifmw_build_containers_config_file: "{{ ansible_user_dir }}/{{ zuul.projects['github.com/openstack-k8s-operators/tcib'].src_dir }}/containers.yaml"
 
 - job:
