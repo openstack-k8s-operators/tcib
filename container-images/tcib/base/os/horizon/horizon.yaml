@@ -10,14 +10,14 @@ tcib_actions:
 - run: >-
     sed -i -r 's,^(Listen 80),#\1,' /etc/httpd/conf/httpd.conf &&
     sed -i -r 's,^(Listen 443),#\1,' /etc/httpd/conf.d/ssl.conf &&
-    ln -s /usr/share/openstack-dashboard/openstack_dashboard /usr/lib/python3.9/site-packages/openstack_dashboard &&
-    ln -s /usr/share/openstack-dashboard/static /usr/lib/python3.9/site-packages/static &&
+    ln -s /usr/share/openstack-dashboard/openstack_dashboard /usr/lib/python{{ tcib_python_version }}/site-packages/openstack_dashboard &&
+    ln -s /usr/share/openstack-dashboard/static /usr/lib/python{{ tcib_python_version }}/site-packages/static &&
     chown -R apache /etc/openstack-dashboard /usr/share/openstack-dashboard &&
     chown -R apache /usr/share/openstack-dashboard/static &&
     sed -i "s|WEBROOT = ''/dashboard/''|WEBROOT = ''/''|" /etc/openstack-dashboard/local_settings &&
     cp /usr/share/openstack-dashboard/manage.py /usr/bin/manage.py &&
-    rm -f /usr/share/openstack-dashboard/openstack_dashboard/local/enabled/?[^_]*.py* && rm -f /usr/lib/python3.9/site-packages/openstack_dashboard/local/enabled/?[^_]*.py* &&
-    for locale in /usr/lib/python3.9/site-packages/*/locale; do (cd ${locale%/*} && /usr/bin/django-admin compilemessages) done
+    rm -f /usr/share/openstack-dashboard/openstack_dashboard/local/enabled/?[^_]*.py* && rm -f /usr/lib/python{{ tcib_python_version }}/site-packages/openstack_dashboard/local/enabled/?[^_]*.py* &&
+    for locale in /usr/lib/python{{ tcib_python_version }}/site-packages/*/locale; do (cd ${locale%/*} && /usr/bin/django-admin compilemessages) done
 tcib_packages:
   common:
   - gettext

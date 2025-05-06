@@ -1,6 +1,8 @@
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage keystone
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: >-
+    if [ '{{ tcib_release }}' == '9' ];then dnf -y install mod_auth_mellon && dnf clean all && rm -rf /var/cache/dnf; fi
 - run: mkdir -p /var/www/cgi-bin/keystone && chown -R keystone /var/www/cgi-bin/keystone
 - run: cp /usr/share/tcib/container-images/kolla/keystone/extend_start.sh /usr/local/bin/kolla_extend_start
 - run: chmod 755 /usr/local/bin/kolla_extend_start
@@ -12,7 +14,6 @@ tcib_packages:
   common:
   - httpd
   - mod_auth_gssapi
-  - mod_auth_mellon
   - mod_auth_openidc
   - mod_ssl
   - openstack-keystone
