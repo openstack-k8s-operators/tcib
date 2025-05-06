@@ -722,6 +722,13 @@ class Build(command.Command):
 
         # Ensure anything not intended to be built is excluded
         excludes.extend(self.rectify_excludes(image_configs.keys()))
+        # For EL10, Put redis under exclude list to build valkey
+        if parsed_args.release == '10' and 'redis' not in excludes:
+            excludes.append('redis')
+        else:
+            # Exclude valkey for EL9
+            excludes.append('valkey')
+
         self.log.info("Images being excluded: {}".format(excludes))
         volumes = parsed_args.volumes
         volumes.append(
