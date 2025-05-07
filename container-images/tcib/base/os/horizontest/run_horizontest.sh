@@ -123,10 +123,18 @@ function delete_custom_resources {
 }
 
 pushd ${HORIZONTEST_DIR}
-git clone ${REPO_URL} ${HORIZONTEST_DIR}/horizon
+if [[ ${REPO_URL} == *redhat.com* ]]; then
+    git -c http.sslVerify=false clone ${REPO_URL} ${HORIZONTEST_DIR}/horizon
+else
+    git clone ${REPO_URL} ${HORIZONTEST_DIR}/horizon
+fi
 chown -R horizontest:horizontest horizon
 pushd horizon
-git pull --rebase
+if [[ ${REPO_URL} == *redhat.com* ]]; then
+    git -c http.sslVerify=false pull --rebase
+else
+    git pull --rebase
+fi
 git checkout ${HORIZON_REPO_BRANCH}
 
 clean_leftover_images
