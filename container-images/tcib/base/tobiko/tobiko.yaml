@@ -38,5 +38,5 @@ tcib_packages:
   - iperf3
   - tcpdump
   - podman
-
+  - libffi-devel
 tcib_user: tobiko
