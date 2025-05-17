@@ -14,6 +14,7 @@ tcib_actions:
     crudini --set /etc/dnf/dnf.conf main plugins 1 &&
     crudini --set /etc/dnf/dnf.conf main skip_missing_names_on_install False &&
     crudini --set /etc/dnf/dnf.conf main tsflags nodocs
+- run: if [ ! -f "/etc/pki/tls/cert.pem"]; then ln -s /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem /etc/pki/tls/cert.pem; fi
 - run: dnf install -y {{ tcib_packages['common'] | join(' ') }} {{ tcib_package }}
 - run: cp /usr/share/tcib/container-images/kolla/base/uid_gid_manage.sh /usr/local/bin/uid_gid_manage
 - run: chmod 755 /usr/local/bin/uid_gid_manage
