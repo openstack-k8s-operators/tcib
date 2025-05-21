@@ -1,0 +1,10 @@
+tcib_actions:
+- run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: sed -i -r 's,^(Listen 80),#\1,' /etc/httpd/conf/httpd.conf && sed -i -r 's,^(Listen 443),#\1,' /etc/httpd/conf.d/ssl.conf
+tcib_packages:
+  common:
+  - openstack-watcher-api
+  - httpd
+  - mod_ssl
+  - python3-mod_wsgi
+tcib_user: watcher
