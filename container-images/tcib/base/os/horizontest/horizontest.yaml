@@ -35,6 +35,6 @@ tcib_packages:
   - testtools
   - xvfbwrapper
   - junit2html
-  - urllib3==1.26.18
+  - urllib3==1.26.19
 
 tcib_user: horizontest
