@@ -29,6 +29,8 @@ BLP_SEC_LINE_XPATH=".//*[@class='navbar primary persistent-secondary']"
 BLP_SEC_LINE_REQ_BTN=".//*[@class='navbar primary persistent-secondary']//a[normalize-space()='{sec_panel}']//ancestor::li"
 BLP_SIDEBAR_XPATH=".//*[@class='navbar primary persistent-secondary']//a[normalize-space()='{sec_panel}']//ancestor::li//*[@class='dropdown-menu']"
 
+# This is an empty test PR
+
 # assert mandatory variables have been set
 [[ -z ${ADMIN_USERNAME} ]] && echo "ADMIN_USERNAME not set" && exit 1
 [[ -z ${ADMIN_PASSWORD} ]] && echo "ADMIN_PASSWORD not set" && exit 1
