@@ -8,6 +8,11 @@ POD_ANSIBLE_PLAYBOOK="${POD_ANSIBLE_PLAYBOOK:-}"
 POD_ANSIBLE_EXTRA_VARS="${POD_ANSIBLE_EXTRA_VARS:-}"
 POD_ANSIBLE_GIT_REPO="${POD_ANSIBLE_GIT_REPO:-}"
 
+# Run user-specified command before the ansible playbooks
+if [[ -n "${POD_ANSIBLE_PRE_TEST_HOOK:-}" ]]; then
+    /bin/bash -c "$POD_ANSIBLE_PRE_TEST_HOOK"
+fi
+
 # Check and set ansible debug verbosity
 ANSIBLE_DEBUG=""
 if [[ ${POD_DEBUG:-true} == true ]]; then
