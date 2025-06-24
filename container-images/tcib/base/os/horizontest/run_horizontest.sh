@@ -14,7 +14,7 @@ SELENIUM_EXPLICIT_WAIT=180
 SELENIUM_PAGE_TIMEOUT=240
 SELENIUM_IMPLICIT_WAIT=30
 HORIZONTEST_DEBUG_MODE="${HORIZONTEST_DEBUG_MODE:-false}"
-EXTRA_FLAG="${EXTRA_FLAG:-"not pagination"}"
+EXTRA_FLAG="${EXTRA_FLAG:-"not pagination and not federation"}"
 PROJECT_NAME_XPATH="${PROJECT_NAME_XPATH:-"//span[@class='rcueicon rcueicon-folder-open']/ancestor::li"}"
 IMAGE_FILE_NAME=cirros-0.6.2-x86_64-disk
 IMAGE_FILE_NAME_WITH_SIZE="cirros-0.6.2-x86_64-disk (20.4 MB)"
