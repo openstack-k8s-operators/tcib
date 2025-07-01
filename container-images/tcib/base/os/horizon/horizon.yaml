@@ -34,4 +34,3 @@ tcib_packages:
   - openstack-octavia-ui
   - openstack-designate-ui
   - openstack-watcher-ui
-  - openstack-cloudkitty-ui
