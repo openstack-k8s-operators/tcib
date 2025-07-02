@@ -1,5 +1,6 @@
 tcib_actions:
 - run: if [ -f "/etc/yum.repos.d/ubi.repo" ]; then rm -f /etc/yum.repos.d/ubi.repo && dnf clean all && rm -rf /var/cache/dnf; fi
+- run: if [ -f "/etc/yum.repos.d/centos.repo" ]; then rm -f /etc/yum.repos.d/centos*.repo && dnf clean all && rm -rf /var/cache/dnf; fi
 - run: >-
     dnf install -y crudini &&
     crudini --del /etc/dnf/dnf.conf main override_install_langs &&
