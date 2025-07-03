@@ -36,7 +36,6 @@ declare -A _SUPPORTED_USERS
 _SUPPORTED_USERS['aodh']='aodh 42402 42402 /var/lib/aodh kolla'
 _SUPPORTED_USERS['barbican']='barbican 42403 42403 /var/lib/barbican kolla,nfast'
 _SUPPORTED_USERS['ceilometer']='ceilometer 42405 42405 /var/lib/ceilometer kolla'
-_SUPPORTED_USERS['cloudkitty']='cloudkitty 42406 42406 /var/lib/cloudkitty kolla'
 _SUPPORTED_USERS['cinder']='cinder 42407 42407 /var/lib/cinder kolla'
 _SUPPORTED_USERS['cloud-admin']='cloud-admin 42401 42401 /home/cloud-admin kolla'
 _SUPPORTED_USERS['designate']='designate 42411 42411 /var/lib/designate kolla'
