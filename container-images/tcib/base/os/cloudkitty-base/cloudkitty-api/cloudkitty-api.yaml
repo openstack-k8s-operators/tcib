@@ -1,9 +1,9 @@
 tcib_actions:
 - run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: mkdir -p /var/www/cgi-bin/cloudkitty && chmod 755 /var/www/cgi-bin/cloudkitty && cp -a /usr/bin/cloudkitty-api /var/www/cgi-bin/cloudkitty/ && sed -i -r 's,^(Listen 80),#\1,' /etc/httpd/conf/httpd.conf && sed -i -r 's,^(Listen 443),#\1,' /etc/httpd/conf.d/ssl.conf
 tcib_packages:
   common:
     - httpd
     - mod_ssl
     - openstack-cloudkitty-api
     - python3-mod_wsgi
-tcib_user: cloudkitty
