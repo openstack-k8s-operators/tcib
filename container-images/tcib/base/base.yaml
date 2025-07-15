@@ -36,6 +36,7 @@ tcib_actions:
     dnf -y reinstall which &&
     rpm -e --nodeps tzdata &&
     dnf -y install tzdata
+- run: if [ ! -f "/etc/localtime" ]; then ln -s /usr/share/zoneinfo/Etc/UTC /etc/localtime; fi
 - run: mkdir -p /openstack
 - run: >-
     if [ '{{ tcib_distro }}' == 'centos' ];then
@@ -47,6 +48,7 @@ tcib_entrypoint: dumb-init --single-child --
 tcib_envs:
   LANG: en_US.UTF-8
   container: oci
+  TZ: UTC
 tcib_labels:
   maintainer: OpenStack Kubernetes Operator team
   tcib_managed: True
