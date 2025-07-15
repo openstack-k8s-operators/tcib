@@ -2,13 +2,13 @@ tcib_envs:
   USE_EXTERNAL_FILES: true
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
-- run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: cp /usr/share/tcib/container-images/tcib/base/tobiko/tobiko_sudoers /etc/sudoers.d/tobiko_sudoers
 - run: chmod 440 /etc/sudoers.d/tobiko_sudoers
 - run: mkdir -p /var/lib/tempest/external_files
 - run: >-
     if [ '{{ tcib_distro }}' == 'rhel' ];then
     if [ -n "$(rpm -qa redhat-release)" ];then dnf -y remove python3-chardet; fi ; fi
+- run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: >-
     curl -s -L
     https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/stable/openshift-client-linux.tar.gz
