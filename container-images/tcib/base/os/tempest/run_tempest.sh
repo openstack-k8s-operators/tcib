@@ -137,6 +137,7 @@ TEMPEST_LOGS_DIR=${TEMPEST_PATH}${TEMPEST_WORKFLOW_STEP_DIR_NAME}/
 [[ ! -z ${TEMPESTCONF_NETWORK_ID} ]] && TEMPESTCONF_ARGS+="--network-id ${TEMPESTCONF_NETWORK_ID} "
 
 TEMPESTCONF_OVERRIDES="$(echo ${TEMPESTCONF_OVERRIDES} | tr '\n' ' ') identity.v3_endpoint_type public "
+TEMPESTCONF_OVERRIDES+="DEFAULT.log_dir ${TEMPEST_LOGS_DIR} "
 
 # Octavia test-server is built as part of the installation of the python3-octavia-tests-tempest
 # https://github.com/rdo-packages/octavia-tempest-plugin-distgit/blob/rpm-master/python-octavia-tests-tempest.spec#L127
@@ -349,6 +350,8 @@ function run_git_tempest {
 
     upload_extra_images
 
+    mkdir -p ${TEMPEST_LOGS_DIR}
+
     discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
@@ -395,6 +398,8 @@ function run_rpm_tempest {
 
     upload_extra_images
 
+    mkdir -p ${TEMPEST_LOGS_DIR}
+
     discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
@@ -421,20 +426,18 @@ function generate_test_results {
         cat ${TEMPEST_INCLUDE_LIST}
     fi
 
-    mkdir -p ${TEMPEST_LOGS_DIR}
-
     echo "Generate file containing failing tests"
     stestr failing --list | sed 's/\[.*\]//g' > ${TEMPEST_LOGS_DIR}stestr_failing.txt
 
     echo "Generate subunit, then xml and html results"
     stestr last --subunit > ${TEMPEST_LOGS_DIR}testrepository.subunit \
-    && (subunit2junitxml ${TEMPEST_LOGS_DIR}testrepository.subunit > ${TEMPEST_LOGS_DIR}tempest_results.xml || true) \
+    && subunit2junitxml ${TEMPEST_LOGS_DIR}testrepository.subunit > ${TEMPEST_LOGS_DIR}tempest_results.xml || true \
     && subunit2html ${TEMPEST_LOGS_DIR}testrepository.subunit ${TEMPEST_LOGS_DIR}stestr_results.html || true
 
     # NOTE: Remove images before copying of the logs.
     rm ${TEMPEST_DIR}/etc/*.{img,qcow2}
 
-    echo Copying logs file
+    echo Copying log files
     cp -rf ${TEMPEST_DIR}/* ${TEMPEST_LOGS_DIR}
 
     popd
