@@ -8,6 +8,10 @@ tcib_actions:
 - run: >-
     if [ '{{ tcib_distro }}' == 'rhel' ];then
     if [ -n "$(rpm -qa redhat-release)" ];then dnf -y remove python3-chardet; fi ; fi
+# Note(Chandan Kumar): tobiko upper constriants support python3-dateutil-2.8.2, is available
+# in CS10. Let's use this version to avoid no RECORD file was found for python-dateutil error
+- run: >-
+    if [ '{{ tcib_release }}' == '10' ];then dnf -y downgrade python3-dateutil-2.8.2; fi
 - run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: >-
     curl -s -L
