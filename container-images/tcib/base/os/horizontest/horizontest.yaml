@@ -21,7 +21,7 @@ tcib_entrypoint: /usr/local/bin/run_horizontest.sh
 
 tcib_packages:
   common:
-  - git
+  - git-core
   - python3-pip
   - xorg-x11-server-Xvfb
   - firefox
