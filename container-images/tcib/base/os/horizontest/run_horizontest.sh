@@ -10,7 +10,8 @@ USER_NAME=horizontest
 PASSWORD=horizontest
 FLAVOR_NAME=m1.tiny
 GROUP_NAME=admins
-SELENIUM_EXPLICIT_WAIT=180
+SELENIUM_MESSAGE_WAIT=120
+SELENIUM_EXPLICIT_WAIT=360
 SELENIUM_PAGE_TIMEOUT=240
 SELENIUM_IMPLICIT_WAIT=30
 HORIZONTEST_DEBUG_MODE="${HORIZONTEST_DEBUG_MODE:-false}"
@@ -157,6 +158,7 @@ crudini --set horizon.conf identity admin_password ${ADMIN_PASSWORD}
 crudini --set horizon.conf image http_image ${IMAGE_URL}
 crudini --set horizon.conf image images_list ${IMAGE_FILE_NAME}
 crudini --set horizon.conf launch_instances image_name "${IMAGE_FILE_NAME_WITH_SIZE}"
+crudini --set horizon.conf selenium message_wait ${SELENIUM_MESSAGE_WAIT}
 crudini --set horizon.conf selenium explicit_wait ${SELENIUM_EXPLICIT_WAIT}
 crudini --set horizon.conf selenium page_timeout ${SELENIUM_PAGE_TIMEOUT}
 crudini --set horizon.conf selenium implicit_wait ${SELENIUM_IMPLICIT_WAIT}
