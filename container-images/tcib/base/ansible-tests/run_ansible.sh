@@ -10,7 +10,7 @@ POD_ANSIBLE_GIT_REPO="${POD_ANSIBLE_GIT_REPO:-}"
 
 # Check and set ansible debug verbosity
 ANSIBLE_DEBUG=""
-if [[ ${POD_DEBUG:-true} == true ]]; then
+if [[ ${POD_DEBUG:-false} == true ]]; then
     ANSIBLE_DEBUG="-vvvv"
 fi
 
