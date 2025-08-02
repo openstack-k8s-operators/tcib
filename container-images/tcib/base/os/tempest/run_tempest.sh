@@ -228,11 +228,12 @@ function get_image_status {
 
 function upload_extra_images {
     for image_index in "${!TEMPEST_EXTRA_IMAGES_NAME[@]}"; do
+        if [[ ! -f "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" ]]; then
+            curl -o "${HOMEDIR}/${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" "${TEMPEST_EXTRA_IMAGES_URL[image_index]}"
+        fi
+
         if ! openstack image show ${TEMPEST_EXTRA_IMAGES_NAME[image_index]}; then
             image_create_params=()
-
-            [[ ! -f "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" ]] && \
-                curl -o "${HOMEDIR}/${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" "${TEMPEST_EXTRA_IMAGES_URL[image_index]}"
 
             [[ ${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]} != "-" ]] && \
                 image_create_params+=(--disk-format ${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]})
