@@ -313,7 +313,21 @@ function run_git_tempest {
         refspec=${TEMPEST_EXTERNAL_PLUGIN_REFSPEC[plugin_index]}
         plugin_name=$(basename -s .git $git_url)
 
-        git clone $git_url
+        # Handle possible timeouts on the git clone.
+        retry_count=0
+        while [ $retry_count -lt 3 ]; do
+            git clone $git_url
+            if [ $? -eq 0 ]; then
+                break
+            fi
+            let retry_count=$retry_count+1
+            sleep 10
+        done
+        if [ $retry_count -gt 2 ]; then
+            echo "Failed to clone $git_url"
+            exit 1
+        fi
+
 
         if [[ ! -z $change_url ]] && [[ ! -z $refspec ]] || \
            [[ $change_url != "-" ]] && [[ $refspec != "-" ]]; then
