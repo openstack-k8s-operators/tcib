@@ -128,18 +128,29 @@ function delete_custom_resources {
 }
 
 pushd ${HORIZONTEST_DIR}
+GIT_CMD_ARGS=()
 if [[ ${REPO_URL} == *redhat.com* ]]; then
-    git -c http.sslVerify=false clone ${REPO_URL} ${HORIZONTEST_DIR}/horizon
-else
-    git clone ${REPO_URL} ${HORIZONTEST_DIR}/horizon
+    GIT_CMD_ARGS+=(-c http.sslVerify=false)
 fi
+
+_trial=0
+_limit=5
+_delay=30
+
+GIT_CLONE_CMD=(git "${GIT_CMD_ARGS[@]}" clone "${REPO_URL}" "${HORIZONTEST_DIR}/horizon")
+
+until ("${GIT_CLONE_CMD[@]}"); do
+    if [ "${_trial}" -lt "${_limit}" ]; then
+        _trial=$(( _trial + 1 ))
+        echo "Git clone failed; retrying in ${_delay} seconds..."
+        sleep "${_delay}"
+    else
+        exit 1
+    fi
+done
 chown -R horizontest:horizontest horizon
 pushd horizon
-if [[ ${REPO_URL} == *redhat.com* ]]; then
-    git -c http.sslVerify=false pull --rebase
-else
-    git pull --rebase
-fi
+git "${GIT_CMD_ARGS[@]}" pull --rebase
 git checkout ${HORIZON_REPO_BRANCH}
 
 clean_leftover_images
