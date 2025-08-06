@@ -186,7 +186,7 @@ crudini --set horizon.conf theme b_l_p_sidebar_xpath "${BLP_SIDEBAR_XPATH}"
 popd
 
 # run horizon selenium tests
-INTEGRATION_TESTS=1 SELENIUM_HEADLESS=1 pytest openstack_dashboard/test/selenium/integration/ -k "${EXTRA_FLAG}" \
+INTEGRATION_TESTS=1 SELENIUM_HEADLESS=True pytest openstack_dashboard/test/selenium/integration/ -k "${EXTRA_FLAG}" \
         --junitxml="test_reports/ui_integration_test_results.xml" \
         --html="test_reports/ui_integration_test_results.html" --self-contained-html
 RETURN_VALUE=$?
