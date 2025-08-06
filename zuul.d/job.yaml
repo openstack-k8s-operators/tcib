@@ -21,13 +21,23 @@
     vars: &edpm_vars
       cifmw_run_test_role: test_operator
       cifmw_test_operator_stages:
-        - name: tempest
-          type: tempest
-      cifmw_test_operator_tempest_registry: "{{ content_provider_os_registry_url | split('/') | first }}"
-      cifmw_test_operator_tempest_namespace: "{{ content_provider_os_registry_url | split('/') | last }}"
-      cifmw_test_operator_tempest_image_tag: "{{ content_provider_dlrn_md5_hash }}"
+        - name: "fvtansibletests"
+          type: ansibletest
+      cifmw_test_operator_ansibletest_workload_ssh_key_secret_name: "dataplane-ansible-ssh-private-key-secret"
+      cifmw_test_operator_default_registry: "{{ content_provider_os_registry_url | split('/') | first }}"
+      cifmw_test_operator_default_namespace: "{{ content_provider_os_registry_url | split('/') | last }}"
+      cifmw_test_operator_default_image_tag: "{{ content_provider_dlrn_md5_hash }}"
       cifmw_test_operator_tempest_include_list: |
         tempest.scenario.test_network_basic_ops.TestNetworkBasicOps
+      #cifmw_test_operator_ansibletest_ansible_extra_vars: |
+      # These configs are usually pulled in from the cifmw artifacts directory, and this should eventually get passed in properly.
+      cifmw_test_operator_ansibletest_ansible_var_files: |
+        cifmw_openshift_kubeconfig: "{{ cifmw_openshift_kubeconfig }}"
+        cifmw_path: "{{ cifmw_path }}"
+        patch_observabilityclient: true
+        cifmw_target_hook_host: controller
+      cifmw_test_operator_ansibletest_ansible_inventory: "{{ lookup('ansible.builtin.file', '/home/zuul/ci-framework-data/artifacts/zuul_inventory.yml') }}"
+      cifmw_build_containers_config_file: "{{ ansible_user_dir }}/{{ zuul.projects['github.com/openstack-k8s-operators/tcib'].src_dir }}/containers.yaml"
 
 - job:
     name: tcib-crc-podified-edpm-baremetal
