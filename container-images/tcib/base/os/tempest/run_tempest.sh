@@ -97,6 +97,9 @@ TEMPEST_ARGS=""
 TEMPEST_DEBUG_MODE="${TEMPEST_DEBUG_MODE:-false}"
 TEMPEST_CLEANUP="${TEMPEST_CLEANUP:-false}"
 
+TEMPEST_STESTR="$HOMEDIR/openshift/.stestr"
+TEMPEST_STESTR_REUSE="$HOMEDIR/.stestr-reuse"
+
 function catch_error_if_debug {
     echo "File run_tempest.sh has run into an error!"
     sleep infinity
@@ -366,6 +369,11 @@ function run_git_tempest {
 
     mkdir -p ${TEMPEST_LOGS_DIR}
 
+    if [[ ${TEMPEST_TIMING_DATA} == true ]] && [ -n "$(ls -A ${TEMPEST_STESTR_REUSE})" ]; then
+        echo "Copying timing data for reuse."
+        cp -rf ${TEMPEST_STESTR_REUSE}/* ${TEMPEST_STESTR}
+    fi
+
     discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
@@ -414,6 +422,11 @@ function run_rpm_tempest {
 
     mkdir -p ${TEMPEST_LOGS_DIR}
 
+    if [[ ${TEMPEST_TIMING_DATA} == true ]] && [ -n "$(ls -A ${TEMPEST_STESTR_REUSE})" ]; then
+        echo "Copying timing data for reuse."
+        cp -rf ${TEMPEST_STESTR_REUSE}/* ${TEMPEST_STESTR}
+    fi
+
     discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
@@ -453,6 +466,10 @@ function generate_test_results {
 
     echo Copying log files
     cp -rf ${TEMPEST_DIR}/* ${TEMPEST_LOGS_DIR}
+
+    if [[ ${TEMPEST_TIMING_DATA} == true ]] && [ ! -n "$(ls -A ${TEMPEST_STESTR_REUSE})" ]; then
+        cp -rf ${TEMPEST_STESTR}/* ${TEMPEST_STESTR_REUSE}
+    fi
 
     popd
 }
