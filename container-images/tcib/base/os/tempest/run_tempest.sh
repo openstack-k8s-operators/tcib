@@ -349,6 +349,10 @@ function run_tempest {
 
     upload_extra_images
 
+    if [[ -n "${TEMPEST_TIMING_DATA_URL:-}" ]]; then
+        curl -L "${TEMPEST_TIMING_DATA_URL}" | tar -xz --strip-components=1 -C "${TEMPEST_DIR}/.stestr"
+    fi
+
     mkdir -p "${TEMPEST_LOGS_DIR}"
 
     discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
@@ -444,7 +448,7 @@ function save_config_files {
     cp -f "${TEMPEST_DIR}/etc/"*.{conf,ini,txt,yaml} "${TEMPEST_LOGS_DIR}/etc"
 
     cp -f "${TEMPEST_DIR}/.stestr.conf" "${TEMPEST_LOGS_DIR}/stestr.conf"
-    cp -rf "${TEMPEST_DIR}/.stestr" "${TEMPEST_LOGS_DIR}/stestr"
+    tar -czf "${TEMPEST_LOGS_DIR}/stestr.tar.gz" -C "${TEMPEST_DIR}" .stestr
 }
 
 
