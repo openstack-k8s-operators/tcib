@@ -499,10 +499,10 @@ if [ ${TEMPEST_DEBUG_MODE} == true ]; then
     sleep infinity
 fi
 
-if [ -s ${TEMPEST_LOGS_DIR}stestr_failing.txt ] && [ -s ${TEMPEST_EXPECTED_FAILURES_LIST} ]; then
+if [ -n "${TEMPEST_EXPECTED_FAILURES_LIST}" ] && [ -s ${TEMPEST_LOGS_DIR}stestr_failing.txt ] && [ -s "${TEMPEST_EXPECTED_FAILURES_LIST}" ]; then
     echo "Failing tests marked as expected failures"
-    grep -Fxf ${TEMPEST_EXPECTED_FAILURES_LIST} ${TEMPEST_LOGS_DIR}stestr_failing.txt
-    if ! grep -Fxv -q -f ${TEMPEST_EXPECTED_FAILURES_LIST} ${TEMPEST_LOGS_DIR}stestr_failing.txt ; then
+    grep -Fxf "${TEMPEST_EXPECTED_FAILURES_LIST}" ${TEMPEST_LOGS_DIR}stestr_failing.txt
+    if ! grep -Fxv -q -f "${TEMPEST_EXPECTED_FAILURES_LIST}" ${TEMPEST_LOGS_DIR}stestr_failing.txt ; then
         RETURN_VALUE=0
     fi
 fi
