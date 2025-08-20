@@ -332,6 +332,28 @@ function run_tempest_cleanup {
 }
 
 
+function run_tempest {
+    pushd $HOMEDIR
+    tempest init openshift
+    pushd $TEMPEST_DIR
+
+    prepare_tempest_cleanup
+
+    upload_extra_images
+
+    mkdir -p ${TEMPEST_LOGS_DIR}
+
+    discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
+    && tempest run ${TEMPEST_ARGS}
+    RETURN_VALUE=$?
+
+    run_tempest_cleanup
+
+    popd
+    popd
+}
+
+
 function run_git_tempest {
     mkdir -p $TEMPEST_EXTERNAL_PLUGIN_DIR
     pushd $TEMPEST_EXTERNAL_PLUGIN_DIR
@@ -372,54 +394,22 @@ function run_git_tempest {
         pip install -chttps://releases.openstack.org/constraints/upper/2023.1 ./$plugin_name
     done
 
-    pushd $HOMEDIR
-    tempest init openshift
-    pushd $TEMPEST_DIR
-
-    prepare_tempest_cleanup
-
-    upload_extra_images
-
-    mkdir -p ${TEMPEST_LOGS_DIR}
-
-    discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
-    && tempest run ${TEMPEST_ARGS}
-    RETURN_VALUE=$?
-
-    run_tempest_cleanup
+    run_tempest
 
     deactivate
 
     popd
-    popd
-    popd
 }
 
-function run_rpm_tempest {
-    pushd $HOMEDIR
-    tempest init openshift
-    pushd $TEMPEST_DIR
 
+function run_rpm_tempest {
     # Install additional plugins from .rpms plus their dependencies
     [ ${#TEMPEST_EXTRA_RPMS[@]} -ne 0 ] && sudo dnf install -y ${TEMPEST_EXTRA_RPMS[@]}
 
     # List Tempest packages
     rpm -qa | grep tempest
 
-    prepare_tempest_cleanup
-
-    upload_extra_images
-
-    mkdir -p ${TEMPEST_LOGS_DIR}
-
-    discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
-    && tempest run ${TEMPEST_ARGS}
-    RETURN_VALUE=$?
-
-    run_tempest_cleanup
-
-    popd
-    popd
+    run_tempest
 }
 
 
