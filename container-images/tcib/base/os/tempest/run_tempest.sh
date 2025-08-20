@@ -112,6 +112,7 @@ fi
 [[ ! -z ${USE_EXTERNAL_FILES} ]] && TEMPEST_PATH=$HOMEDIR/external_files/
 
 TEMPEST_LOGS_DIR=${TEMPEST_PATH}${TEMPEST_WORKFLOW_STEP_DIR_NAME}/
+FAILED_TESTS_FILE="${TEMPEST_LOGS_DIR}/stestr_failing.txt"
 
 [[ ${TEMPESTCONF_CREATE:=true} == true ]] && TEMPESTCONF_ARGS+="--create "
 [[ ${TEMPESTCONF_INSECURE} == true ]] && TEMPESTCONF_ARGS+="--insecure "
@@ -471,7 +472,7 @@ function generate_test_results {
     pushd $TEMPEST_DIR
 
     echo "Generate file containing failing tests"
-    stestr failing --list | sed 's/\[.*\]//g' > ${TEMPEST_LOGS_DIR}stestr_failing.txt
+    stestr failing --list | sed 's/\[.*\]//g' > "${FAILED_TESTS_FILE}"
 
     echo "Generate subunit, then xml and html results"
     stestr last --subunit > "${_SUBUNIT_FILE}"
@@ -532,10 +533,11 @@ if [ ${TEMPEST_DEBUG_MODE} == true ]; then
     sleep infinity
 fi
 
-if [ -s ${TEMPEST_LOGS_DIR}stestr_failing.txt ] && [ -s ${TEMPEST_EXPECTED_FAILURES_LIST} ]; then
+
+if [ -s "${FAILED_TESTS_FILE}" ] && [ -s ${TEMPEST_EXPECTED_FAILURES_LIST} ]; then
     echo "Failing tests marked as expected failures"
-    grep -Fxf ${TEMPEST_EXPECTED_FAILURES_LIST} ${TEMPEST_LOGS_DIR}stestr_failing.txt
-    if ! grep -Fxv -q -f ${TEMPEST_EXPECTED_FAILURES_LIST} ${TEMPEST_LOGS_DIR}stestr_failing.txt ; then
+    grep -Fxf ${TEMPEST_EXPECTED_FAILURES_LIST} "${FAILED_TESTS_FILE}"
+    if ! grep -Fxv -q -f ${TEMPEST_EXPECTED_FAILURES_LIST} "${FAILED_TESTS_FILE}"; then
         RETURN_VALUE=0
     fi
 fi
