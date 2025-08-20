@@ -152,6 +152,7 @@ TEMPEST_EXTERNAL_PLUGIN_GIT_URL="${TEMPEST_EXTERNAL_PLUGIN_GIT_URL:-}"
 TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL="${TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL:-}"
 TEMPEST_EXTERNAL_PLUGIN_REFSPEC="${TEMPEST_EXTERNAL_PLUGIN_REFSPEC:-}"
 TEMPEST_EXTERNAL_PLUGIN_DIR=/var/lib/tempest/external-plugins
+VENV_DIR="${TEMPEST_EXTERNAL_PLUGIN_DIR}/.venv"
 
 TEMPEST_EXTRA_RPMS="${TEMPEST_EXTRA_RPMS:-}"
 
@@ -358,8 +359,8 @@ function run_git_tempest {
     mkdir -p $TEMPEST_EXTERNAL_PLUGIN_DIR
     pushd $TEMPEST_EXTERNAL_PLUGIN_DIR
 
-    python3 -m venv .venv
-    source ./.venv/bin/activate
+    python3 -m venv "${VENV_DIR}"
+    source "${VENV_DIR}/bin/activate"
 
     for plugin_index in "${!TEMPEST_EXTERNAL_PLUGIN_GIT_URL[@]}"; do
         git_url=${TEMPEST_EXTERNAL_PLUGIN_GIT_URL[plugin_index]}
