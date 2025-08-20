@@ -323,6 +323,14 @@ function prepare_tempest_cleanup {
 }
 
 
+function run_tempest_cleanup {
+    # Run tempest cleanup to delete any leftover resources when not in debug mode
+    if [[ ${TEMPEST_CLEANUP} == true ]]; then
+        tempest cleanup
+    fi
+}
+
+
 function run_git_tempest {
     mkdir -p $TEMPEST_EXTERNAL_PLUGIN_DIR
     pushd $TEMPEST_EXTERNAL_PLUGIN_DIR
@@ -377,10 +385,7 @@ function run_git_tempest {
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
 
-    # Run tempest cleanup to delete any leftover resources when not in debug mode
-    if [[ ${TEMPEST_CLEANUP} == true ]]; then
-        tempest cleanup
-    fi
+    run_tempest_cleanup
 
     deactivate
 
@@ -410,10 +415,7 @@ function run_rpm_tempest {
     && tempest run ${TEMPEST_ARGS}
     RETURN_VALUE=$?
 
-    # Run tempest cleanup to delete any leftover resources when not in debug mode
-    if [[ ${TEMPEST_CLEANUP} == true ]]; then
-        tempest cleanup
-    fi
+    run_tempest_cleanup
 
     popd
     popd
