@@ -466,9 +466,14 @@ function move_tempest_log {
 
 
 function generate_test_results {
-    _SUBUNIT_FILE="${TEMPEST_LOGS_DIR}/tempest_results.subunit"
-    _RESULTS_XML="${TEMPEST_LOGS_DIR}/tempest_results.xml"
-    _RESULTS_HTML="${TEMPEST_LOGS_DIR}/tempest_results.html"
+    # Produces the report files in subunit, xml and html formats,
+    # based on the last recorded run; saves results in the logs directory.
+    # Optional first argument allows specifying the custom report file name.
+    _FILENAME="${1:-tempest_results}"
+
+    _SUBUNIT_FILE="${TEMPEST_LOGS_DIR}/${_FILENAME}.subunit"
+    _RESULTS_XML="${TEMPEST_LOGS_DIR}/${_FILENAME}.xml"
+    _RESULTS_HTML="${TEMPEST_LOGS_DIR}/${_FILENAME}.html"
 
     pushd $TEMPEST_DIR
 
