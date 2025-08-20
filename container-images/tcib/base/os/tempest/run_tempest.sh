@@ -428,9 +428,8 @@ function run_rpm_tempest {
     popd
 }
 
-function generate_test_results {
-    pushd $TEMPEST_DIR
 
+function print_config_files {
     echo "Excluded tests"
     if [ ! -z ${TEMPEST_EXCLUDE_LIST} ]; then
         cat ${TEMPEST_EXCLUDE_LIST}
@@ -440,6 +439,11 @@ function generate_test_results {
     if [ ! -z ${TEMPEST_INCLUDE_LIST} ]; then
         cat ${TEMPEST_INCLUDE_LIST}
     fi
+}
+
+
+function generate_test_results {
+    pushd $TEMPEST_DIR
 
     echo "Generate file containing failing tests"
     stestr failing --list | sed 's/\[.*\]//g' > ${TEMPEST_LOGS_DIR}stestr_failing.txt
@@ -493,6 +497,7 @@ else
     run_git_tempest
 fi
 
+print_config_files
 generate_test_results
 
 # Keep pod in running state when in debug mode
