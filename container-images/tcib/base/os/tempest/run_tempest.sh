@@ -101,6 +101,8 @@ TEMPEST_CLEANUP="${TEMPEST_CLEANUP:-false}"
 RERUN_FAILED_TESTS="${TEMPEST_RERUN_FAILED_TESTS:-false}"
 RERUN_OVERRIDE_STATUS="${TEMPEST_RERUN_OVERRIDE_STATUS:-false}"
 
+TEMPEST_EXPECTED_FAILURES_LIST="${TEMPEST_EXPECTED_FAILURES_LIST:-/dev/null}"
+
 
 function catch_error_if_debug {
     echo "File run_tempest.sh has run into an error!"
@@ -526,6 +528,20 @@ function rerun_failed_tests {
 }
 
 
+function check_expected_failures {
+    # Compares the tests that failed in the last run with the expected list.
+    # In case all failed tests were the expected ones, we still return success.
+    if [ -s "${FAILED_TESTS_FILE}" ] && [ -s ${TEMPEST_EXPECTED_FAILURES_LIST} ]; then
+        echo "Failing tests marked as expected failures"
+        grep -Fxf ${TEMPEST_EXPECTED_FAILURES_LIST} "${FAILED_TESTS_FILE}"
+
+        if ! grep -Fxv -q -f ${TEMPEST_EXPECTED_FAILURES_LIST} "${FAILED_TESTS_FILE}"; then
+            RETURN_VALUE=0
+        fi
+    fi
+}
+
+
 function whitebox_neutron_tempest_plugin_workaround {
     # This workaround is required for the whitebox-neutron-tempest plugin.
     # We need to be able to specify 600 permissions for the id_ecdsa.
@@ -572,19 +588,11 @@ move_tempest_log tempest_results.log
 generate_test_results tempest_results
 
 rerun_failed_tests
+check_expected_failures
 
 # Keep pod in running state when in debug mode
 if [ ${TEMPEST_DEBUG_MODE} == true ]; then
     sleep infinity
-fi
-
-
-if [ -s "${FAILED_TESTS_FILE}" ] && [ -s ${TEMPEST_EXPECTED_FAILURES_LIST} ]; then
-    echo "Failing tests marked as expected failures"
-    grep -Fxf ${TEMPEST_EXPECTED_FAILURES_LIST} "${FAILED_TESTS_FILE}"
-    if ! grep -Fxv -q -f ${TEMPEST_EXPECTED_FAILURES_LIST} "${FAILED_TESTS_FILE}"; then
-        RETURN_VALUE=0
-    fi
 fi
 
 exit ${RETURN_VALUE}
