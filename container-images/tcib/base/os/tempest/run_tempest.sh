@@ -466,17 +466,19 @@ function move_tempest_log {
 
 
 function generate_test_results {
+    _SUBUNIT_FILE="${TEMPEST_LOGS_DIR}/testrepository.subunit"
+    _RESULTS_XML="${TEMPEST_LOGS_DIR}/tempest_results.xml"
+    _RESULTS_HTML="${TEMPEST_LOGS_DIR}/stestr_results.html"
+
     pushd $TEMPEST_DIR
 
     echo "Generate file containing failing tests"
     stestr failing --list | sed 's/\[.*\]//g' > ${TEMPEST_LOGS_DIR}stestr_failing.txt
 
     echo "Generate subunit, then xml and html results"
-    stestr last --subunit > ${TEMPEST_LOGS_DIR}testrepository.subunit \
-    && subunit2junitxml ${TEMPEST_LOGS_DIR}testrepository.subunit > ${TEMPEST_LOGS_DIR}tempest_results.xml || true \
-    && subunit2html ${TEMPEST_LOGS_DIR}testrepository.subunit ${TEMPEST_LOGS_DIR}stestr_results.html || true
-
-
+    stestr last --subunit > "${_SUBUNIT_FILE}"
+    subunit2junitxml "${_SUBUNIT_FILE}" -o "${_RESULTS_XML}"
+    subunit2html "${_SUBUNIT_FILE}" "${_RESULTS_HTML}"
 
     popd
 }
