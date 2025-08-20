@@ -99,6 +99,7 @@ TEMPEST_DEBUG_MODE="${TEMPEST_DEBUG_MODE:-false}"
 TEMPEST_CLEANUP="${TEMPEST_CLEANUP:-false}"
 
 RERUN_FAILED_TESTS="${TEMPEST_RERUN_FAILED_TESTS:-false}"
+RERUN_OVERRIDE_STATUS="${TEMPEST_RERUN_OVERRIDE_STATUS:-false}"
 
 
 function catch_error_if_debug {
@@ -479,8 +480,8 @@ function generate_test_results {
 
 function rerun_failed_tests {
     # Perform re-run of tests that failed in previous execution, if requested.
-    # Saves the results in the logs directory and overrides the return value
-    # from the script if the newer execution is successful.
+    # Saves the results in the logs directory and (if set to do so) overrides
+    # the return value from the script if the newer execution is successful.
     if [ "${RERUN_FAILED_TESTS}" = false ]; then
         return 1  # Not enabled
     fi
@@ -495,7 +496,11 @@ function rerun_failed_tests {
     pushd $TEMPEST_DIR
 
     tempest run ${TEMPEST_ARGS} --include-list "${FAILED_TESTS_FILE}"
-    RETURN_VALUE=$?
+    _RETURN_VALUE=$?
+
+    if [ "${RERUN_OVERRIDE_STATUS}" = true ]; then
+        RETURN_VALUE="${_RETURN_VALUE}"
+    fi
 
     popd
 
