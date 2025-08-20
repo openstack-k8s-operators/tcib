@@ -442,6 +442,21 @@ function print_config_files {
 }
 
 
+function save_config_files {
+    # Copies the configuration files from last run to the logs directory.
+    mkdir -p "${TEMPEST_LOGS_DIR}/etc"
+
+    cp -f "${TEMPEST_INCLUDE_LIST}" "${TEMPEST_LOGS_DIR}/etc"
+    cp -f "${TEMPEST_EXCLUDE_LIST}" "${TEMPEST_LOGS_DIR}/etc"
+    cp -f "${TEMPEST_EXPECTED_FAILURES_LIST}" "${TEMPEST_LOGS_DIR}/etc"
+    cp -f "${TEMPEST_DIR}/etc/"*.{conf,ini,txt,yaml} "${TEMPEST_LOGS_DIR}/etc"
+
+    cp -f "${TEMPEST_DIR}/tempest.log" "${TEMPEST_LOGS_DIR}"
+    cp -f "${TEMPEST_DIR}/.stestr.conf" "${TEMPEST_LOGS_DIR}/stestr.conf"
+    cp -rf "${TEMPEST_DIR}/.stestr" "${TEMPEST_LOGS_DIR}/stestr"
+}
+
+
 function generate_test_results {
     pushd $TEMPEST_DIR
 
@@ -453,11 +468,7 @@ function generate_test_results {
     && subunit2junitxml ${TEMPEST_LOGS_DIR}testrepository.subunit > ${TEMPEST_LOGS_DIR}tempest_results.xml || true \
     && subunit2html ${TEMPEST_LOGS_DIR}testrepository.subunit ${TEMPEST_LOGS_DIR}stestr_results.html || true
 
-    # NOTE: Remove images before copying of the logs.
-    rm ${TEMPEST_DIR}/etc/*.{img,qcow2}
 
-    echo Copying log files
-    cp -rf ${TEMPEST_DIR}/* ${TEMPEST_LOGS_DIR}
 
     popd
 }
@@ -498,6 +509,7 @@ else
 fi
 
 print_config_files
+save_config_files
 generate_test_results
 
 # Keep pod in running state when in debug mode
