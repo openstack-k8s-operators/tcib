@@ -88,6 +88,7 @@
 # octavia-tempest-plugin for example.
 
 set -x
+RETURN_VALUE=0
 
 HOMEDIR=/var/lib/tempest
 TEMPEST_PATH=$HOMEDIR/
