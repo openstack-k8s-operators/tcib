@@ -98,6 +98,9 @@ TEMPEST_ARGS=""
 TEMPEST_DEBUG_MODE="${TEMPEST_DEBUG_MODE:-false}"
 TEMPEST_CLEANUP="${TEMPEST_CLEANUP:-false}"
 
+RERUN_FAILED_TESTS="${TEMPEST_RERUN_FAILED_TESTS:-false}"
+
+
 function catch_error_if_debug {
     echo "File run_tempest.sh has run into an error!"
     sleep infinity
@@ -474,6 +477,41 @@ function generate_test_results {
 }
 
 
+function rerun_failed_tests {
+    # Perform re-run of tests that failed in previous execution, if requested.
+    # Saves the results in the logs directory and overrides the return value
+    # from the script if the newer execution is successful.
+    if [ "${RERUN_FAILED_TESTS}" = false ]; then
+        return 1  # Not enabled
+    fi
+    if [ ! -s "${FAILED_TESTS_FILE}" ]; then
+        return 2  # No failed tests
+    fi
+
+    if [ -f "${VENV_DIR}/bin/activate" ]; then
+        source "${VENV_DIR}/bin/activate"
+    fi
+
+    pushd $TEMPEST_DIR
+
+    tempest run ${TEMPEST_ARGS} --include-list "${FAILED_TESTS_FILE}"
+    RETURN_VALUE=$?
+
+    popd
+
+    if [ -f "${VENV_DIR}/bin/activate" ]; then
+        deactivate
+    fi
+
+    # NOTE: the name `retry` is important because it always comes after
+    #       the `results` in the alphabetically sorted output...
+    move_tempest_log tempest_retry.log
+    generate_test_results tempest_retry
+
+    return 0
+}
+
+
 function whitebox_neutron_tempest_plugin_workaround {
     # This workaround is required for the whitebox-neutron-tempest plugin.
     # We need to be able to specify 600 permissions for the id_ecdsa.
@@ -516,8 +554,10 @@ fi
 
 print_config_files
 save_config_files
-move_tempest_log
-generate_test_results
+move_tempest_log tempest_results.log
+generate_test_results tempest_results
+
+rerun_failed_tests
 
 # Keep pod in running state when in debug mode
 if [ ${TEMPEST_DEBUG_MODE} == true ]; then
