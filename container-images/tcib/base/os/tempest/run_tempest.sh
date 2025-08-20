@@ -451,9 +451,17 @@ function save_config_files {
     cp -f "${TEMPEST_EXPECTED_FAILURES_LIST}" "${TEMPEST_LOGS_DIR}/etc"
     cp -f "${TEMPEST_DIR}/etc/"*.{conf,ini,txt,yaml} "${TEMPEST_LOGS_DIR}/etc"
 
-    cp -f "${TEMPEST_DIR}/tempest.log" "${TEMPEST_LOGS_DIR}"
     cp -f "${TEMPEST_DIR}/.stestr.conf" "${TEMPEST_LOGS_DIR}/stestr.conf"
     cp -rf "${TEMPEST_DIR}/.stestr" "${TEMPEST_LOGS_DIR}/stestr"
+}
+
+
+function move_tempest_log {
+    # Moves the tempest.log file from last run to a new name in logs directory.
+    # Optional first argument allows specifying the new file name.
+    _FILENAME="${1:-tempest_results.log}"
+
+    mv "${TEMPEST_LOGS_DIR}/tempest.log" "${TEMPEST_LOGS_DIR}/${_FILENAME}"
 }
 
 
@@ -510,6 +518,7 @@ fi
 
 print_config_files
 save_config_files
+move_tempest_log
 generate_test_results
 
 # Keep pod in running state when in debug mode
