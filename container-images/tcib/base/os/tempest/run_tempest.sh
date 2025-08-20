@@ -488,6 +488,20 @@ function generate_test_results {
     popd
 }
 
+
+function whitebox_neutron_tempest_plugin_workaround {
+    # This workaround is required for the whitebox-neutron-tempest plugin.
+    # We need to be able to specify 600 permissions for the id_ecdsa.
+    if [ -f "${HOMEDIR}/id_ecdsa" ]; then
+        mkdir -p "${HOMEDIR}/.ssh"
+        cp "${HOMEDIR}/id_ecdsa" "${HOMEDIR}/.ssh/id_ecdsa"
+        chmod 700 "${HOMEDIR}/.ssh"
+        chmod 600 "${HOMEDIR}/.ssh/id_ecdsa"
+        chown -R tempest:tempest "${HOMEDIR}/.ssh"
+    fi
+}
+
+
 export OS_CLOUD=default
 
 if [ ! -z ${USE_EXTERNAL_FILES} ] && [ -e ${TEMPEST_PATH}clouds.yaml ]; then
@@ -507,15 +521,7 @@ if [ ! -f ${TEMPEST_PATH}exclude.txt ] && [ -z ${TEMPEST_EXCLUDE_LIST} ]; then
     touch ${TEMPEST_PATH}exclude.txt
 fi
 
-# This workaround is required for the whitebox-neutron-tempest plugin. We need
-# to be able to specify 600 permissions for the id_ecdsa.
-if [ -f ${HOMEDIR}/id_ecdsa ]; then
-    mkdir -p ${HOMEDIR}/.ssh
-    cp ${HOMEDIR}/id_ecdsa ${HOMEDIR}/.ssh/id_ecdsa
-    chmod 700 ${HOMEDIR}/.ssh
-    chmod 600 ${HOMEDIR}/.ssh/id_ecdsa
-    chown -R tempest:tempest ${HOMEDIR}/.ssh
-fi
+whitebox_neutron_tempest_plugin_workaround
 
 if [ -z $TEMPEST_EXTERNAL_PLUGIN_GIT_URL ]; then
     run_rpm_tempest
