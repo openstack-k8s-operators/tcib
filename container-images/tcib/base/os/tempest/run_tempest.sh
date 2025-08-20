@@ -466,9 +466,9 @@ function move_tempest_log {
 
 
 function generate_test_results {
-    _SUBUNIT_FILE="${TEMPEST_LOGS_DIR}/testrepository.subunit"
+    _SUBUNIT_FILE="${TEMPEST_LOGS_DIR}/tempest_results.subunit"
     _RESULTS_XML="${TEMPEST_LOGS_DIR}/tempest_results.xml"
-    _RESULTS_HTML="${TEMPEST_LOGS_DIR}/stestr_results.html"
+    _RESULTS_HTML="${TEMPEST_LOGS_DIR}/tempest_results.html"
 
     pushd $TEMPEST_DIR
 
