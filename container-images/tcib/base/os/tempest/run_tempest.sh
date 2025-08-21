@@ -513,6 +513,15 @@ function rerun_failed_tests {
     move_tempest_log tempest_retry.log
     generate_test_results tempest_retry
 
+    # TODO(sdatko): Figure out the ReportPortal/Polarion case in the future;
+    #               TL;DR the rerun.xml entries should override the results.xml
+    #               entries before reporting in case we want to OVERRIDE_STATUS
+    #               to be effective; for now, just rename the generated file
+    #               so it is not picked up to avoid any potential issue.
+    #               Remove that line below after the merging of XMLs is fixed
+    #               in the polarion role in ci-framework
+    mv "${TEMPEST_LOGS_DIR}/tempest_retry.xml" "${TEMPEST_LOGS_DIR}/tempest_retry.xml.txt"
+
     return 0
 }
 
