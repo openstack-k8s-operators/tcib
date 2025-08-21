@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/usr/bin/env bash
+#
 # run_tempest.sh
 # ==============
 #
@@ -87,6 +88,7 @@
 # octavia-tempest-plugin for example.
 
 set -x
+RETURN_VALUE=0
 
 HOMEDIR=/var/lib/tempest
 TEMPEST_PATH=$HOMEDIR/
@@ -96,6 +98,12 @@ TEMPESTCONF_ARGS=""
 TEMPEST_ARGS=""
 TEMPEST_DEBUG_MODE="${TEMPEST_DEBUG_MODE:-false}"
 TEMPEST_CLEANUP="${TEMPEST_CLEANUP:-false}"
+
+RERUN_FAILED_TESTS="${TEMPEST_RERUN_FAILED_TESTS:-false}"
+RERUN_OVERRIDE_STATUS="${TEMPEST_RERUN_OVERRIDE_STATUS:-false}"
+
+TEMPEST_EXPECTED_FAILURES_LIST="${TEMPEST_EXPECTED_FAILURES_LIST:-/dev/null}"
+
 
 function catch_error_if_debug {
     echo "File run_tempest.sh has run into an error!"
@@ -111,6 +119,7 @@ fi
 [[ ! -z ${USE_EXTERNAL_FILES} ]] && TEMPEST_PATH=$HOMEDIR/external_files/
 
 TEMPEST_LOGS_DIR=${TEMPEST_PATH}${TEMPEST_WORKFLOW_STEP_DIR_NAME}/
+FAILED_TESTS_FILE="${TEMPEST_LOGS_DIR}/stestr_failing.txt"
 
 [[ ${TEMPESTCONF_CREATE:=true} == true ]] && TEMPESTCONF_ARGS+="--create "
 [[ ${TEMPESTCONF_INSECURE} == true ]] && TEMPESTCONF_ARGS+="--insecure "
@@ -150,6 +159,7 @@ TEMPEST_EXTERNAL_PLUGIN_GIT_URL="${TEMPEST_EXTERNAL_PLUGIN_GIT_URL:-}"
 TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL="${TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL:-}"
 TEMPEST_EXTERNAL_PLUGIN_REFSPEC="${TEMPEST_EXTERNAL_PLUGIN_REFSPEC:-}"
 TEMPEST_EXTERNAL_PLUGIN_DIR=/var/lib/tempest/external-plugins
+VENV_DIR="${TEMPEST_EXTERNAL_PLUGIN_DIR}/.venv"
 
 TEMPEST_EXTRA_RPMS="${TEMPEST_EXTRA_RPMS:-}"
 
@@ -301,12 +311,63 @@ $*
 EOF
 }
 
+
+function prepare_tempest_cleanup {
+    # We're running cleanup only under certain circumstances
+    if [[ ${TEMPEST_CLEANUP} == true ]]; then
+        # discover-tempest-config needs 2 flavors it can't run without. When ran without "--create"
+        # param, it can't create the flavors itself and fails.
+        # Let's create 2 flavors and delete them afterwards to leave the system intact.
+        openstack flavor create --ram 128 --disk 1 --ephemeral 0 --vcpus 1 tempestconf_small
+        openstack flavor create --ram 192 --disk 1 --ephemeral 0 --vcpus 1 tempestconf_medium
+        # generate a simple tempest.conf so that we can run --init-saved-state
+        discover-tempest-config
+        openstack flavor delete tempestconf_small tempestconf_medium
+        # let's remove the images that discover-tempest-config creates by default
+        # so that the're not part of the saved_state.json and can be deleted
+        # by tempest cleanup later
+        openstack image list -c Name -f value | grep cirros | xargs -I {} openstack image delete {}
+        tempest cleanup --init-saved-state
+    fi
+}
+
+
+function run_tempest_cleanup {
+    # Run tempest cleanup to delete any leftover resources when not in debug mode
+    if [[ ${TEMPEST_CLEANUP} == true ]]; then
+        tempest cleanup
+    fi
+}
+
+
+function run_tempest {
+    pushd $HOMEDIR
+    tempest init openshift
+    pushd $TEMPEST_DIR
+
+    prepare_tempest_cleanup
+
+    upload_extra_images
+
+    mkdir -p ${TEMPEST_LOGS_DIR}
+
+    discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
+    && tempest run ${TEMPEST_ARGS}
+    RETURN_VALUE=$?
+
+    run_tempest_cleanup
+
+    popd
+    popd
+}
+
+
 function run_git_tempest {
     mkdir -p $TEMPEST_EXTERNAL_PLUGIN_DIR
     pushd $TEMPEST_EXTERNAL_PLUGIN_DIR
 
-    python3 -m venv .venv
-    source ./.venv/bin/activate
+    python3 -m venv "${VENV_DIR}"
+    source "${VENV_DIR}/bin/activate"
 
     for plugin_index in "${!TEMPEST_EXTERNAL_PLUGIN_GIT_URL[@]}"; do
         git_url=${TEMPEST_EXTERNAL_PLUGIN_GIT_URL[plugin_index]}
@@ -341,95 +402,26 @@ function run_git_tempest {
         pip install -chttps://releases.openstack.org/constraints/upper/2023.1 ./$plugin_name
     done
 
-    pushd $HOMEDIR
-    tempest init openshift
-    pushd $TEMPEST_DIR
-
-    # We're running cleanup only under certain circumstances
-    if [[ ${TEMPEST_CLEANUP} == true ]]; then
-        # discover-tempest-config needs 2 flavors it can't run without. When ran without "--create"
-        # param, it can't create the flavors itself and fails.
-        # Let's create 2 flavors and delete them afterwards to leave the system intact.
-        openstack flavor create --ram 128 --disk 1 --ephemeral 0 --vcpus 1 tempestconf_small
-        openstack flavor create --ram 192 --disk 1 --ephemeral 0 --vcpus 1 tempestconf_medium
-        # generate a simple tempest.conf so that we can run --init-saved-state
-        discover-tempest-config
-        openstack flavor delete tempestconf_small tempestconf_medium
-        # let's remove the images that discover-tempest-config creates by default
-        # so that the're not part of the saved_state.json and can be deleted
-        # by tempest cleanup later
-        openstack image list -c Name -f value | grep cirros | xargs -I {} openstack image delete {}
-        tempest cleanup --init-saved-state
-    fi
-
-    upload_extra_images
-
-    mkdir -p ${TEMPEST_LOGS_DIR}
-
-    discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
-    && tempest run ${TEMPEST_ARGS}
-    RETURN_VALUE=$?
-
-    # Run tempest cleanup to delete any leftover resources when not in debug mode
-    if [[ ${TEMPEST_CLEANUP} == true ]]; then
-        tempest cleanup
-    fi
+    run_tempest
 
     deactivate
 
     popd
-    popd
-    popd
 }
 
-function run_rpm_tempest {
-    pushd $HOMEDIR
-    tempest init openshift
-    pushd $TEMPEST_DIR
 
+function run_rpm_tempest {
     # Install additional plugins from .rpms plus their dependencies
     [ ${#TEMPEST_EXTRA_RPMS[@]} -ne 0 ] && sudo dnf install -y ${TEMPEST_EXTRA_RPMS[@]}
 
     # List Tempest packages
     rpm -qa | grep tempest
 
-    # We're running cleanup only under certain circumstances
-    if [[ ${TEMPEST_CLEANUP} == true ]]; then
-        # discover-tempest-config needs 2 flavors it can't run without. When ran without "--create"
-        # param, it can't create the flavors itself and fails.
-        # Let's create 2 flavors and delete them afterwards to leave the system intact.
-        openstack flavor create --ram 128 --disk 1 --ephemeral 0 --vcpus 1 tempestconf_small
-        openstack flavor create --ram 192 --disk 1 --ephemeral 0 --vcpus 1 tempestconf_medium
-        # generate a simple tempest.conf so that we can run --init-saved-state
-        discover-tempest-config
-        openstack flavor delete tempestconf_small tempestconf_medium
-        # let's remove the images that discover-tempest-config creates by default
-        # so that the're not part of the saved_state.json and can be deleted
-        # by tempest cleanup later
-        openstack image list -c Name -f value | grep cirros | xargs -I {} openstack image delete {}
-        tempest cleanup --init-saved-state
-    fi
-
-    upload_extra_images
-
-    mkdir -p ${TEMPEST_LOGS_DIR}
-
-    discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
-    && tempest run ${TEMPEST_ARGS}
-    RETURN_VALUE=$?
-
-    # Run tempest cleanup to delete any leftover resources when not in debug mode
-    if [[ ${TEMPEST_CLEANUP} == true ]]; then
-        tempest cleanup
-    fi
-
-    popd
-    popd
+    run_tempest
 }
 
-function generate_test_results {
-    pushd $TEMPEST_DIR
 
+function print_config_files {
     echo "Excluded tests"
     if [ ! -z ${TEMPEST_EXCLUDE_LIST} ]; then
         cat ${TEMPEST_EXCLUDE_LIST}
@@ -439,23 +431,130 @@ function generate_test_results {
     if [ ! -z ${TEMPEST_INCLUDE_LIST} ]; then
         cat ${TEMPEST_INCLUDE_LIST}
     fi
+}
+
+
+function save_config_files {
+    # Copies the configuration files from last run to the logs directory.
+    mkdir -p "${TEMPEST_LOGS_DIR}/etc"
+
+    cp -f "${TEMPEST_INCLUDE_LIST}" "${TEMPEST_LOGS_DIR}/etc"
+    cp -f "${TEMPEST_EXCLUDE_LIST}" "${TEMPEST_LOGS_DIR}/etc"
+    cp -f "${TEMPEST_EXPECTED_FAILURES_LIST}" "${TEMPEST_LOGS_DIR}/etc"
+    cp -f "${TEMPEST_DIR}/etc/"*.{conf,ini,txt,yaml} "${TEMPEST_LOGS_DIR}/etc"
+
+    cp -f "${TEMPEST_DIR}/.stestr.conf" "${TEMPEST_LOGS_DIR}/stestr.conf"
+    cp -rf "${TEMPEST_DIR}/.stestr" "${TEMPEST_LOGS_DIR}/stestr"
+}
+
+
+function move_tempest_log {
+    # Moves the tempest.log file from last run to a new name in logs directory.
+    # Optional first argument allows specifying the new file name.
+    _FILENAME="${1:-tempest_results.log}"
+
+    mv "${TEMPEST_LOGS_DIR}/tempest.log" "${TEMPEST_LOGS_DIR}/${_FILENAME}"
+}
+
+
+function generate_test_results {
+    # Produces the report files in subunit, xml and html formats,
+    # based on the last recorded run; saves results in the logs directory.
+    # Optional first argument allows specifying the custom report file name.
+    _FILENAME="${1:-tempest_results}"
+
+    _SUBUNIT_FILE="${TEMPEST_LOGS_DIR}/${_FILENAME}.subunit"
+    _RESULTS_XML="${TEMPEST_LOGS_DIR}/${_FILENAME}.xml"
+    _RESULTS_HTML="${TEMPEST_LOGS_DIR}/${_FILENAME}.html"
+
+    pushd $TEMPEST_DIR
 
     echo "Generate file containing failing tests"
-    stestr failing --list | sed 's/\[.*\]//g' > ${TEMPEST_LOGS_DIR}stestr_failing.txt
+    stestr failing --list | sed 's/\[.*\]//g' > "${FAILED_TESTS_FILE}"
 
     echo "Generate subunit, then xml and html results"
-    stestr last --subunit > ${TEMPEST_LOGS_DIR}testrepository.subunit \
-    && subunit2junitxml ${TEMPEST_LOGS_DIR}testrepository.subunit > ${TEMPEST_LOGS_DIR}tempest_results.xml || true \
-    && subunit2html ${TEMPEST_LOGS_DIR}testrepository.subunit ${TEMPEST_LOGS_DIR}stestr_results.html || true
-
-    # NOTE: Remove images before copying of the logs.
-    rm ${TEMPEST_DIR}/etc/*.{img,qcow2}
-
-    echo Copying log files
-    cp -rf ${TEMPEST_DIR}/* ${TEMPEST_LOGS_DIR}
+    stestr last --subunit > "${_SUBUNIT_FILE}"
+    subunit2junitxml "${_SUBUNIT_FILE}" -o "${_RESULTS_XML}"
+    subunit2html "${_SUBUNIT_FILE}" "${_RESULTS_HTML}"
 
     popd
 }
+
+
+function rerun_failed_tests {
+    # Perform re-run of tests that failed in previous execution, if requested.
+    # Saves the results in the logs directory and (if set to do so) overrides
+    # the return value from the script if the newer execution is successful.
+    if [ "${RERUN_FAILED_TESTS}" = false ]; then
+        return 1  # Not enabled
+    fi
+    if [ ! -s "${FAILED_TESTS_FILE}" ]; then
+        return 2  # No failed tests
+    fi
+
+    if [ -f "${VENV_DIR}/bin/activate" ]; then
+        source "${VENV_DIR}/bin/activate"
+    fi
+
+    pushd $TEMPEST_DIR
+
+    tempest run ${TEMPEST_ARGS} --include-list <(sed -e 's#^\(setUpClass\|tearDownClass\) ##g' "${FAILED_TESTS_FILE}")
+    _RETURN_VALUE=$?
+
+    if [ "${RERUN_OVERRIDE_STATUS}" = true ]; then
+        RETURN_VALUE="${_RETURN_VALUE}"
+    fi
+
+    popd
+
+    if [ -f "${VENV_DIR}/bin/activate" ]; then
+        deactivate
+    fi
+
+    # NOTE: the name `retry` is important because it always comes after
+    #       the `results` in the alphabetically sorted output...
+    move_tempest_log tempest_retry.log
+    generate_test_results tempest_retry
+
+    # TODO(sdatko): Figure out the ReportPortal/Polarion case in the future;
+    #               TL;DR the rerun.xml entries should override the results.xml
+    #               entries before reporting in case we want to OVERRIDE_STATUS
+    #               to be effective; for now, just rename the generated file
+    #               so it is not picked up to avoid any potential issue.
+    #               Remove that line below after the merging of XMLs is fixed
+    #               in the polarion role in ci-framework
+    mv "${TEMPEST_LOGS_DIR}/tempest_retry.xml" "${TEMPEST_LOGS_DIR}/tempest_retry.xml.txt"
+
+    return 0
+}
+
+
+function check_expected_failures {
+    # Compares the tests that failed in the last run with the expected list.
+    # In case all failed tests were the expected ones, we still return success.
+    if [ -s "${FAILED_TESTS_FILE}" ] && [ -s ${TEMPEST_EXPECTED_FAILURES_LIST} ]; then
+        echo "Failing tests marked as expected failures"
+        grep -Fxf ${TEMPEST_EXPECTED_FAILURES_LIST} "${FAILED_TESTS_FILE}"
+
+        if ! grep -Fxv -q -f ${TEMPEST_EXPECTED_FAILURES_LIST} "${FAILED_TESTS_FILE}"; then
+            RETURN_VALUE=0
+        fi
+    fi
+}
+
+
+function whitebox_neutron_tempest_plugin_workaround {
+    # This workaround is required for the whitebox-neutron-tempest plugin.
+    # We need to be able to specify 600 permissions for the id_ecdsa.
+    if [ -f "${HOMEDIR}/id_ecdsa" ]; then
+        mkdir -p "${HOMEDIR}/.ssh"
+        cp "${HOMEDIR}/id_ecdsa" "${HOMEDIR}/.ssh/id_ecdsa"
+        chmod 700 "${HOMEDIR}/.ssh"
+        chmod 600 "${HOMEDIR}/.ssh/id_ecdsa"
+        chown -R tempest:tempest "${HOMEDIR}/.ssh"
+    fi
+}
+
 
 export OS_CLOUD=default
 
@@ -476,15 +575,7 @@ if [ ! -f ${TEMPEST_PATH}exclude.txt ] && [ -z ${TEMPEST_EXCLUDE_LIST} ]; then
     touch ${TEMPEST_PATH}exclude.txt
 fi
 
-# This workaround is required for the whitebox-neutron-tempest plugin. We need
-# to be able to specify 600 permissions for the id_ecdsa.
-if [ -f ${HOMEDIR}/id_ecdsa ]; then
-    mkdir -p ${HOMEDIR}/.ssh
-    cp ${HOMEDIR}/id_ecdsa ${HOMEDIR}/.ssh/id_ecdsa
-    chmod 700 ${HOMEDIR}/.ssh
-    chmod 600 ${HOMEDIR}/.ssh/id_ecdsa
-    chown -R tempest:tempest ${HOMEDIR}/.ssh
-fi
+whitebox_neutron_tempest_plugin_workaround
 
 if [ -z $TEMPEST_EXTERNAL_PLUGIN_GIT_URL ]; then
     run_rpm_tempest
@@ -492,19 +583,17 @@ else
     run_git_tempest
 fi
 
-generate_test_results
+print_config_files
+save_config_files
+move_tempest_log tempest_results.log
+generate_test_results tempest_results
+
+rerun_failed_tests
+check_expected_failures
 
 # Keep pod in running state when in debug mode
 if [ ${TEMPEST_DEBUG_MODE} == true ]; then
     sleep infinity
-fi
-
-if [ -s ${TEMPEST_LOGS_DIR}stestr_failing.txt ] && [ -s ${TEMPEST_EXPECTED_FAILURES_LIST} ]; then
-    echo "Failing tests marked as expected failures"
-    grep -Fxf ${TEMPEST_EXPECTED_FAILURES_LIST} ${TEMPEST_LOGS_DIR}stestr_failing.txt
-    if ! grep -Fxv -q -f ${TEMPEST_EXPECTED_FAILURES_LIST} ${TEMPEST_LOGS_DIR}stestr_failing.txt ; then
-        RETURN_VALUE=0
-    fi
 fi
 
 exit ${RETURN_VALUE}
