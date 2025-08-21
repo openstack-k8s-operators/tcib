@@ -498,7 +498,7 @@ function rerun_failed_tests {
 
     pushd $TEMPEST_DIR
 
-    tempest run ${TEMPEST_ARGS} --include-list "${FAILED_TESTS_FILE}"
+    tempest run ${TEMPEST_ARGS} --include-list <(sed -e 's#^\(setUpClass\|tearDownClass\) ##g' "${FAILED_TESTS_FILE}")
     _RETURN_VALUE=$?
 
     if [ "${RERUN_OVERRIDE_STATUS}" = true ]; then
