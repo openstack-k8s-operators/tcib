@@ -91,8 +91,8 @@ set -x
 RETURN_VALUE=0
 
 HOMEDIR=/var/lib/tempest
-TEMPEST_PATH=$HOMEDIR/
-TEMPEST_DIR=$HOMEDIR/openshift
+TEMPEST_PATH="${HOMEDIR}/"
+TEMPEST_DIR="${HOMEDIR}/openshift"
 CONCURRENCY="${CONCURRENCY:-}"
 TEMPESTCONF_ARGS=""
 TEMPEST_ARGS=""
@@ -111,46 +111,46 @@ function catch_error_if_debug {
 }
 
 # Catch errors when in debug mode
-if [ ${TEMPEST_DEBUG_MODE} == true ]; then
+if [ "${TEMPEST_DEBUG_MODE}" == true ]; then
     trap catch_error_if_debug ERR
 fi
 
-[[ -z ${TEMPEST_WORKFLOW_STEP_DIR_NAME} ]] && TEMPEST_WORKFLOW_STEP_DIR_NAME="tempest"
-[[ ! -z ${USE_EXTERNAL_FILES} ]] && TEMPEST_PATH=$HOMEDIR/external_files/
+[[ -z "${TEMPEST_WORKFLOW_STEP_DIR_NAME}" ]] && TEMPEST_WORKFLOW_STEP_DIR_NAME="tempest"
+[[ ! -z "${USE_EXTERNAL_FILES}" ]] && TEMPEST_PATH="${HOMEDIR}/external_files/"
 
-TEMPEST_LOGS_DIR=${TEMPEST_PATH}${TEMPEST_WORKFLOW_STEP_DIR_NAME}/
+TEMPEST_LOGS_DIR="${TEMPEST_PATH}/${TEMPEST_WORKFLOW_STEP_DIR_NAME}/"
 FAILED_TESTS_FILE="${TEMPEST_LOGS_DIR}/stestr_failing.txt"
 
-[[ ${TEMPESTCONF_CREATE:=true} == true ]] && TEMPESTCONF_ARGS+="--create "
-[[ ${TEMPESTCONF_INSECURE} == true ]] && TEMPESTCONF_ARGS+="--insecure "
-[[ ${TEMPESTCONF_COLLECT_TIMING} == true ]] && TEMPESTCONF_ARGS+="--collect-timing "
-[[ ${TEMPESTCONF_NO_DEFAULT_DEPLOYER} == true ]] && TEMPESTCONF_ARGS+="--no-default-deployer "
-[[ ${TEMPESTCONF_DEBUG:=true} == true ]] && TEMPESTCONF_ARGS+="--debug "
-[[ ${TEMPESTCONF_VERBOSE} == true ]] && TEMPESTCONF_ARGS+="--verbose "
-[[ ${TEMPESTCONF_NO_RNG} == true ]] && TEMPESTCONF_ARGS+="--no-rng "
-[[ ${TEMPESTCONF_NON_ADMIN} == true ]] && TEMPESTCONF_ARGS+="--non-admin "
-[[ ${TEMPESTCONF_RETRY_IMAGE} == true ]] && TEMPESTCONF_ARGS+="--retry-image "
-[[ ${TEMPESTCONF_CONVERT_TO_RAW} == true ]] && TEMPESTCONF_ARGS+="--convert-to-raw "
+[[ "${TEMPESTCONF_CREATE:=true}" == true ]] && TEMPESTCONF_ARGS+="--create "
+[[ "${TEMPESTCONF_INSECURE}" == true ]] && TEMPESTCONF_ARGS+="--insecure "
+[[ "${TEMPESTCONF_COLLECT_TIMING}" == true ]] && TEMPESTCONF_ARGS+="--collect-timing "
+[[ "${TEMPESTCONF_NO_DEFAULT_DEPLOYER}" == true ]] && TEMPESTCONF_ARGS+="--no-default-deployer "
+[[ "${TEMPESTCONF_DEBUG:=true}" == true ]] && TEMPESTCONF_ARGS+="--debug "
+[[ "${TEMPESTCONF_VERBOSE}" == true ]] && TEMPESTCONF_ARGS+="--verbose "
+[[ "${TEMPESTCONF_NO_RNG}" == true ]] && TEMPESTCONF_ARGS+="--no-rng "
+[[ "${TEMPESTCONF_NON_ADMIN}" == true ]] && TEMPESTCONF_ARGS+="--non-admin "
+[[ "${TEMPESTCONF_RETRY_IMAGE}" == true ]] && TEMPESTCONF_ARGS+="--retry-image "
+[[ "${TEMPESTCONF_CONVERT_TO_RAW}" == true ]] && TEMPESTCONF_ARGS+="--convert-to-raw "
 
-[[ ! -z ${TEMPESTCONF_TIMEOUT} ]] && TEMPESTCONF_ARGS+="--timeout ${TEMPESTCONF_TIMEOUT} "
-[[ ! -z ${TEMPESTCONF_OUT} ]] && TEMPESTCONF_ARGS+="--out ${TEMPESTCONF_OUT} "
-[[ ! -z ${TEMPESTCONF_DEPLOYER_INPUT} ]] && TEMPESTCONF_ARGS+="--deployer-input ${TEMPESTCONF_DEPLOYER_INPUT} "
-[[ ! -z ${TEMPESTCONF_TEST_ACCOUNTS} ]] && TEMPESTCONF_ARGS+="--test-accounts ${TEMPESTCONF_TEST_ACCOUNTS} "
-[[ ! -z ${TEMPESTCONF_CREATE_ACCOUNTS_FILE} ]] && TEMPESTCONF_ARGS+="--create-accounts-file ${TEMPESTCONF_CREATE_ACCOUNTS_FILE} "
-[[ ! -z ${TEMPESTCONF_PROFILE} ]] && TEMPESTCONF_ARGS+="--profile ${TEMPESTCONF_PROFILE} "
-[[ ! -z ${TEMPESTCONF_GENERATE_PROFILE} ]] && TEMPESTCONF_ARGS+="--generate-profile ${TEMPESTCONF_GENERATE_PROFILE} "
-[[ ! -z ${TEMPESTCONF_IMAGE_DISK_FORMAT} ]] && TEMPESTCONF_ARGS+="--image-disk-format ${TEMPESTCONF_IMAGE_DISK_FORMAT} "
-[[ ! -z ${TEMPESTCONF_IMAGE} ]] && TEMPESTCONF_ARGS+="--image ${TEMPESTCONF_IMAGE} "
-[[ ! -z ${TEMPESTCONF_FLAVOR_MIN_MEM} ]] && TEMPESTCONF_ARGS+="--flavor-min-mem ${TEMPESTCONF_FLAVOR_MIN_MEM} "
-[[ ! -z ${TEMPESTCONF_FLAVOR_MIN_DISK} ]] && TEMPESTCONF_ARGS+="--flavor-min-disk ${TEMPESTCONF_FLAVOR_MIN_DISK} "
-[[ ! -z ${TEMPESTCONF_NETWORK_ID} ]] && TEMPESTCONF_ARGS+="--network-id ${TEMPESTCONF_NETWORK_ID} "
+[[ ! -z "${TEMPESTCONF_TIMEOUT}" ]] && TEMPESTCONF_ARGS+="--timeout ${TEMPESTCONF_TIMEOUT} "
+[[ ! -z "${TEMPESTCONF_OUT}" ]] && TEMPESTCONF_ARGS+="--out ${TEMPESTCONF_OUT} "
+[[ ! -z "${TEMPESTCONF_DEPLOYER_INPUT}" ]] && TEMPESTCONF_ARGS+="--deployer-input ${TEMPESTCONF_DEPLOYER_INPUT} "
+[[ ! -z "${TEMPESTCONF_TEST_ACCOUNTS}" ]] && TEMPESTCONF_ARGS+="--test-accounts ${TEMPESTCONF_TEST_ACCOUNTS} "
+[[ ! -z "${TEMPESTCONF_CREATE_ACCOUNTS_FILE}" ]] && TEMPESTCONF_ARGS+="--create-accounts-file ${TEMPESTCONF_CREATE_ACCOUNTS_FILE} "
+[[ ! -z "${TEMPESTCONF_PROFILE}" ]] && TEMPESTCONF_ARGS+="--profile ${TEMPESTCONF_PROFILE} "
+[[ ! -z "${TEMPESTCONF_GENERATE_PROFILE}" ]] && TEMPESTCONF_ARGS+="--generate-profile ${TEMPESTCONF_GENERATE_PROFILE} "
+[[ ! -z "${TEMPESTCONF_IMAGE_DISK_FORMAT}" ]] && TEMPESTCONF_ARGS+="--image-disk-format ${TEMPESTCONF_IMAGE_DISK_FORMAT} "
+[[ ! -z "${TEMPESTCONF_IMAGE}" ]] && TEMPESTCONF_ARGS+="--image ${TEMPESTCONF_IMAGE} "
+[[ ! -z "${TEMPESTCONF_FLAVOR_MIN_MEM}" ]] && TEMPESTCONF_ARGS+="--flavor-min-mem ${TEMPESTCONF_FLAVOR_MIN_MEM} "
+[[ ! -z "${TEMPESTCONF_FLAVOR_MIN_DISK}" ]] && TEMPESTCONF_ARGS+="--flavor-min-disk ${TEMPESTCONF_FLAVOR_MIN_DISK} "
+[[ ! -z "${TEMPESTCONF_NETWORK_ID}" ]] && TEMPESTCONF_ARGS+="--network-id ${TEMPESTCONF_NETWORK_ID} "
 
 TEMPESTCONF_OVERRIDES="$(echo ${TEMPESTCONF_OVERRIDES} | tr '\n' ' ') identity.v3_endpoint_type public "
 TEMPESTCONF_OVERRIDES+="DEFAULT.log_dir ${TEMPEST_LOGS_DIR} "
 
 # Octavia test-server is built as part of the installation of the python3-octavia-tests-tempest
 # https://github.com/rdo-packages/octavia-tempest-plugin-distgit/blob/rpm-master/python-octavia-tests-tempest.spec#L127
-if [[ ! -z ${TEMPESTCONF_OCTAVIA_TEST_SERVER_PATH} ]]; then
+if [[ ! -z "${TEMPESTCONF_OCTAVIA_TEST_SERVER_PATH}" ]]; then
     TEMPESTCONF_OVERRIDES+="load_balancer.test_server_path ${TEMPESTCONF_OCTAVIA_TEST_SERVER_PATH} "
 fi
 
@@ -202,17 +202,17 @@ read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_NAME <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_NAME
 read -ra TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD <<< $TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD
 IFS=$OLD_IFS
 
-[[ ${TEMPEST_SMOKE} == true ]] && TEMPEST_ARGS+="--smoke "
-[[ ${TEMPEST_SERIAL} == true ]] && TEMPEST_ARGS+="--serial "
+[[ "${TEMPEST_SMOKE}" == true ]] && TEMPEST_ARGS+="--smoke "
+[[ "${TEMPEST_SERIAL}" == true ]] && TEMPEST_ARGS+="--serial "
 
-[[ ! -z ${TEMPEST_INCLUDE_LIST} ]] && TEMPEST_ARGS+="--include-list ${TEMPEST_INCLUDE_LIST} "
-[[ ! -z ${TEMPEST_EXCLUDE_LIST} ]] && TEMPEST_ARGS+="--exclude-list ${TEMPEST_EXCLUDE_LIST} "
-[[ ! -z ${TEMPEST_CONCURRENCY} ]] && TEMPEST_ARGS+="--concurrency ${TEMPEST_CONCURRENCY} "
-[[ ! -z ${TEMPEST_WORKER_FILE} ]] && TEMPEST_ARGS+="--worker-file ${TEMPEST_WORKER_FILE} "
-[[ -z ${TEMPEST_INCLUDE_LIST} ]] && TEMPEST_ARGS+="--include-list ${TEMPEST_PATH}include.txt "
-[[ -z ${TEMPEST_EXCLUDE_LIST} ]] && TEMPEST_ARGS+="--exclude-list ${TEMPEST_PATH}exclude.txt "
+[[ ! -z "${TEMPEST_INCLUDE_LIST}" ]] && TEMPEST_ARGS+="--include-list ${TEMPEST_INCLUDE_LIST} "
+[[ ! -z "${TEMPEST_EXCLUDE_LIST}" ]] && TEMPEST_ARGS+="--exclude-list ${TEMPEST_EXCLUDE_LIST} "
+[[ ! -z "${TEMPEST_CONCURRENCY}" ]] && TEMPEST_ARGS+="--concurrency ${TEMPEST_CONCURRENCY} "
+[[ ! -z "${TEMPEST_WORKER_FILE}" ]] && TEMPEST_ARGS+="--worker-file ${TEMPEST_WORKER_FILE} "
+[[ -z "${TEMPEST_INCLUDE_LIST}" ]] && TEMPEST_ARGS+="--include-list ${TEMPEST_PATH}/include.txt "
+[[ -z "${TEMPEST_EXCLUDE_LIST}" ]] && TEMPEST_ARGS+="--exclude-list ${TEMPEST_PATH}/exclude.txt "
 
-if [[ ! -z ${TEMPESTCONF_APPEND} ]]; then
+if [[ ! -z "${TEMPESTCONF_APPEND}" ]]; then
     while IFS= read -r line; do
         [[ ! -n "$line" ]] && continue
         arr_line=( $line )
@@ -220,7 +220,7 @@ if [[ ! -z ${TEMPESTCONF_APPEND} ]]; then
     done <<< "$TEMPESTCONF_APPEND"
 fi
 
-if [[ ! -z ${TEMPESTCONF_REMOVE} ]]; then
+if [[ ! -z "${TEMPESTCONF_REMOVE}" ]]; then
     while IFS= read -r line; do
         [[ ! -n "$line" ]] && continue
         arr_line=( $line )
@@ -228,75 +228,75 @@ if [[ ! -z ${TEMPESTCONF_REMOVE} ]]; then
     done <<< "$TEMPESTCONF_REMOVE"
 fi
 
-if [ -n "$CONCURRENCY" ] && [ -z ${TEMPEST_CONCURRENCY} ]; then
+if [ -n "${CONCURRENCY}" ] && [ -z "${TEMPEST_CONCURRENCY}" ]; then
     TEMPEST_ARGS+="--concurrency ${CONCURRENCY} "
 fi
 
 function get_image_status {
-    openstack image show $IMAGE_ID -f value -c status
+    openstack image show "${IMAGE_ID}" -f value -c status
 }
 
 function upload_extra_images {
     for image_index in "${!TEMPEST_EXTRA_IMAGES_NAME[@]}"; do
-        if ! openstack image show ${TEMPEST_EXTRA_IMAGES_NAME[image_index]}; then
+        if ! openstack image show "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}"; then
             image_create_params=()
 
             [[ ! -f "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" ]] && \
                 curl -o "${HOMEDIR}/${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" "${TEMPEST_EXTRA_IMAGES_URL[image_index]}"
 
-            [[ ${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]} != "-" ]] && \
-                image_create_params+=(--disk-format ${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]})
+            [[ "${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]}" != "-" ]] && \
+                image_create_params+=(--disk-format "${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]}")
 
-            [[ ${TEMPEST_EXTRA_IMAGES_OS_CLOUD[image_index]} != "-" ]] && \
-                image_create_params+=(--os-cloud ${TEMPEST_EXTRA_IMAGES_OS_CLOUD[image_index]})
+            [[ "${TEMPEST_EXTRA_IMAGES_OS_CLOUD[image_index]}" != "-" ]] && \
+                image_create_params+=(--os-cloud "${TEMPEST_EXTRA_IMAGES_OS_CLOUD[image_index]}")
 
-            [[ ${TEMPEST_EXTRA_IMAGES_ID[image_index]} != "-" ]] && \
-                image_create_params+=(--id ${TEMPEST_EXTRA_IMAGES_ID[image_index]})
+            [[ "${TEMPEST_EXTRA_IMAGES_ID[image_index]}" != "-" ]] && \
+                image_create_params+=(--id "${TEMPEST_EXTRA_IMAGES_ID[image_index]}")
 
-            [[ ${TEMPEST_EXTRA_IMAGES_NAME[image_index]} != "-" ]] && \
+            [[ "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" != "-" ]] && \
                 image_create_params+=(--file "${HOMEDIR}/${TEMPEST_EXTRA_IMAGES_NAME[image_index]}")
 
-            [[ ${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]} != "-" ]] && \
-                image_create_params+=(--container-format ${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]})
+            [[ "${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]}" != "-" ]] && \
+                image_create_params+=(--container-format "${TEMPEST_EXTRA_IMAGES_CONTAINER_FORMAT[image_index]}")
 
-            image_create_params+=(--public ${TEMPEST_EXTRA_IMAGES_NAME[image_index]})
-            IMAGE_ID=$(openstack image create --import ${image_create_params[@]} -f value -c id)
+            image_create_params+=(--public "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}")
+            IMAGE_ID=$(openstack image create --import "${image_create_params[@]}" -f value -c id)
             STATUS=$(get_image_status)
             START_TIME=$(date +%s)
-            while [ "$STATUS" != "active" ]; do
-                echo "Current status: $STATUS. Waiting for image to become active..."
+            while [ "${STATUS}" != "active" ]; do
+                echo "Current status: ${STATUS}. Waiting for image to become active..."
                 sleep 5
-                if [ $(($(date +%s) - $START_TIME)) -gt ${TEMPEST_EXTRA_IMAGES_CREATE_TIMEOUT[image_index]} ]; then
+                if [ $(( $(date +%s) - ${START_TIME} )) -gt "${TEMPEST_EXTRA_IMAGES_CREATE_TIMEOUT[image_index]}" ]; then
                     echo "Error: Image creation exceeded the timeout period of ${TEMPEST_EXTRA_IMAGES_CREATE_TIMEOUT[image_index]} seconds."
                     exit 1
                 fi
                 STATUS=$(get_image_status)
             done
-            echo "Image $IMAGE_ID is now active."
+            echo "Image ${IMAGE_ID} is now active."
         fi
 
-        if ! openstack flavor show ${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]}; then
+        if ! openstack flavor show "${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]}"; then
             flavor_create_params=()
 
-            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_ID[image_index]} != "-" ]] && \
-                flavor_create_params+=(--id ${TEMPEST_EXTRA_IMAGES_FLAVOR_ID[image_index]})
+            [[ "${TEMPEST_EXTRA_IMAGES_FLAVOR_ID[image_index]}" != "-" ]] && \
+                flavor_create_params+=(--id "${TEMPEST_EXTRA_IMAGES_FLAVOR_ID[image_index]}")
 
-            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_RAM[image_index]} != "-" ]] && \
-                flavor_create_params+=(--ram ${TEMPEST_EXTRA_IMAGES_FLAVOR_RAM[image_index]})
+            [[ "${TEMPEST_EXTRA_IMAGES_FLAVOR_RAM[image_index]}" != "-" ]] && \
+                flavor_create_params+=(--ram "${TEMPEST_EXTRA_IMAGES_FLAVOR_RAM[image_index]}")
 
-            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_DISK[image_index]} != "-" ]] && \
-                flavor_create_params+=(--disk ${TEMPEST_EXTRA_IMAGES_FLAVOR_DISK[image_index]})
+            [[ "${TEMPEST_EXTRA_IMAGES_FLAVOR_DISK[image_index]}" != "-" ]] && \
+                flavor_create_params+=(--disk "${TEMPEST_EXTRA_IMAGES_FLAVOR_DISK[image_index]}")
 
-            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS[image_index]} != "-" ]] && \
-                flavor_create_params+=(--vcpus ${TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS[image_index]})
+            [[ "${TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS[image_index]}" != "-" ]] && \
+                flavor_create_params+=(--vcpus "${TEMPEST_EXTRA_IMAGES_FLAVOR_VCPUS[image_index]}")
 
-            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]} != "-" ]] && \
-                flavor_create_params+=(--public ${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]})
+            [[ "${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]}" != "-" ]] && \
+                flavor_create_params+=(--public "${TEMPEST_EXTRA_IMAGES_FLAVOR_NAME[image_index]}")
 
-            [[ ${TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD[image_index]} != "-" ]] && \
-                flavor_create_params+=(--os-cloud ${TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD[image_index]})
+            [[ "${TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD[image_index]}" != "-" ]] && \
+                flavor_create_params+=(--os-cloud "${TEMPEST_EXTRA_IMAGES_FLAVOR_OS_CLOUD[image_index]}")
 
-            openstack flavor create ${flavor_create_params[@]}
+            openstack flavor create "${flavor_create_params[@]}"
         fi
     done
 }
@@ -314,7 +314,7 @@ EOF
 
 function prepare_tempest_cleanup {
     # We're running cleanup only under certain circumstances
-    if [[ ${TEMPEST_CLEANUP} == true ]]; then
+    if [[ "${TEMPEST_CLEANUP}" == true ]]; then
         # discover-tempest-config needs 2 flavors it can't run without. When ran without "--create"
         # param, it can't create the flavors itself and fails.
         # Let's create 2 flavors and delete them afterwards to leave the system intact.
@@ -334,22 +334,22 @@ function prepare_tempest_cleanup {
 
 function run_tempest_cleanup {
     # Run tempest cleanup to delete any leftover resources when not in debug mode
-    if [[ ${TEMPEST_CLEANUP} == true ]]; then
+    if [[ "${TEMPEST_CLEANUP}" == true ]]; then
         tempest cleanup
     fi
 }
 
 
 function run_tempest {
-    pushd $HOMEDIR
+    pushd "${HOMEDIR}"
     tempest init openshift
-    pushd $TEMPEST_DIR
+    pushd "${TEMPEST_DIR}"
 
     prepare_tempest_cleanup
 
     upload_extra_images
 
-    mkdir -p ${TEMPEST_LOGS_DIR}
+    mkdir -p "${TEMPEST_LOGS_DIR}"
 
     discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
     && tempest run ${TEMPEST_ARGS}
@@ -363,43 +363,43 @@ function run_tempest {
 
 
 function run_git_tempest {
-    mkdir -p $TEMPEST_EXTERNAL_PLUGIN_DIR
-    pushd $TEMPEST_EXTERNAL_PLUGIN_DIR
+    mkdir -p "${TEMPEST_EXTERNAL_PLUGIN_DIR}"
+    pushd "${TEMPEST_EXTERNAL_PLUGIN_DIR}"
 
     python3 -m venv "${VENV_DIR}"
     source "${VENV_DIR}/bin/activate"
 
     for plugin_index in "${!TEMPEST_EXTERNAL_PLUGIN_GIT_URL[@]}"; do
-        git_url=${TEMPEST_EXTERNAL_PLUGIN_GIT_URL[plugin_index]}
-        change_url=${TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL[plugin_index]}
-        refspec=${TEMPEST_EXTERNAL_PLUGIN_REFSPEC[plugin_index]}
-        plugin_name=$(basename -s .git $git_url)
+        git_url="${TEMPEST_EXTERNAL_PLUGIN_GIT_URL[plugin_index]}"
+        change_url="${TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL[plugin_index]}"
+        refspec="${TEMPEST_EXTERNAL_PLUGIN_REFSPEC[plugin_index]}"
+        plugin_name=$(basename -s .git "${git_url}")
 
         # Handle possible timeouts on the git clone.
         retry_count=0
-        while [ $retry_count -lt 3 ]; do
-            git clone $git_url
+        while [ "${retry_count}" -lt 3 ]; do
+            git clone "${git_url}"
             if [ $? -eq 0 ]; then
                 break
             fi
-            let retry_count=$retry_count+1
+            let retry_count=${retry_count}+1
             sleep 10
         done
-        if [ $retry_count -gt 2 ]; then
-            echo "Failed to clone $git_url"
+        if [ "${retry_count}" -gt 2 ]; then
+            echo "Failed to clone ${git_url}"
             exit 1
         fi
 
 
-        if [[ ! -z $change_url ]] && [[ ! -z $refspec ]] || \
-           [[ $change_url != "-" ]] && [[ $refspec != "-" ]]; then
-            pushd $plugin_name
-            git fetch $change_url $refspec
+        if [[ ! -z "${change_url}" ]] && [[ ! -z "${refspec}" ]] || \
+           [[ "${change_url}" != "-" ]] && [[ "${refspec}" != "-" ]]; then
+            pushd "${plugin_name}"
+            git fetch "${change_url}" "${refspec}"
             git checkout FETCH_HEAD
             popd
         fi
 
-        pip install -chttps://releases.openstack.org/constraints/upper/2023.1 ./$plugin_name
+        pip install -chttps://releases.openstack.org/constraints/upper/2023.1 "./${plugin_name}"
     done
 
     run_tempest
@@ -412,7 +412,7 @@ function run_git_tempest {
 
 function run_rpm_tempest {
     # Install additional plugins from .rpms plus their dependencies
-    [ ${#TEMPEST_EXTRA_RPMS[@]} -ne 0 ] && sudo dnf install -y ${TEMPEST_EXTRA_RPMS[@]}
+    [ "${#TEMPEST_EXTRA_RPMS[@]}" -ne 0 ] && sudo dnf install -y "${TEMPEST_EXTRA_RPMS[@]}"
 
     # List Tempest packages
     rpm -qa | grep tempest
@@ -423,13 +423,13 @@ function run_rpm_tempest {
 
 function print_config_files {
     echo "Excluded tests"
-    if [ ! -z ${TEMPEST_EXCLUDE_LIST} ]; then
-        cat ${TEMPEST_EXCLUDE_LIST}
+    if [ ! -z "${TEMPEST_EXCLUDE_LIST}" ]; then
+        cat "${TEMPEST_EXCLUDE_LIST}"
     fi
 
     echo "Included tests"
-    if [ ! -z ${TEMPEST_INCLUDE_LIST} ]; then
-        cat ${TEMPEST_INCLUDE_LIST}
+    if [ ! -z "${TEMPEST_INCLUDE_LIST}" ]; then
+        cat "${TEMPEST_INCLUDE_LIST}"
     fi
 }
 
@@ -467,7 +467,7 @@ function generate_test_results {
     _RESULTS_XML="${TEMPEST_LOGS_DIR}/${_FILENAME}.xml"
     _RESULTS_HTML="${TEMPEST_LOGS_DIR}/${_FILENAME}.html"
 
-    pushd $TEMPEST_DIR
+    pushd "${TEMPEST_DIR}"
 
     echo "Generate file containing failing tests"
     stestr failing --list | sed 's/\[.*\]//g' > "${FAILED_TESTS_FILE}"
@@ -496,7 +496,7 @@ function rerun_failed_tests {
         source "${VENV_DIR}/bin/activate"
     fi
 
-    pushd $TEMPEST_DIR
+    pushd "${TEMPEST_DIR}"
 
     tempest run ${TEMPEST_ARGS} --include-list <(sed -e 's#^\(setUpClass\|tearDownClass\) ##g' "${FAILED_TESTS_FILE}")
     _RETURN_VALUE=$?
@@ -532,11 +532,11 @@ function rerun_failed_tests {
 function check_expected_failures {
     # Compares the tests that failed in the last run with the expected list.
     # In case all failed tests were the expected ones, we still return success.
-    if [ -s "${FAILED_TESTS_FILE}" ] && [ -s ${TEMPEST_EXPECTED_FAILURES_LIST} ]; then
+    if [ -s "${FAILED_TESTS_FILE}" ] && [ -s "${TEMPEST_EXPECTED_FAILURES_LIST}" ]; then
         echo "Failing tests marked as expected failures"
-        grep -Fxf ${TEMPEST_EXPECTED_FAILURES_LIST} "${FAILED_TESTS_FILE}"
+        grep -Fxf "${TEMPEST_EXPECTED_FAILURES_LIST}" "${FAILED_TESTS_FILE}"
 
-        if ! grep -Fxv -q -f ${TEMPEST_EXPECTED_FAILURES_LIST} "${FAILED_TESTS_FILE}"; then
+        if ! grep -Fxv -q -f "${TEMPEST_EXPECTED_FAILURES_LIST}" "${FAILED_TESTS_FILE}"; then
             RETURN_VALUE=0
         fi
     fi
@@ -558,26 +558,26 @@ function whitebox_neutron_tempest_plugin_workaround {
 
 export OS_CLOUD=default
 
-if [ ! -z ${USE_EXTERNAL_FILES} ] && [ -e ${TEMPEST_PATH}clouds.yaml ]; then
-    mkdir -p $HOME/.config/openstack
-    cp ${TEMPEST_PATH}clouds.yaml $HOME/.config/openstack/clouds.yaml
+if [ ! -z "${USE_EXTERNAL_FILES}" ] && [ -e "${TEMPEST_PATH}/clouds.yaml" ]; then
+    mkdir -p "${HOME}/.config/openstack"
+    cp "${TEMPEST_PATH}/clouds.yaml" "${HOME}/.config/openstack/clouds.yaml"
 fi
 
-if [ -f ${TEMPEST_PATH}profile.yaml ] && [ -z ${TEMPESTCONF_PROFILE} ]; then
-    TEMPESTCONF_ARGS+="--profile ${TEMPEST_PATH}profile.yaml "
+if [ -f "${TEMPEST_PATH}/profile.yaml" ] && [ -z "${TEMPESTCONF_PROFILE}" ]; then
+    TEMPESTCONF_ARGS+="--profile ${TEMPEST_PATH}/profile.yaml "
 fi
 
-if [ ! -f ${TEMPEST_PATH}include.txt ] && [ -z ${TEMPEST_INCLUDE_LIST} ]; then
-    echo "tempest.api.identity.v3" > ${TEMPEST_PATH}include.txt
+if [ ! -f "${TEMPEST_PATH}/include.txt" ] && [ -z "${TEMPEST_INCLUDE_LIST}" ]; then
+    echo "tempest.api.identity.v3" > "${TEMPEST_PATH}/include.txt"
 fi
 
-if [ ! -f ${TEMPEST_PATH}exclude.txt ] && [ -z ${TEMPEST_EXCLUDE_LIST} ]; then
-    touch ${TEMPEST_PATH}exclude.txt
+if [ ! -f "${TEMPEST_PATH}/exclude.txt" ] && [ -z "${TEMPEST_EXCLUDE_LIST}" ]; then
+    touch "${TEMPEST_PATH}/exclude.txt"
 fi
 
 whitebox_neutron_tempest_plugin_workaround
 
-if [ -z $TEMPEST_EXTERNAL_PLUGIN_GIT_URL ]; then
+if [ -z "${TEMPEST_EXTERNAL_PLUGIN_GIT_URL}" ]; then
     run_rpm_tempest
 else
     run_git_tempest
@@ -592,8 +592,8 @@ rerun_failed_tests
 check_expected_failures
 
 # Keep pod in running state when in debug mode
-if [ ${TEMPEST_DEBUG_MODE} == true ]; then
+if [ "${TEMPEST_DEBUG_MODE}" == true ]; then
     sleep infinity
 fi
 
-exit ${RETURN_VALUE}
+exit "${RETURN_VALUE}"
