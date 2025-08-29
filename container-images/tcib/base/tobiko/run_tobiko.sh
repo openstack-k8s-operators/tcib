@@ -39,7 +39,11 @@ cp -r ${TOBIKO_SRC_DIR} tobiko
 chown tobiko:tobiko -R tobiko
 pushd tobiko
 git pull --rebase
-git checkout ${TOBIKO_VERSION}
+if [ -n "${TOBIKO_PATCH_REFSPEC}" ]; then
+    git fetch ${TOBIKO_PATCH_REPOSITORY} ${TOBIKO_PATCH_REFSPEC} && git checkout FETCH_HEAD
+else
+    git checkout ${TOBIKO_VERSION}
+fi
 
 # obtain clouds.yaml, ssh private/public keys and tobiko.conf from external_files directory
 if [ ! -z ${USE_EXTERNAL_FILES} ]; then
