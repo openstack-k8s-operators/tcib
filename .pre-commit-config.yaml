@@ -12,7 +12,7 @@ repos:
       - id: check-yaml
         files: .*\.(yaml|yml)$
   - repo: https://github.com/pycqa/flake8.git
-    rev: 3.9.0
+    rev: 7.3.0
     hooks:
       - id: flake8
   - repo: https://github.com/openstack-dev/bashate.git
@@ -28,6 +28,25 @@ repos:
         #       use jinja templating, this will often fail and the syntax
         #       error will be discovered in execution anyway)
   - repo: https://github.com/PyCQA/pylint
-    rev: pylint-2.7.2
+    rev: v3.3.8
     hooks:
       - id: pylint
+        args:
+          [
+            "--disable=C0209,R0917,R1705,R1734,R1735,W1514,W3301"
+          ]
+          # C0209: Formatting a regular string which could be an
+          #        f-string (consider-using-f-string)
+          # R0917: Too many positional arguments (25/5)
+          #        (too-many-positional-arguments)
+          # R1705: Unnecessary "else" after "return", remove the "else"
+          #        and de-indent the code inside it (no-else-return)
+          # R1734: Consider using [] instead of list() (use-list-literal)
+          # R1753: Consider using '{}' instead of a call to 'dict'.
+          #        (use-dict-literal)
+          # W1514: Using open without explicitly specifying
+          #        an encoding (unspecified-encoding)
+          # W3301: Do not use nested call of 'min'; it's possible to do
+          #        'min(8, max(2, processutils.get_worker_count()),
+          #         len(containers))'
+          #         instead (nested-min-max)
