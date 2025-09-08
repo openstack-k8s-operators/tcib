@@ -59,7 +59,7 @@ class TempDirs(object):
 
     def __init__(self, dir_path=None, dir_prefix='tcib', cleanup=True,
                  chdir=True):
-        """This context manager will create, push, and cleanup temp directories.
+        """This context manager will create, push and cleanup temp directories.
         >>> with TempDirs() as t:
         ...     with open('file', 'w') as f:
         ...         f.write('test')
