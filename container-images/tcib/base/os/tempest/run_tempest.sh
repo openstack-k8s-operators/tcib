@@ -481,6 +481,22 @@ function generate_test_results {
 }
 
 
+function generate_stackviz_report {
+    _SUBUNIT_FILE="${TEMPEST_LOGS_DIR}/tempest_results.subunit"
+    _STACKVIZ_DIR="${TEMPEST_LOGS_DIR}/stackviz"
+
+    if [ -f "${_SUBUNIT_FILE}" ]; then
+        echo "Generating Stackviz report..."
+        mkdir -p "${_STACKVIZ_DIR}"
+        stackviz-export "${_SUBUNIT_FILE}" "${_STACKVIZ_DIR}/data"
+        # Optionally build full HTML frontend
+        stackviz-html "${_STACKVIZ_DIR}/data" "${_STACKVIZ_DIR}/html"
+    else
+        echo "No subunit file found for Stackviz"
+    fi
+}
+
+
 function rerun_failed_tests {
     # Perform re-run of tests that failed in previous execution, if requested.
     # Saves the results in the logs directory and (if set to do so) overrides
@@ -587,6 +603,7 @@ print_config_files
 save_config_files
 move_tempest_log tempest_results.log
 generate_test_results tempest_results
+generate_stackviz_report
 
 rerun_failed_tests
 check_expected_failures
