@@ -21,6 +21,7 @@ tcib_packages:
   - python3-octaviaclient
   - python3-aodhclient
   - python3-watcherclient
+  - python3-cloudkittyclient
   - bash-completion
   - iputils
   - ipmitool
