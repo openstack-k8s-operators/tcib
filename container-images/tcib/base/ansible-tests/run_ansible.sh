@@ -7,6 +7,7 @@ ANSIBLE_FILE_EXTRA_VARS_PARAM="${ANSIBLE_FILE_EXTRA_VARS_PARAM:-}"
 POD_ANSIBLE_PLAYBOOK="${POD_ANSIBLE_PLAYBOOK:-}"
 POD_ANSIBLE_EXTRA_VARS="${POD_ANSIBLE_EXTRA_VARS:-}"
 POD_ANSIBLE_GIT_REPO="${POD_ANSIBLE_GIT_REPO:-}"
+POD_ANSIBLE_GIT_BRANCH="${POD_ANSIBLE_GIT_BRANCH:-}"
 
 # Check and set ansible debug verbosity
 ANSIBLE_DEBUG=""
@@ -16,6 +17,12 @@ fi
 
 # Clone the Ansible repository
 git clone "$POD_ANSIBLE_GIT_REPO" "$ANSIBLE_DIR"
+
+if [[ -n "$POD_ANSIBLE_GIT_BRANCH" ]]; then
+    pushd "$ANSIBLE_DIR"
+    git fetch && git checkout --track origin/${POD_ANSIBLE_GIT_BRANCH}
+    popd
+fi
 
 # Handle extra vars file if provided
 if [[ -n "${POD_ANSIBLE_FILE_EXTRA_VARS:-}" ]]; then
