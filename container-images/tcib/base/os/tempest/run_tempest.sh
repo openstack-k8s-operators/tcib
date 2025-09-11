@@ -403,7 +403,7 @@ function run_git_tempest {
             popd
         fi
 
-        pip install -chttps://releases.openstack.org/constraints/upper/2023.1 "./${plugin_name}"
+        pip install -chttps://opendev.org/openstack/requirements/raw/branch/master/upper-constraints.txt "./${plugin_name}"
     done
 
     run_tempest
