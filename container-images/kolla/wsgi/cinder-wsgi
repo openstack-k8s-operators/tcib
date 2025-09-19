@@ -1,0 +1,14 @@
+#! /usr/bin/python3 -sP
+# PBR Generated from 'wsgi_scripts'
+
+import threading
+
+try:
+    from cinder.wsgi.api import application
+except ImportError:
+    from cinder.wsgi.wsgi import initialize_application
+    application = None
+    app_lock = threading.Lock()
+    with app_lock:
+        if application is None:
+            application = initialize_application()
