@@ -30,7 +30,7 @@ fi
 
 # Install collections if specified
 if [[ -n "${POD_INSTALL_COLLECTIONS:-}" ]]; then
-    ansible-galaxy collection install "$POD_INSTALL_COLLECTIONS"
+    ansible-galaxy collection install $POD_INSTALL_COLLECTIONS
 fi
 
 # Install collections from requirements.yaml if the file exists
