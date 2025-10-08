@@ -18,6 +18,8 @@
               - .coveragerc
               - LICENSE
               - OWNERS*
+            vars:
+              openstack_release: master
         - tcib-crc-podified-edpm-baremetal:
             irrelevant-files: *if
         - tcib-podified-multinode-edpm-deployment-crc:
