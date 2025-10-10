@@ -38,7 +38,7 @@ pushd ${TOBIKO_DIR}
 cp -r ${TOBIKO_SRC_DIR} tobiko
 chown tobiko:tobiko -R tobiko
 pushd tobiko
-[ ! -z ${TOBIKO_UPDATE_REPO} ] && git pull --rebase
+git pull --rebase
 git checkout ${TOBIKO_VERSION}
 
 # obtain clouds.yaml, ssh private/public keys and tobiko.conf from external_files directory

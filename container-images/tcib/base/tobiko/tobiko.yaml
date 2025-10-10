@@ -1,6 +1,5 @@
 tcib_envs:
   USE_EXTERNAL_FILES: true
-  TOBIKO_UPDATE_REPO: true
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: cp /usr/share/tcib/container-images/tcib/base/tobiko/tobiko_sudoers /etc/sudoers.d/tobiko_sudoers
