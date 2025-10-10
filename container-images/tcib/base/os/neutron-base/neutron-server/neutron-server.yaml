@@ -1,5 +1,9 @@
 tcib_actions:
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+# TODO(slaweq): install python3-neutron-fwaas on all distros once upstream
+# CI jobs will be switched to CentOS 10 Stream and this package from master
+# branch will be available there,
+- run: if [ '{{ tcib_distro }}' == 'rhel' ]; then dnf -y install python3-neutron-fwaas && dnf clean all && rm -rf /var/cache/dnf; fi
 - run: sed -i -r 's,^(Listen 80),#\1,' /etc/httpd/conf/httpd.conf  && sed -i -r 's,^(Listen 443),#\1,' /etc/httpd/conf.d/ssl.conf
 tcib_packages:
   common:
