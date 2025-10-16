@@ -3,6 +3,7 @@ tcib_envs:
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: pip install git+https://opendev.org/openstack/stackviz
 - run: cp /usr/share/tcib/container-images/tcib/base/os/tempest/tempest_sudoers /etc/sudoers.d/tempest_sudoers
 - run: chmod 440 /etc/sudoers.d/tempest_sudoers
 - run: mkdir -p /var/lib/tempest/external_files
@@ -20,6 +21,7 @@ tcib_packages:
   - openstack-tempest
   - subunit-filters
   - python3-subunit
+  - python3-pip
   - qemu-img
 
 tcib_user: tempest
