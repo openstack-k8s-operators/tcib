@@ -10,7 +10,7 @@ tcib_envs:
   FIREFOX_CONFIG_DIR: "/var/lib/ironic/.mozilla/firefox"
   EXTENSION_PATH: "/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/@ironic-console.openstack.org"
 tcib_actions:
-- run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: dnf -y install epel-release && dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
 - run: cp -r /usr/share/ironic/vnc-container/bin/* /usr/local/bin/
 - run: cp -r /usr/share/ironic/vnc-container/drivers /
 - run: cp -r /usr/share/ironic/vnc-container/extension /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/@ironic-console.openstack.org
