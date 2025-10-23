@@ -3,7 +3,7 @@
     name: openstack-k8s-operators/tcib
     github-check:
       jobs:
-        - openstack-meta-content-provider:
+        - tcib-openstack-meta-content-provider-master:
             irrelevant-files: &if
               - HACKING.rst
               - AUTHORS
@@ -18,9 +18,9 @@
               - .coveragerc
               - LICENSE
               - OWNERS*
-        - tcib-crc-podified-edpm-baremetal:
+        - tcib-crc-podified-edpm-baremetal-master:
             irrelevant-files: *if
-        - tcib-podified-multinode-edpm-deployment-crc:
+        - tcib-podified-multinode-edpm-deployment-crc-master:
             irrelevant-files: *if
-        - tcib-podified-multinode-edpm-deployment-crc-tobiko:
+        - tcib-podified-multinode-edpm-deployment-crc-tobiko-master:
             irrelevant-files: *if
