@@ -78,11 +78,6 @@
         - stepName: scenario-nova
           testenv: nova
           numProcesses: 1
-      # remove `cifmw_test_operator_tobiko_override_conf` when ticket TOBIKO-142 is resolved
-      cifmw_test_operator_tobiko_override_conf:
-        advanced_vm:
-          username: fedora
-          image_url: https://kaplonski.pl/files/Customized-Fedora-Cloud-Base-Generic-41-1.4.x86_64.qcow2
       # enabling heat is needed for some tobiko tests
       cifmw_edpm_prepare_kustomizations:
         - apiVersion: kustomize.config.k8s.io/v1beta1
