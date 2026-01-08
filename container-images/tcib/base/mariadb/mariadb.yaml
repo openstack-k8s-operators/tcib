@@ -21,4 +21,5 @@ tcib_packages:
   - socat
   - stunnel
   - tar
+  - jq
 tcib_user: mysql
