@@ -242,7 +242,7 @@ function upload_extra_images {
             image_create_params=()
 
             [[ ! -f "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" ]] && \
-                curl -o "${HOMEDIR}/${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" "${TEMPEST_EXTRA_IMAGES_URL[image_index]}"
+                curl -L -o "${HOMEDIR}/${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" "${TEMPEST_EXTRA_IMAGES_URL[image_index]}"
 
             [[ "${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]}" != "-" ]] && \
                 image_create_params+=(--disk-format "${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]}")
