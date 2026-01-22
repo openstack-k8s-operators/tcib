@@ -5,6 +5,7 @@ tcib_actions:
 - run: crudini --set /etc/dnf/dnf.conf main install_weak_deps True
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: if [ -n '{{ tcib_tempest_enable_wntp }}' ] then dnf -y install python-whitebox-neutron-tests-tempest && dnf clean all && rm -rf /var/cache/dnf; fi
 - run: cp /usr/share/tcib/container-images/tcib/base/os/tempest/tempest_sudoers /etc/sudoers.d/tempest_sudoers
 - run: chmod 440 /etc/sudoers.d/tempest_sudoers
 - run: mkdir -p /var/lib/tempest/external_files
