@@ -3,7 +3,11 @@ tcib_envs:
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
-- run: pip install git+https://opendev.org/openstack/stackviz
+- run: pip install git+https://opendev.org/openstack/stackviz@refs/changes/14/973914/1
+- run: |
+    STACKVIZ_PATH=$(python3 -c "import stackviz, os; print(os.path.dirname(stackviz.__file__))")
+    mkdir -p /var/lib/tempest/stackviz
+    cp -r ${STACKVIZ_PATH}/app/* /var/lib/tempest/stackviz/
 - run: cp /usr/share/tcib/container-images/tcib/base/os/tempest/tempest_sudoers /etc/sudoers.d/tempest_sudoers
 - run: chmod 440 /etc/sudoers.d/tempest_sudoers
 - run: mkdir -p /var/lib/tempest/external_files

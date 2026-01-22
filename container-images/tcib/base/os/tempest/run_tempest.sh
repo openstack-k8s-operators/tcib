@@ -483,14 +483,28 @@ function generate_test_results {
 
 function generate_stackviz_report {
     _SUBUNIT_FILE="${TEMPEST_LOGS_DIR}/tempest_results.subunit"
-    _STACKVIZ_DIR="${TEMPEST_LOGS_DIR}/stackviz"
+    _SUBUNIT_GZ_FILE="${TEMPEST_LOGS_DIR}/tempest_results.subunit.gz"
+    _STACKVIZ_HTML_DIR="/var/lib/tempest/stackviz"
+    _STACKVIZ_DATA_DIR="${_STACKVIZ_HTML_DIR}/data"
+
+    # Check if compressed subunit file exists and decompress it
+    if [ -f "${_SUBUNIT_GZ_FILE}" ]; then
+        echo "Decompressing subunit.gz file..."
+        gunzip -c "${_SUBUNIT_GZ_FILE}" > "${_SUBUNIT_FILE}"
+    fi
 
     if [ -f "${_SUBUNIT_FILE}" ]; then
         echo "Generating Stackviz report..."
-        mkdir -p "${_STACKVIZ_DIR}"
-        stackviz-export "${_SUBUNIT_FILE}" "${_STACKVIZ_DIR}/data"
-        # Optionally build full HTML frontend
-        stackviz-html "${_STACKVIZ_DIR}/data" "${_STACKVIZ_DIR}/html"
+        # Generate JSON files in a temporary directory
+        _TEMP_DATA_DIR=$(mktemp -d)
+        stackviz-export "${_SUBUNIT_FILE}" "${_TEMP_DATA_DIR}"
+
+        # Copy JSON files to stackviz HTML data directory
+        mkdir -p "${_STACKVIZ_DATA_DIR}"
+        cp -r "${_TEMP_DATA_DIR}"/* "${_STACKVIZ_DATA_DIR}/"
+        rm -rf "${_TEMP_DATA_DIR}"
+
+        echo "Stackviz report generated at ${_STACKVIZ_HTML_DIR}"
     else
         echo "No subunit file found for Stackviz"
     fi
