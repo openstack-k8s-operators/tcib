@@ -484,7 +484,7 @@ function generate_test_results {
 function generate_stackviz_report {
     _SUBUNIT_FILE="${TEMPEST_LOGS_DIR}/tempest_results.subunit"
     _SUBUNIT_GZ_FILE="${TEMPEST_LOGS_DIR}/tempest_results.subunit.gz"
-    _STACKVIZ_HTML_DIR="/var/lib/tempest/stackviz"
+    _STACKVIZ_HTML_DIR="/var/lib/tempest/external_files/stackviz"
     _STACKVIZ_DATA_DIR="${_STACKVIZ_HTML_DIR}/data"
 
     # Check if compressed subunit file exists and decompress it

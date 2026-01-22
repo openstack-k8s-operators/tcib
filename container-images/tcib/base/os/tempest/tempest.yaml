@@ -6,8 +6,8 @@ tcib_actions:
 - run: pip install git+https://opendev.org/openstack/stackviz@refs/changes/14/973914/1
 - run: |
     STACKVIZ_PATH=$(python3 -c "import stackviz, os; print(os.path.dirname(stackviz.__file__))")
-    mkdir -p /var/lib/tempest/stackviz
-    cp -r ${STACKVIZ_PATH}/app/* /var/lib/tempest/stackviz/
+    mkdir -p /var/lib/tempest/external_files/stackviz
+    cp -r ${STACKVIZ_PATH}/app/* /var/lib/tempest/external_files/stackviz/
 - run: cp /usr/share/tcib/container-images/tcib/base/os/tempest/tempest_sudoers /etc/sudoers.d/tempest_sudoers
 - run: chmod 440 /etc/sudoers.d/tempest_sudoers
 - run: mkdir -p /var/lib/tempest/external_files
