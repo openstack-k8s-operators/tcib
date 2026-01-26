@@ -148,12 +148,6 @@ FAILED_TESTS_FILE="${TEMPEST_LOGS_DIR}/stestr_failing.txt"
 TEMPESTCONF_OVERRIDES="$(echo ${TEMPESTCONF_OVERRIDES} | tr '\n' ' ') identity.v3_endpoint_type public "
 TEMPESTCONF_OVERRIDES+="DEFAULT.log_dir ${TEMPEST_LOGS_DIR} "
 
-# Octavia test-server is built as part of the installation of the python3-octavia-tests-tempest
-# https://github.com/rdo-packages/octavia-tempest-plugin-distgit/blob/rpm-master/python-octavia-tests-tempest.spec#L127
-if [[ ! -z "${TEMPESTCONF_OCTAVIA_TEST_SERVER_PATH}" ]]; then
-    TEMPESTCONF_OVERRIDES+="load_balancer.test_server_path ${TEMPESTCONF_OCTAVIA_TEST_SERVER_PATH} "
-fi
-
 # Tempest arguments
 TEMPEST_EXTERNAL_PLUGIN_GIT_URL="${TEMPEST_EXTERNAL_PLUGIN_GIT_URL:-}"
 TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL="${TEMPEST_EXTERNAL_PLUGIN_CHANGE_URL:-}"
