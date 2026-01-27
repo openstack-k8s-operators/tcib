@@ -1,5 +1,6 @@
 container_images:
 - imagename: quay.io/podified-master-centos9/openstack-ansible-tests:current-podified
+- imagename: quay.io/podified-master-centos9/openstack-aetos:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-aodh-api:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-aodh-evaluator:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-aodh-listener:current-podified
