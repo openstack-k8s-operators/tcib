@@ -6,8 +6,8 @@ aliases:
   - slagle
   - rabi
   ci-approvers:
-  - frenzyfriday
-  - pablintino
+  - evallesp
+  - amartyasinha
   openstack-approvers:
   - abays
   - dprince
