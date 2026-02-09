@@ -25,6 +25,7 @@ tcib_packages:
   - python3-pip
   - xorg-x11-server-Xvfb
   - firefox
+# pinned setuptools until https://bugs.launchpad.net/horizon/+bug/2141293 is fixed
   pip_packages:
   - pytest==7.3.2
   - pytest-django
@@ -36,5 +37,6 @@ tcib_packages:
   - xvfbwrapper
   - junit2html
   - urllib3==1.26.19
+  - setuptools==v81.0.0
 
 tcib_user: horizontest
