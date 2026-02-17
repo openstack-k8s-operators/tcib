@@ -31,3 +31,4 @@ repos:
     rev: pylint-2.7.2
     hooks:
       - id: pylint
+        additional_dependencies: ['setuptools<82']
