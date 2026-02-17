@@ -1,0 +1,7 @@
+tcib_actions:
+- run: dnf -y install {{ tcib_packages['common'] | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+tcib_packages:
+  common:
+  - novnc
+  - openstack-ironic-novncproxy
+tcib_user: ironic
