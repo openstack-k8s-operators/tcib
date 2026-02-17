@@ -1,9 +1,11 @@
 tcib_envs:
   USE_EXTERNAL_FILES: true
+  PIP_BUILD_CONSTRAINT: /tmp/horizon-build-constraints.txt
 tcib_actions:
 - run: bash /usr/local/bin/uid_gid_manage {{ tcib_user }}
 - run: dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
-- run: python3 -m pip install --upgrade pip
+- run: python3 -m pip install --upgrade pip 'setuptools<82'
+- run: echo "setuptools<82" > /tmp/horizon-build-constraints.txt
 - run: pip install {{ tcib_packages.pip_packages | join(' ') }}
 - run: cp /usr/share/tcib/container-images/tcib/base/os/horizontest/horizontest_sudoers /etc/sudoers.d/horizontest_sudoers
 - run: chmod 440 /etc/sudoers.d/horizontest_sudoers
