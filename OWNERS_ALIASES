@@ -7,7 +7,7 @@ aliases:
   - rabi
   ci-approvers:
   - evallesp
-  - amartyasinha
+  - bshewale
   - brjackma
   openstack-approvers:
   - abays
