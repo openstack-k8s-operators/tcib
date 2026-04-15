@@ -77,8 +77,6 @@ container_images:
 - imagename: quay.io/podified-master-centos9/openstack-rsyslog:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-unbound:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-tempest:current-podified
-- imagename: quay.io/podified-master-centos9/openstack-tempest-all:current-podified
-- imagename: quay.io/podified-master-centos9/openstack-tempest-extras:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-tobiko:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-openstackclient:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-watcher-api:current-podified
