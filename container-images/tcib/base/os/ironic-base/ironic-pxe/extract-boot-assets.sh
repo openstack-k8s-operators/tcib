@@ -49,6 +49,21 @@ done
 # Ensure all files are readable
 chmod -R +r ${TARGET_DIR}
 
+# Build an ESP image
+# Uses existing script recipe from ironic-operator pxe-init.sh
+pushd ${TARGET_DIR}/httpboot
+dd if=/dev/zero of=esp.img bs=4096 count=2048
+mkfs.msdos -F 12 -n 'ESP_IMAGE' esp.img
+
+mmd -i esp.img EFI
+mmd -i esp.img EFI/BOOT
+mcopy -i esp.img -v bootx64.efi ::EFI/BOOT
+mcopy -i esp.img -v grubx64.efi ::EFI/BOOT
+mdir -i esp.img ::EFI/BOOT
+popd
+
+echo "ESP image created successfully at ${TARGET_DIR}/httpboot/esp.img"
+
 # Clean up
 cd /
 rm -rf ${WORKDIR}
