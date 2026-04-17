@@ -33,6 +33,10 @@ BROWSE_LEFT_PANEL_SEC="Project,None,None,None,None,None,Volumes,Volumes,Network,
 BLP_SEC_LINE_XPATH=".//*[@class='navbar primary persistent-secondary']"
 BLP_SEC_LINE_REQ_BTN=".//*[@class='navbar primary persistent-secondary']//a[normalize-space()='{sec_panel}']//ancestor::li"
 BLP_SIDEBAR_XPATH=".//*[@class='navbar primary persistent-secondary']//a[normalize-space()='{sec_panel}']//ancestor::li//*[@class='dropdown-menu']"
+PROJECT_TEXT_XPATH="${PROJECT_TEXT_XPATH:-".//span[@class='rcueicon rcueicon-folder-open']/ancestor::li"}"
+SERVICES_REGION_NAME_XPATH=".//li[@id='services_region_switcher']/a"
+SERVICES_REGION_BTN_TEXT_PATTERN="Managing Region {region}"
+SERVICES_REGION_DROPDOWN_XPATH=".//li[@id='services_region_switcher']"
 
 # assert mandatory variables have been set
 [[ -z ${ADMIN_USERNAME} ]] && echo "ADMIN_USERNAME not set" && exit 1
@@ -183,6 +187,10 @@ crudini --set horizon.conf theme browse_left_panel_sec "${BROWSE_LEFT_PANEL_SEC}
 crudini --set horizon.conf theme b_l_p_sec_line_xpath "${BLP_SEC_LINE_XPATH}"
 crudini --set horizon.conf theme b_l_p_sec_line_req_btn "${BLP_SEC_LINE_REQ_BTN}"
 crudini --set horizon.conf theme b_l_p_sidebar_xpath "${BLP_SIDEBAR_XPATH}"
+crudini --set horizon.conf theme project_text_xpath "${PROJECT_TEXT_XPATH}"
+crudini --set horizon.conf services_regions region_name_xpath "${SERVICES_REGION_NAME_XPATH}"
+crudini --set horizon.conf services_regions region_btn_text_pattern "${SERVICES_REGION_BTN_TEXT_PATTERN}"
+crudini --set horizon.conf services_regions region_dropdown_xpath "${SERVICES_REGION_DROPDOWN_XPATH}"
 popd
 
 # run horizon selenium tests
