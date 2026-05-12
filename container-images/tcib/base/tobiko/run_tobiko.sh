@@ -60,7 +60,8 @@ if [[ ! -z "${USE_EXTERNAL_FILES}" ]]; then
 fi
 
 # run tobiko tests
-python3 -m tox -e "${TOBIKO_TESTENV}"
+# Note(kstrenko): Unquoted to enable word splitting for tox -- syntax
+python3 -m tox -e ${TOBIKO_TESTENV}
 RETURN_VALUE=$?
 
 # copy logs to external_files
