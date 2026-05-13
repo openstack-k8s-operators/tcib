@@ -33,6 +33,7 @@ declare -A _SUPPORTED_USERS
 # This comes from kolla/common/config.py.
 # Format: <username> <uid> <gid> <optional homedir> <optional comma-separated list of extra groups>
 # Note: if homedir isn't specified, extra groups aren't supported
+_SUPPORTED_USERS['aetos']='aetos 42462 42462 /var/lib/aetos kolla'
 _SUPPORTED_USERS['aodh']='aodh 42402 42402 /var/lib/aodh kolla'
 _SUPPORTED_USERS['barbican']='barbican 42403 42403 /var/lib/barbican kolla,nfast'
 _SUPPORTED_USERS['ceilometer']='ceilometer 42405 42405 /var/lib/ceilometer kolla'
