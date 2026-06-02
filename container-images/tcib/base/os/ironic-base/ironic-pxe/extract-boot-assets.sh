@@ -37,7 +37,7 @@ fi
 # Download boot asset packages for aarch64
 mkdir -p ${WORKDIR}/aarch64
 cd ${WORKDIR}/aarch64
-dnf download --forcearch=aarch64 ipxe-bootimgs-aarch64 grub2-efi-aa64 shim-aa64
+dnf download --forcearch=aarch64 --setopt=*.skip_if_unavailable=True ipxe-bootimgs-aarch64 grub2-efi-aa64 shim-aa64
 
 # Extract aarch64 RPMs
 for rpm in *.rpm; do
