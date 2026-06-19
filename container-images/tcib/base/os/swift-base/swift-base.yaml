@@ -7,6 +7,7 @@ tcib_actions:
 - run: touch /etc/swift/rootwrap.conf && chmod 644 /etc/swift/rootwrap.conf && crudini --set /etc/swift/rootwrap.conf DEFAULT filters_path /etc/swift/rootwrap.d,/usr/share/swift/rootwrap && crudini --set /etc/swift/rootwrap.conf DEFAULT exec_dirs /sbin,/usr/sbin,/bin,/usr/bin && crudini --set /etc/swift/rootwrap.conf DEFAULT use_syslog False && crudini --set /etc/swift/rootwrap.conf DEFAULT syslog_log_facility syslog && crudini --set /etc/swift/rootwrap.conf DEFAULT syslog_log_level ERROR
 tcib_packages:
   common:
+  - attr
   - nmap-ncat
   - openstack-swift
   - rsync-daemon
