@@ -1,0 +1,41 @@
+
+tcib_envs:
+  DISPLAY_WIDTH: "1280"
+  DISPLAY_HEIGHT: "960"
+  APP: "fake"
+  APP_INFO: "{}"
+  READ_ONLY: "False"
+  DEBUG: "0"
+  FIREFOX: "firefox"
+  FIREFOX_CONFIG_DIR: "/var/lib/ironic/.mozilla/firefox"
+  EXTENSION_PATH: "/usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/@ironic-console.openstack.org"
+tcib_actions:
+- run: dnf -y install epel-release && dnf -y install {{ tcib_packages.common | join(' ') }} && dnf clean all && rm -rf /var/cache/dnf
+- run: cp -r /usr/share/ironic/vnc-container/bin/* /usr/local/bin/
+- run: cp -r /usr/share/ironic/vnc-container/drivers /
+# TODO(stevebaker) uncomment when https://review.opendev.org/c/openstack/ironic/+/961434 lands
+# - run: cp -r /usr/share/ironic/vnc-container/extension /usr/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/@ironic-console.openstack.org
+# tcib_cmd: /usr/local/bin/start-x11vnc.sh
+tcib_cmd: /usr/local/bin/start-xvfb.sh
+tcib_entrypoint: dumb-init --
+tcib_packages:
+  common:
+  # TODO(stevebaker) replace the below list of packages with this when https://review.opendev.org/c/openstack/ironic/+/961434 lands
+  # - firefox
+  # - dumb-init
+  # - iproute
+  # - procps
+  # - psmisc
+  # - python3-requests
+  # - x11vnc
+  # - xorg-x11-server-Xvfb
+  - chromium
+  - chromedriver
+  - dumb-init
+  - procps
+  - psmisc
+  - python3-requests
+  - python3-selenium
+  - x11vnc
+  - xorg-x11-server-Xvfb
+tcib_user: ironic

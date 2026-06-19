@@ -36,7 +36,9 @@ container_images:
 - imagename: quay.io/podified-master-centos9/openstack-horizontest:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-ironic-api:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-ironic-conductor:current-podified
+- imagename: quay.io/podified-master-centos9/openstack-ironic-graphical-console:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-ironic-inspector:current-podified
+- imagename: quay.io/podified-master-centos9/openstack-ironic-novncproxy:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-ironic-pxe:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-ironic-neutron-agent:current-podified
 - imagename: quay.io/podified-master-centos9/openstack-iscsid:current-podified
