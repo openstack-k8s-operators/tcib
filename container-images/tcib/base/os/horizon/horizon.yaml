@@ -1,8 +1,8 @@
 tcib_actions:
 - run: >-
-    mv /etc/rpm/macros.image-language-conf /tmp &&
+    if [ -f /etc/rpm/macros.image-language-conf ]; then mv /etc/rpm/macros.image-language-conf /tmp; fi &&
     dnf -y install  {{ tcib_packages.with_localization | join(' ') }}  &&
-    mv /tmp/macros.image-language-conf /etc/rpm &&
+    if [ -f /tmp/macros.image-language-conf ]; then mv /tmp/macros.image-language-conf /etc/rpm; fi &&
     dnf -y install {{ tcib_packages.common | join(' ') }} &&
     dnf clean all && rm -rf /var/cache/dnf
 - run: cp /usr/share/tcib/container-images/kolla/horizon/extend_start.sh /usr/local/bin/kolla_extend_start
