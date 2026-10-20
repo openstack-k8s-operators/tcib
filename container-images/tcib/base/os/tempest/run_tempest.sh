@@ -236,8 +236,23 @@ function upload_extra_images {
         if ! openstack image show "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}"; then
             image_create_params=()
 
-            [[ ! -f "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" ]] && \
-                curl -L -o "${HOMEDIR}/${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" "${TEMPEST_EXTRA_IMAGES_URL[image_index]}"
+            if [[ ! -f "${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" ]]; then
+                curl_retry_count=0
+                while [ "${curl_retry_count}" -lt 3 ]; do
+                    curl -L -o "${HOMEDIR}/${TEMPEST_EXTRA_IMAGES_NAME[image_index]}" "${TEMPEST_EXTRA_IMAGES_URL[image_index]}"
+                    if [ $? -eq 0 ]; then
+                        break
+                    fi
+                    let curl_retry_count=${curl_retry_count}+1
+                    echo "curl download failed for ${TEMPEST_EXTRA_IMAGES_NAME[image_index]}. Retrying ${curl_retry_count}/3..."
+                    sleep 5
+                done
+
+                if [ "${curl_retry_count}" -eq 3 ]; then
+                    echo "Error: Failed to download ${TEMPEST_EXTRA_IMAGES_NAME[image_index]} after 3 attempts."
+                    exit 1
+                fi
+            fi
 
             [[ "${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]}" != "-" ]] && \
                 image_create_params+=(--disk-format "${TEMPEST_EXTRA_IMAGES_DISK_FORMAT[image_index]}")
