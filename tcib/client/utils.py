@@ -347,8 +347,7 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
 
     env = dict()
     env['ANSIBLE_SSH_ARGS'] = (
-        '-o UserKnownHostsFile={} '
-        '-o StrictHostKeyChecking=no '
+        '-o StrictHostKeyChecking=accept-new '
         '-o ControlMaster=auto '
         '-o ControlPersist=30m '
         '-o ServerAliveInterval=64 '
@@ -357,10 +356,9 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
         '-o TCPKeepAlive=yes '
         '-o VerifyHostKeyDNS=no '
         '-o ForwardX11=no '
-        '-o ForwardAgent=yes '
         '-o PreferredAuthentications=publickey '
         '-T'
-    ).format(os.devnull)
+    )
     env['ANSIBLE_DISPLAY_FAILED_STDERR'] = True
     env['ANSIBLE_FORKS'] = forks
     env['ANSIBLE_TIMEOUT'] = ansible_timeout
@@ -401,7 +399,6 @@ def run_ansible_playbook(playbook, inventory, workdir, playbook_dir=None,
         roles_path = os.path.join(_get_development_prefix(), 'roles')
         env['ANSIBLE_ROLES_PATH'] += ":{}".format(roles_path)
     env['ANSIBLE_RETRY_FILES_ENABLED'] = False
-    env['ANSIBLE_HOST_KEY_CHECKING'] = False
     env['ANSIBLE_TRANSPORT'] = connection
     env['ANSIBLE_CACHE_PLUGIN_TIMEOUT'] = 7200
 
