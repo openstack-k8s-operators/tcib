@@ -6,4 +6,5 @@ tcib_packages:
   - httpd
   - mod_ssl
   - python3-mod_wsgi
+  - uwsgi
 tcib_user: designate
