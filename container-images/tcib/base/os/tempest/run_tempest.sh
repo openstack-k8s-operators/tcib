@@ -89,6 +89,7 @@
 
 set -x
 RETURN_VALUE=0
+TEMPEST_TESTS_RAN=false
 
 HOMEDIR=/var/lib/tempest
 TEMPEST_PATH="${HOMEDIR}/"
@@ -344,14 +345,19 @@ function run_tempest {
     upload_extra_images
 
     if [[ -n "${TEMPEST_TIMING_DATA_URL:-}" ]]; then
-        curl -L "${TEMPEST_TIMING_DATA_URL}" | tar -xz --strip-components=1 -C "${TEMPEST_DIR}/.stestr"
+        curl -L "${TEMPEST_TIMING_DATA_URL}" | tar -xz --strip-components=1 -C "${TEMPEST_DIR}/.stestr" --wildcards '*/times.dbm*'
     fi
 
     mkdir -p "${TEMPEST_LOGS_DIR}"
 
-    discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES} \
-    && tempest run ${TEMPEST_ARGS}
-    RETURN_VALUE=$?
+    if discover_tempest_config ${TEMPESTCONF_ARGS} ${TEMPESTCONF_OVERRIDES}; then
+        TEMPEST_TESTS_RAN=true
+        tempest run ${TEMPEST_ARGS}
+        RETURN_VALUE=$?
+    else
+        RETURN_VALUE=$?
+        echo "discover-tempest-config failed (rc=${RETURN_VALUE}), skipping tempest run"
+    fi
 
     run_tempest_cleanup
 
@@ -574,11 +580,15 @@ fi
 
 print_config_files
 save_config_files
-move_tempest_log tempest_results.log
-generate_test_results tempest_results
 
-rerun_failed_tests
-check_expected_failures
+if [ "${TEMPEST_TESTS_RAN}" = true ]; then
+    move_tempest_log tempest_results.log
+    generate_test_results tempest_results
+    rerun_failed_tests
+    check_expected_failures
+else
+    echo "Tests did not run, skipping result collection"
+fi
 
 # Keep pod in running state when in debug mode
 if [ "${TEMPEST_DEBUG_MODE}" == true ]; then
